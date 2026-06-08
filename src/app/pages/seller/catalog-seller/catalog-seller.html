@@ -1,0 +1,219 @@
+<div class="seller-catalog-page animate-fade-in">
+  <!-- Catalog Banner -->
+  <section class="catalog-hero">
+    <div class="catalog-hero-content">
+      <h2 class="hero-title">Catálogo de mis productos</h2>
+      
+      <!-- Categories filters tabs from Figma -->
+      <div class="catalog-filters">
+        <button 
+          class="filter-tab-btn" 
+          [class.active]="selectedCategory() === 'Todos'"
+          (click)="setCategory('Todos')"
+        >
+          Todas las categorías
+        </button>
+        <button 
+          class="filter-tab-btn" 
+          [class.active]="selectedCategory() === 'Bebidas'"
+          (click)="setCategory('Bebidas')"
+        >
+          Bebidas
+        </button>
+        <button 
+          class="filter-tab-btn" 
+          [class.active]="selectedCategory() === 'Lácteos'"
+          (click)="setCategory('Lácteos')"
+        >
+          Lácteos
+        </button>
+        <button 
+          class="filter-tab-btn" 
+          [class.active]="selectedCategory() === 'Abarrotes'"
+          (click)="setCategory('Abarrotes')"
+        >
+          Abarrotes
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Catalog Operations Bar -->
+  <section class="catalog-ops-bar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar en mi catálogo..." 
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+    </div>
+    
+    <button class="btn btn-primary" (click)="openModal()">
+      + Agregar Producto
+    </button>
+  </section>
+
+  <!-- Catalog Grid Area -->
+  <section class="catalog-grid-section">
+    <!-- Check if empty -->
+    @if (filteredProducts().length === 0) {
+      <div class="empty-catalog-box animate-fade-in">
+        <div class="empty-icon">📦</div>
+        <h3>No se encontraron productos</h3>
+        <p>Intente con otra categoría, cambie su búsqueda o agregue un nuevo producto a su catálogo.</p>
+        <button class="btn btn-primary btn-pill" (click)="openModal()">
+          Subir Primer Producto
+        </button>
+      </div>
+    } @else {
+      <div class="section-header">
+        <h3 class="section-title">Mis productos cargados ({{ filteredProducts().length }})</h3>
+      </div>
+
+      <div class="card-grid">
+        @for (prod of filteredProducts(); track prod.id) {
+          <div class="premium-card catalog-product-card" [class.product-hidden]="!prod.isVisible">
+            <div class="card-img-container">
+              <span class="card-tag">{{ prod.tag }}</span>
+              <img [alt]="prod.name" [src]="prod.image" />
+              @if (!prod.isVisible) {
+                <div class="hidden-overlay">
+                  <span>NO DISPONIBLE</span>
+                </div>
+              }
+            </div>
+            
+            <div class="card-content">
+              <h4 class="card-title">{{ prod.name }}</h4>
+              
+              <div class="card-action">
+                <span class="card-price">S/ {{ prod.price | number: '1.2-2' }}</span>
+                <span class="visibility-status-badge" [class.visible]="prod.isVisible">
+                  {{ prod.isVisible ? 'Visible' : 'Oculto' }}
+                </span>
+              </div>
+              
+              <div class="card-manage-actions">
+                <button 
+                  class="btn-manage-edit" 
+                  [routerLink]="['/seller/catalog/product', prod.id]"
+                >
+                  ⚙️ Ver y Editar
+                </button>
+                <button 
+                  class="btn-manage-delete" 
+                  (click)="deleteProduct(prod.id, $event)"
+                  title="Eliminar"
+                >
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Options Grid from Figma -->
+  <section class="seller-options-section">
+    <div class="section-header">
+      <h3 class="section-title">Opciones del vendedor</h3>
+    </div>
+    
+    <div class="options-grid">
+      <div class="option-card" (click)="openModal()" style="cursor: pointer;">
+        <h4>Agregar producto</h4>
+      </div>
+
+      <div class="option-card" style="opacity: 0.8;">
+        <h4>Reporte del día</h4>
+      </div>
+
+      <div class="option-card" style="opacity: 0.8;">
+        <h4>Pedidos actuales</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- Create Product Modal -->
+  @if (showAddModal()) {
+    <div class="modal-overlay animate-fade-in" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Registrar Nuevo Producto</h3>
+          <button class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-input-group">
+            <label class="form-label">Nombre del Producto</label>
+            <input 
+              type="text" 
+              class="form-field" 
+              placeholder="Ej: Gaseosa Fanta 2L" 
+              [ngModel]="newProdName()"
+              (ngModelChange)="newProdName.set($event)"
+            />
+          </div>
+
+          <div class="form-input-group">
+            <label class="form-label">Precio de Venta (S/.)</label>
+            <input 
+              type="number" 
+              class="form-field" 
+              placeholder="Ej: 7.50" 
+              [ngModel]="newProdPrice()"
+              (ngModelChange)="newProdPrice.set($event)"
+            />
+          </div>
+
+          <div class="form-input-group">
+            <label class="form-label">Categoría</label>
+            <select 
+              class="form-field" 
+              [ngModel]="newProdCategory()"
+              (ngModelChange)="newProdCategory.set($event)"
+            >
+              <option value="Bebidas">Bebidas</option>
+              <option value="Lácteos">Lácteos</option>
+              <option value="Abarrotes">Abarrotes</option>
+            </select>
+          </div>
+
+          <div class="form-input-group">
+            <label class="form-label">Etiqueta Badge</label>
+            <select 
+              class="form-field" 
+              [ngModel]="newProdTag()"
+              (ngModelChange)="newProdTag.set($event)"
+            >
+              <option value="Nuevo">Nuevo</option>
+              <option value="Oferta">Oferta</option>
+              <option value="Popular">Popular</option>
+              <option value="Recomendado">Recomendado</option>
+              <option value="Venta">Venta</option>
+            </select>
+          </div>
+
+          <div class="form-input-group">
+            <label class="form-label">Descripción & Especificaciones</label>
+            <textarea 
+              class="form-field textarea-field" 
+              placeholder="Detalles sobre presentación, ingredientes y stock..."
+              [ngModel]="newProdDescription()"
+              (ngModelChange)="newProdDescription.set($event)"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" style="width: auto;" (click)="closeModal()">Cancelar</button>
+          <button class="btn btn-primary" style="width: auto;" (click)="submitProduct()">Guardar Producto</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

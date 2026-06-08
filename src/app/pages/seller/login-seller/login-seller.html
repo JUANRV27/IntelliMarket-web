@@ -1,0 +1,65 @@
+<div class="login-seller-page animate-fade-in">
+  <!-- Top Bar -->
+  <div class="login-top-bar">
+    <button class="back-btn" routerLink="/seller">← Regresar</button>
+    <div class="top-bar-logo">
+      <div class="avatar-circle"></div>
+      <h1>Bienvenido a IntelliMarket</h1>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <section class="login-form-section">
+    <div class="login-content-wrapper">
+      <div class="login-left-col">
+        <h2 class="login-main-title">Iniciar Sesión</h2>
+      </div>
+
+      <div class="login-right-col">
+        <!-- Input Group Email -->
+        <div class="form-input-group">
+          <label class="form-label text-white">Ingrese su Correo Electrónico</label>
+          <input 
+            type="email" 
+            class="form-field" 
+            placeholder="ejemplo@gmail.com" 
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+          />
+        </div>
+
+        <!-- Input Group Password -->
+        <div class="form-input-group">
+          <label class="form-label text-white">Contraseña</label>
+          <input 
+            type="password" 
+            class="form-field" 
+            placeholder="Ingrese su Contraseña" 
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            (keyup.enter)="login()"
+          />
+        </div>
+
+        <!-- Buttons Row -->
+        <div class="login-buttons-row">
+          <button class="btn btn-secondary" (click)="register()">
+            Crear Cuenta
+          </button>
+          <button class="btn btn-white" (click)="login()">
+            Iniciar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Login Footer -->
+  <footer class="login-footer">
+    <div class="footer-container">
+      <a class="footer-link-item" routerLink="/seller">Términos y condiciones</a>
+      <a class="footer-link-item" routerLink="/seller">Política de privacidad</a>
+      <a class="footer-link-item" routerLink="/seller">Contáctenos</a>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,49 @@
+<div class="layout-seller-container">
+  <!-- Seller Top Navigation Bar -->
+  <header class="top-bar top-bar-dark">
+    <div class="top-bar-logo">
+      <button class="menu-icon-btn text-white" routerLink="/seller/catalog">☰</button>
+      <h1 routerLink="/seller/catalog" style="cursor: pointer;">IntelliMarket</h1>
+    </div>
+
+    <!-- Navigation tabs from Figma -->
+    <nav class="top-bar-nav">
+      <a routerLink="/seller/catalog" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+      <a routerLink="/seller/catalog" routerLinkActive="active">Productos</a>
+      <a routerLink="/seller/catalog" routerLinkActive="active">Estadisticas</a>
+      <a routerLink="/seller/profile" routerLinkActive="active">Perfil</a>
+    </nav>
+
+    <div class="top-bar-right">
+      <button class="client-btn" routerLink="/">Ver Tienda</button>
+      <button class="logout-btn" (click)="logout()">Salir</button>
+      <a routerLink="/seller/profile">
+        <img 
+          alt="Avatar" 
+          class="avatar" 
+          src="http://localhost:3845/assets/6897de514b470658bd03c50e647fc563112bb87f.svg" 
+        />
+      </a>
+    </div>
+  </header>
+
+  <!-- Page Content Outlet -->
+  <main class="seller-main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Seller Footer from Figma design -->
+  <footer class="seller-footer">
+    <div class="footer-container">
+      <p>© 2023 IntelliMarket. Todos los derechos reservados.</p>
+      <div class="seller-footer-links">
+        <a routerLink="/seller/catalog">Política de Privacidad</a>
+        <span class="sep">|</span>
+        <a routerLink="/seller/catalog">Términos y Condiciones</a>
+        <span class="sep">|</span>
+        <a routerLink="/seller/catalog">Contacto</a>
+      </div>
+      <p class="footer-links">Facebook | Instagram | Twitter</p>
+    </div>
+  </footer>
+</div>

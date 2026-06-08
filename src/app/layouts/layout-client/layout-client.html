@@ -1,0 +1,43 @@
+<div class="layout-client-container">
+  <!-- Client Top Navigation Bar -->
+  <header class="top-bar">
+    <div class="top-bar-logo">
+      <button class="menu-icon-btn" routerLink="/">☰</button>
+      <h1 routerLink="/" style="cursor: pointer;">IntelliMarket</h1>
+    </div>
+
+    <div class="top-bar-search">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar productos en tu bodega local..." 
+        (input)="onSearch($event)"
+      />
+    </div>
+
+    <div class="top-bar-right">
+      <button class="seller-btn" routerLink="/seller">Zona Vendedor</button>
+      <a routerLink="/seller/login" title="Acceso Vendedor">
+        <img 
+          alt="Avatar" 
+          class="avatar" 
+          src="http://localhost:3845/assets/6897de514b470658bd03c50e647fc563112bb87f.svg" 
+        />
+      </a>
+    </div>
+  </header>
+
+  <!-- Page Content Outlet -->
+  <main class="client-main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Client Footer -->
+  <footer class="client-footer">
+    <div class="footer-container">
+      <p>© 2023 Bodega de Barrio. Todos los derechos reservados.</p>
+      <p class="footer-middle">Síguenos en nuestras redes sociales:</p>
+      <p class="footer-links">Facebook | Instagram | Twitter</p>
+    </div>
+  </footer>
+</div>

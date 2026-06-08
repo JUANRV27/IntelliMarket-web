@@ -1,0 +1,133 @@
+<div class="profile-page animate-fade-in">
+  <div class="profile-layout-wrapper">
+    <!-- Left Column: Vector Graphic -->
+    <div class="profile-graphic-col">
+      <div class="vector-graphic-box">
+        <img 
+          alt="Profile Graphic" 
+          src="http://localhost:3845/assets/011050bb8418c3b52446747976a6c118520790c6.svg" 
+        />
+      </div>
+    </div>
+
+    <!-- Right Column: Personal Data Form -->
+    <div class="profile-form-col">
+      <!-- Section 1: Personal Info -->
+      <div class="form-section-block">
+        <h2 class="form-section-title">Datos Personales</h2>
+        
+        <div class="fields-row-double">
+          <!-- Name field -->
+          <div class="form-input-group">
+            <label class="form-label">Nombre</label>
+            @if (isEditing()) {
+              <input type="text" class="form-field" [(ngModel)]="editName" />
+            } @else {
+              <div class="view-field-box">{{ profileData().name }}</div>
+            }
+          </div>
+
+          <!-- Phone field -->
+          <div class="form-input-group">
+            <label class="form-label">Número telefónico</label>
+            @if (isEditing()) {
+              <input type="text" class="form-field" [(ngModel)]="editPhone" />
+            } @else {
+              <div class="view-field-box">{{ profileData().phone }}</div>
+            }
+          </div>
+        </div>
+
+        <div class="fields-row-single">
+          <!-- Email field -->
+          <div class="form-input-group">
+            <label class="form-label">Correo</label>
+            @if (isEditing()) {
+              <input type="email" class="form-field" [(ngModel)]="editEmail" />
+            } @else {
+              <div class="view-field-box">{{ profileData().email }}</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Delivery Info -->
+      <div class="form-section-block">
+        <h2 class="form-section-title">Datos de Entrega</h2>
+        
+        <div class="fields-row-double">
+          <!-- Address field -->
+          <div class="form-input-group">
+            <label class="form-label">Dirección</label>
+            @if (isEditing()) {
+              <input type="text" class="form-field" [(ngModel)]="editAddress" />
+            } @else {
+              <div class="view-field-box">{{ profileData().address }}</div>
+            }
+          </div>
+
+          <!-- Apartment/House field -->
+          <div class="form-input-group">
+            <label class="form-label">Dpt/Casa</label>
+            @if (isEditing()) {
+              <input type="text" class="form-field" [(ngModel)]="editApartment" />
+            } @else {
+              <div class="view-field-box">{{ profileData().apartment }}</div>
+            }
+          </div>
+        </div>
+
+        <div class="fields-row-single">
+          <!-- Reference field -->
+          <div class="form-input-group">
+            <label class="form-label">Referencia</label>
+            @if (isEditing()) {
+              <input type="text" class="form-field" [(ngModel)]="editReference" />
+            } @else {
+              <div class="view-field-box">{{ profileData().reference }}</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Payment Methods -->
+      <div class="form-section-block">
+        <h2 class="form-section-title">Métodos de pago</h2>
+        
+        <div class="form-input-group">
+          <label class="form-label">Seleccione métodos de pago aceptados</label>
+          
+          <div class="chip-group margin-top-sm">
+            @for (method of availablePaymentMethods; track method) {
+              <div 
+                class="chip" 
+                [class.active]="isMethodSelected(method)"
+                (click)="togglePaymentMethod(method)"
+              >
+                {{ method }}
+              </div>
+            }
+          </div>
+          <span class="form-help">Seleccione uno o más (prioritario para el cliente)</span>
+        </div>
+      </div>
+
+      <!-- Actions Footer -->
+      <div class="profile-actions-footer">
+        @if (isEditing()) {
+          <button class="btn btn-secondary" style="width: auto;" (click)="cancelEditing()">
+            Cancelar
+          </button>
+          <button class="btn btn-primary" style="width: auto;" (click)="saveProfile()">
+            Guardar Información
+          </button>
+        } @else {
+          <button class="btn btn-primary" (click)="startEditing()">
+            Editar información
+          </button>
+        }
+      </div>
+
+    </div>
+  </div>
+</div>

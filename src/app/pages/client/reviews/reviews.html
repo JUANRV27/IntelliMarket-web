@@ -1,0 +1,100 @@
+<div class="reviews-page animate-fade-in">
+  <div class="reviews-header-nav">
+    <a routerLink="/" class="back-link">← Volver a la Tienda</a>
+  </div>
+
+  <section class="reviews-summary-section">
+    <div class="summary-container">
+      <h2 class="section-title">Reseñas de los Clientes</h2>
+      <p class="section-desc">Aquí puedes ver la reputación de nuestra bodega y lo que opinan los clientes de la zona.</p>
+      
+      <div class="rating-display">
+        <span class="rating-avg">5.0</span>
+        <div class="rating-details">
+          <div class="rating-stars">
+            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+          </div>
+          <span class="rating-count">Basado en {{ reviewsList.length }} opiniones</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" (click)="toggleForm()">
+        {{ showForm() ? 'Cancelar' : 'Escribir una Opinión' }}
+      </button>
+    </div>
+  </section>
+
+  <!-- Interactive Add Review Form -->
+  @if (showForm()) {
+    <section class="write-review-section animate-fade-in">
+      <div class="review-form-card">
+        <h3>Tu Opinión Importa</h3>
+        
+        <div class="form-input-group">
+          <label class="form-label">Tu Nombre</label>
+          <input 
+            type="text" 
+            class="form-field" 
+            placeholder="Ej: Juan Pérez" 
+            [ngModel]="authorName()"
+            (ngModelChange)="authorName.set($event)"
+          />
+        </div>
+
+        <div class="form-input-group">
+          <label class="form-label">Calificación</label>
+          <div class="star-rating-selector">
+            @for (star of [1,2,3,4,5]; track star) {
+              <span 
+                class="star-selector-item" 
+                [class.active]="star <= starRating()"
+                (click)="selectStars(star)"
+              >
+                ★
+              </span>
+            }
+          </div>
+        </div>
+
+        <div class="form-input-group">
+          <label class="form-label">Comentario</label>
+          <textarea 
+            class="form-field textarea-field" 
+            placeholder="Cuéntanos tu experiencia de compra..."
+            [ngModel]="commentText()"
+            (ngModelChange)="commentText.set($event)"
+          ></textarea>
+        </div>
+
+        <button class="btn btn-primary" (click)="submitReview()">
+          Publicar Reseña
+        </button>
+      </div>
+    </section>
+  }
+
+  <!-- Reviews List -->
+  <section class="reviews-list-section">
+    <div class="reviews-container">
+      @for (rev of reviewsList; track rev.id) {
+        <div class="review-item-card">
+          <div class="review-user-info">
+            <div class="review-user-avatar">
+              {{ rev.author.charAt(0).toUpperCase() }}
+            </div>
+            <div class="review-user-meta">
+              <span class="author-name">{{ rev.author }}</span>
+              <span class="review-date">Reciente</span>
+            </div>
+            <div class="rating-stars select-none">
+              @for (star of [1,2,3,4,5]; track star) {
+                <span [class.active]="star <= rev.rating">★</span>
+              }
+            </div>
+          </div>
+          <p class="review-text">"{{ rev.comment }}"</p>
+        </div>
+      }
+    </div>
+  </section>
+</div>
