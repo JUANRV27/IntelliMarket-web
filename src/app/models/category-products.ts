@@ -1,0 +1,9 @@
+// Enum de Category: ELECTRÓNICA, ROPA, HOGAR, ALIMENTOS, SALUD, OTROS
+export enum Category {
+  ELECTRONICA = 'ELECTRÓNICA',
+  ROPA = 'ROPA',
+  HOGAR = 'HOGAR',
+  ALIMENTOS = 'ALIMENTOS',
+  SALUD = 'SALUD',
+  OTROS = 'OTROS'
+}
