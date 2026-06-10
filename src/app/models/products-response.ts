@@ -8,4 +8,6 @@ export interface ProductsResponse {
   unitPrice: number;
   imageUrl: string;
   createdAt: string; // ISO Date con String
+  stock: number;       // Mapeado de inventory.stock
+  price: number;       // Mapeado de inventory.price
 }

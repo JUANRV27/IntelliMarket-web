@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { InventoryService } from '../../../services/inventory.service';
 import { ProductsResponse } from '../../../models/products-response';
+import { InventoryResponse } from '../../../models/inventory-response';
 
 @Component({
   selector: 'app-inventory-list',
@@ -19,6 +20,7 @@ export class InventoryListComponent implements OnInit {
 
   // Variables de estado
   public products: ProductsResponse[] = [];
+  public inventory: InventoryResponse[] = [];
   public alerts: ProductsResponse[] = [];
   public currentTab: 'all' | 'alerts' = 'all'; // Control de pestañas dinámicas
   public storeId: string = '1'; // Simulación de la tienda actual del vendedor
