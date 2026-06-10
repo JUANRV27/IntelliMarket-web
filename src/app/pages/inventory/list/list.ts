@@ -14,7 +14,7 @@ import { InventoryResponse } from '../../../models/inventory-response';
   styleUrls: ['./list.css']
 })
 
-export class InventoryListComponent implements OnInit {
+export class ListComponent implements OnInit {
   private inventoryService = inject(InventoryService);
   private router = inject(Router);
 
