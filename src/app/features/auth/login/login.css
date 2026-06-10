@@ -1,0 +1,102 @@
+.login-container h2 {
+  text-align: center;
+  color: #34495e;
+  font-size: 1.2rem;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.form-group input {
+  padding: 12px;
+  border: 1px solid #bdc3c7;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  border-color: #3498db;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  background-color: #2471a3;
+}
+
+.links {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 0.9rem;
+}
+
+.links a {
+  color: #2980b9;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.links a:hover {
+  color: #1c5980;
+  text-decoration: underline;
+}
+
+.links-container {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.links-container p {
+  margin-bottom: 8px;
+}
+
+.register-links {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+}
+
+.register-links a {
+  color: #2980b9;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.register-links a:hover {
+  color: #1c5980;
+  text-decoration: underline;
+}
+
+.divider {
+  color: #bdc3c7;
+}

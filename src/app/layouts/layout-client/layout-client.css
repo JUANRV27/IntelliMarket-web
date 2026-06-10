@@ -76,3 +76,28 @@
     display: none; /* Hide search on small mobile to fit */
   }
 }
+
+.profile-btn {
+  background-color: #2c3e50;
+  color: white;
+}
+
+.profile-btn:hover {
+  background-color: #1a252f;
+}
+
+.logout-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+}
+
+.logout-btn:hover {
+  background-color: #c0392b;
+}

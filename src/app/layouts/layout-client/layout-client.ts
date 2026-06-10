@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { MarketStateService } from '../../services/market-state';
+import { TokenService } from '../../core/services/token.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-layout-client',
@@ -11,9 +13,18 @@ import { MarketStateService } from '../../services/market-state';
 export class LayoutClient {
   router = inject(Router);
   stateService = inject(MarketStateService);
+  
+  // Inyectamos los servicios de seguridad para el Navbar
+  tokenService = inject(TokenService);
+  private authService = inject(AuthService);
 
   onSearch(event: any): void {
-    // For mock search, we can just log or trigger something
     console.log('Search query:', event.target.value);
+  }
+
+  // Método para cerrar sesión y volver al inicio
+  onLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 }

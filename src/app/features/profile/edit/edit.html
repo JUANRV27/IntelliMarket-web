@@ -1,0 +1,30 @@
+<div class="profile-shell">
+  <div class="profile-container">
+    <h2>Editar Perfil</h2>
+    <p class="subtitle">Actualiza tu información de contacto</p>
+
+    <form (ngSubmit)="onGuardar()">
+      <div class="form-group">
+        <label>Teléfono Celular</label>
+        <input type="text" name="phone" [(ngModel)]="phone" placeholder="Ej. 987654321">
+      </div>
+
+      @if (userRole === 'SELLER') {
+        <div class="form-group">
+          <label>Documento Nacional de Identidad (DNI)</label>
+          <input type="text" name="dni" [(ngModel)]="dni" placeholder="Exactamente 8 dígitos">
+        </div>
+      } @else {
+        <div class="form-group">
+          <label>Dirección Física Residencial</label>
+          <input type="text" name="address" [(ngModel)]="address" placeholder="Calle, Número, Distrito">
+        </div>
+      }
+
+      <div class="form-buttons">
+        <button type="button" routerLink="/profile" class="btn-cancel">Cancelar</button>
+        <button type="submit" class="btn-save">Guardar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>

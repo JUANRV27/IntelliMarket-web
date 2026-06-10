@@ -1,5 +1,4 @@
 <div class="layout-client-container">
-  <!-- Client Top Navigation Bar -->
   <header class="top-bar">
     <div class="top-bar-logo">
       <button class="menu-icon-btn" routerLink="/">☰</button>
@@ -16,23 +15,31 @@
     </div>
 
     <div class="top-bar-right">
-      <button class="seller-btn" routerLink="/seller">Zona Vendedor</button>
-      <a routerLink="/seller/login" title="Acceso Vendedor">
-        <img 
-          alt="Avatar" 
-          class="avatar" 
-          src="http://localhost:3845/assets/6897de514b470658bd03c50e647fc563112bb87f.svg" 
-        />
-      </a>
+      
+      @if (!tokenService.isLoggedIn()) {
+        <button class="seller-btn" routerLink="/auth/login">Ingresar</button>
+        <a routerLink="/auth/login" title="Acceso">
+          <img 
+            alt="Avatar" 
+            class="avatar" 
+            src="http://localhost:3845/assets/6897de514b470658bd03c50e647fc563112bb87f.svg" 
+          />
+        </a>
+      } 
+      @else {
+        <button class="seller-btn profile-btn" routerLink="/profile">Mi Perfil</button>
+        <button class="logout-btn" (click)="onLogout()" title="Cerrar Sesión">
+          Cerrar Sesión
+        </button>
+      }
+
     </div>
   </header>
 
-  <!-- Page Content Outlet -->
   <main class="client-main-content">
     <router-outlet></router-outlet>
   </main>
 
-  <!-- Client Footer -->
   <footer class="client-footer">
     <div class="footer-container">
       <p>© 2023 Bodega de Barrio. Todos los derechos reservados.</p>

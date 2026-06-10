@@ -1,0 +1,41 @@
+<div class="profile-shell">
+  <div class="profile-container">
+    <h2>Mi Perfil</h2>
+    <p class="subtitle">Gestiona la información de tu cuenta en IntelliMarket</p>
+
+    @if (profile()) {
+      <div class="info-card">
+        <div class="info-row">
+          <span class="label">Nombre Completo:</span>
+          <span class="value">{{ profile()?.firstName }} {{ profile()?.lastName }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="label">Correo Electrónico:</span>
+          <span class="value">{{ profile()?.email }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="label">Teléfono:</span>
+          <span class="value">{{ profile()?.phone || 'No registrado' }}</span>
+        </div>
+
+        @if (userRole === 'SELLER') {
+          <div class="info-row">
+            <span class="label">DNI del Titular:</span>
+            <span class="value">{{ profile()?.dni || 'No registrado' }}</span>
+          </div>
+        } @else {
+          <div class="info-row">
+            <span class="label">Dirección de Entrega:</span>
+            <span class="value">{{ profile()?.address || 'No registrada' }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="actions">
+        <button routerLink="/profile/edit" class="btn-edit">Editar Datos</button>
+      </div>
+    }
+  </div>
+</div>
