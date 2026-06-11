@@ -1,0 +1,62 @@
+<div class="form-container">
+  <h2>{{ isEditMode ? 'Modificar Producto y Stock' : 'Registrar Nuevo Producto' }}</h2>
+  <p class="subtitle">Catálogo unificado con la bodega física de la sucursal</p>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    
+    <div class="form-group">
+      <label for="name">Nombre del Producto</label>
+      <input id="name" type="text" formControlName="name" placeholder="Ej. Pantalón Jean Slim Fit">
+      @if (productForm.get('name')?.touched && productForm.get('name')?.invalid) {
+        <small class="error-text">El nombre es requerido (Máximo 60 caracteres).</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="category">Categoría de Catálogo</label>
+      <select id="category" formControlName="category">
+        <option value="">-- Seleccione una categoría --</option>
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
+      </select>
+      @if (productForm.get('category')?.touched && productForm.get('category')?.invalid) {
+        <small class="error-text">Debe seleccionar una categoría de la lista.</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción Detallada</label>
+      <textarea id="description" formControlName="description" rows="3" placeholder="Indique características específicas del producto..."></textarea>
+      @if (productForm.get('description')?.touched && productForm.get('description')?.invalid) {
+        <small class="error-text">La descripción es requerida (Máximo 130 caracteres).</small>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="form-group field-half">
+        <label for="price">Precio de Venta (S/.)</label>
+        <input id="price" type="number" formControlName="price" step="0.10" placeholder="0.00">
+        @if (productForm.get('price')?.touched && productForm.get('price')?.invalid) {
+          <small class="error-text">Mínimo S/. 0.10 y Máximo S/. 200.00</small>
+        }
+      </div>
+
+      <div class="form-group field-half">
+        <label for="stock">Stock Inicial / Actual</label>
+        <input id="stock" type="number" formControlName="stock" placeholder="0">
+        @if (productForm.get('stock')?.touched && productForm.get('stock')?.invalid) {
+          <small class="error-text">El stock no puede ser un valor negativo.</small>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" routerLink="/inventory">Cancelar</button>
+      <button type="submit" class="btn-submit" [disabled]="productForm.invalid">
+        {{ isEditMode ? 'Guardar Cambios' : 'Registrar Alta' }}
+      </button>
+    </div>
+
+  </form>
+</div>

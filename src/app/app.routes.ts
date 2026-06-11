@@ -54,6 +54,12 @@ export const routes: Routes = [
     ]
   },
 
-  // 4. COMODÍN DE REDIRECCIÓN
+  // Inventory management routes (lazy loaded)
+  {
+    path: 'inventory',
+    loadChildren: () => import('./pages/inventory/inventory.routes').then(m => m.INVENTORY_ROUTES)
+  },
+
+  // Fallback redirect to store home
   { path: '**', redirectTo: '' }
 ];
