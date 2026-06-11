@@ -1,20 +1,20 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment.dev';
 import { ProductsRequest } from '../models/products-request';
 import { ProductsResponse } from '../models/products-response';
 import { InventoryResponse } from '../models/inventory-response';
 
-@Injectable({
-  providedIn: 'root'
-})
-
-// Interfaz para desenvolver las respuestas personalizadas de tu Map de Java
+// Interfaz para envolver la respuesta del HashMap de tu Java
 export interface ApiResponseWrapper {
   message: string;
   data: ProductsResponse;
 }
+
+@Injectable({
+  providedIn: 'root'
+})
 
 export class InventoryService {
   private http = inject(HttpClient);

@@ -33,6 +33,12 @@ export const routes: Routes = [
     ]
   },
 
+  // Inventory management routes (lazy loaded)
+  {
+    path: 'inventory',
+    loadChildren: () => import('./pages/inventory/inventory.routes').then(m => m.INVENTORY_ROUTES)
+  },
+
   // Fallback redirect to store home
   { path: '**', redirectTo: '' }
 ];
