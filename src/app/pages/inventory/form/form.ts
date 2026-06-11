@@ -22,12 +22,14 @@ export class FormComponent implements OnInit {
   public isEditMode: boolean = false;
   private productId: string | null = null;
   public storeId: string = '1'; // ID simulado de la tienda activa del vendedor
+  
 
-  // Enumeración idéntica a tus categorías del Backend
-  public categories = ['ABARROTES', 'BEBIDAS', 'LIMPIEZA', 'LACTEOS', 'ROPA', 'OTROS'];
+  // Enumeración de Category de productos
+  public categories = ['ELECTRÓNICA', 'HOGAR', 'ALIMENTOS', 'SALUD', 'ROPA', 'OTROS'];
 
   ngOnInit(): void {
     this.initForm();
+    this.storeId = this.inventoryService.getActualStoreId();
     
     // Evaluamos la URL actual usando la ruta activa
     this.productId = this.route.snapshot.paramMap.get('productId');
