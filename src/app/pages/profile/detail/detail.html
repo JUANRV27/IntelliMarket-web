@@ -37,5 +37,22 @@
         <button routerLink="/profile/edit" class="btn-edit">Editar Datos</button>
       </div>
     }
+    <div class="profile-container">
+  
+  <div class="back-action">
+    <a routerLink="/" class="btn-back">
+      <span class="arrow">⬅</span> Volver a la tienda
+    </a>
+  </div>
+
+  
+  
+  @if (loading) {
+    <p>Cargando datos...</p>
+  } @else {
+    <div class="profile-card">
+      </div>
+  }
+</div>
   </div>
 </div>

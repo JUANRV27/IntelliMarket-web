@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { TokenService } from '../services/token.service';
+import { TokenService } from '../../services/token.service';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   // Inyectamos tu servicio para obtener el token guardado

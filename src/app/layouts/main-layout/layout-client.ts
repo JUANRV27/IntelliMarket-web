@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { MarketStateService } from '../../services/market-state';
-import { TokenService } from '../../core/services/token.service';
-import { AuthService } from '../../core/services/auth.service';
+import { TokenService } from '../../services/token.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-layout-client',
