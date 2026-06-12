@@ -29,7 +29,7 @@ export class FormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.storeId = this.inventoryService.getActualStoreId();
+    //this.storeId = this.inventoryService.getActualStoreId();
     
     // Evaluamos la URL actual usando la ruta activa
     this.productId = this.route.snapshot.paramMap.get('productId');

@@ -11,21 +11,38 @@ export class AuthService {
   private readonly tokenService = inject(TokenService);
   private readonly baseUrl = `${environment.apiUrl}/auth`;
 
+  /**
+   * Realiza el login genérico. Guarda el Token JWT básico y limpia estados previos.
+   */
   login(body: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, body).pipe(
       tap(res => {
-        // Ahora el backend nos manda el rol directamente, no hay que adivinarlo
+        // Guardamos las credenciales base que vienen del backend de manera síncrona
         this.tokenService.save(res.token, res.email, res.role);
       })
     );
   }
 
-  // ¡UN SOLO ENDPOINT PARA AMBOS ROLES!
+  /**
+   * Registro único genérico para cualquier rol (Vendedor o Cliente)
+   */
   register(body: RegisterRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, body);
   }
 
+  /**
+   * Cierre de sesión centralizado
+   */
   logout(): void {
     this.tokenService.clear();
   }
+
+  // --- MÉTODOS DE AYUDA GENÉRICOS (Helpers de Rol) ---
+  /*isSeller(): boolean {
+    return this.tokenService.role() === 'SELLER';
+  }
+
+  isCustomer(): boolean {
+    return this.tokenService.role() === 'CUSTOMER';
+  }*/
 }

@@ -15,7 +15,7 @@ export class ProfileEdit implements OnInit {
   private profileService = inject(ProfileService);
   private router = inject(Router);
 
-  userRole = this.tokenService.role;
+  userRole = this.tokenService.role();
   
   // Variables ligadas al formulario con [(ngModel)]
   phone: string = '';

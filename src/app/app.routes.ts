@@ -14,6 +14,8 @@ import { RegisterCustomer } from './features/auth/register/register-customer/reg
 import { RegisterSeller } from './features/auth/register/register-seller/register-seller';
 import { ProfileDetail } from './features/profile/detail/detail';
 import { ProfileEdit } from './features/profile/edit/edit';
+import { ListComponent } from './pages/inventory/list/list';
+import { FormComponent } from './pages/inventory/form/form';
 
 export const routes: Routes = [
   // 1. MÓDULO DE AUTENTICACIÓN Y SEGURIDAD (Tus Pantallas)
@@ -53,12 +55,34 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileSeller }
     ]
   },
+  // Redirección por defecto al Login del vendedor
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 
-  // Inventory management routes (lazy loaded)
+  // Módulo de Autenticación (Migrado a pages/)
   {
-    path: 'inventory',
-    loadChildren: () => import('./pages/inventory/inventory.routes').then(m => m.INVENTORY_ROUTES)
+    path: 'auth',
+    children: [
+      { 
+        path: 'login', 
+        loadComponent: () => import('./pages/seller/login-seller/login-seller').then(m => m.LoginSeller) 
+      },
+      { 
+        path: 'register-seller', 
+        loadComponent: () => import('./features/auth/register/register-seller/register-seller').then(m => m.RegisterSeller) 
+      }
+    ]
   },
+
+  // --- TU MÓDULO DE INVENTARIO REAL (Conectado a Spring Boot) ---
+  { path: 'inventory', component: ListComponent },
+  { path: 'inventory/new', component: FormComponent },
+  { path: 'inventory/edit/:id', component: FormComponent },
+
+  // --- EL MÓDULO DE CATÁLOGO DEL VENDEDOR DE TU COMPAÑERO (Con Signals) ---
+  { path: 'seller/landing', component: LandingSeller },
+  { path: 'seller/catalog', component: CatalogSeller },
+  { path: 'seller/product/:id', component: ProductDetailSeller },
+  { path: 'seller/profile', component: ProfileSeller },
 
   // Fallback redirect to store home
   { path: '**', redirectTo: '' }

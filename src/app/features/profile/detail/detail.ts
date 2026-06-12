@@ -17,23 +17,55 @@ export class ProfileDetail implements OnInit {
 
   // Señal para almacenar los datos del perfil devueltos por la API
   profile = signal<ProfileResponse | null>(null);
-  userRole = this.tokenService.role;
+  // Señal para capturar mensajes de error si el backend falla
+  errorMessage = signal<string | null>(null);
+
+  userRole = this.tokenService.role();
 
   ngOnInit() {
     this.cargarPerfil();
   }
 
   cargarPerfil() {
+    // Nos aseguramos de leer el rol actualizado en el momento de la carga
+    this.userRole = this.tokenService.role();
+
+    if (!this.userRole) {
+      this.errorMessage.set('No se encontró una sesión activa.');
+      return;
+    }
+
     // Verificamos el rol para saber a qué endpoint llamar
     if (this.userRole === 'SELLER') {
       this.profileService.getOwnerProfile().subscribe({
-        next: (data) => this.profile.set(data),
-        error: () => this.cargarPerfilMock() // Datos de prueba si el backend está apagado
+        next: (data) => {
+          this.profile.set(data);
+          this.errorMessage.set(null);
+
+          // 💡 TRUCO DE INTEGRACIÓN: Aprovechamos que la API nos devuelve el perfil real 
+          // para guardar el id de tienda dinámico (ya sea el id del perfil o el que manejes)
+          if (data.userId) {
+            this.tokenService.storeId.set(data.userId.toString());
+            localStorage.setItem('intellimarket.storeId', data.userId.toString());
+          }
+
+        },
+        error: (err) => {
+          console.error('Error al traer perfil de vendedor desde Spring Boot:', err);
+          this.errorMessage.set('No se pudieron cargar los datos del perfil desde el servidor.');
+        }
+
       });
     } else {
       this.profileService.getCustomerProfile().subscribe({
-        next: (data) => this.profile.set(data),
-        error: () => this.cargarPerfilMock()
+        next: (data) => {
+          this.profile.set(data);
+          this.errorMessage.set(null);
+        },
+        error: (err) => {
+          console.error('Error al traer perfil de cliente desde Spring Boot:', err);
+          this.errorMessage.set('No se pudieron cargar los datos de tu cuenta.');
+        }
       });
     }
   }
