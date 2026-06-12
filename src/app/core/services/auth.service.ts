@@ -9,7 +9,7 @@ import { TokenService } from './token.service';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly tokenService = inject(TokenService);
-  private readonly baseUrl = `${environment.apiUrl}/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/v1/auth`;
 
   /**
    * Realiza el login genérico. Guarda el Token JWT básico y limpia estados previos.
@@ -18,7 +18,7 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, body).pipe(
       tap(res => {
         // Guardamos las credenciales base que vienen del backend de manera síncrona
-        this.tokenService.save(res.token, res.email, res.role);
+        this.tokenService.save(res.token, res.email, res.role, res.id.toString());
       })
     );
   }

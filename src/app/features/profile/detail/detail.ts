@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { TokenService } from '../../../core/services/token.service';
 import { ProfileService } from '../../../core/services/profile.service';
 import { ProfileResponse } from '../../../shared/models/profile.model';
@@ -7,7 +8,7 @@ import { ProfileResponse } from '../../../shared/models/profile.model';
 @Component({
   selector: 'app-profile-detail',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './detail.html',
   styleUrl: './detail.css'
 })
