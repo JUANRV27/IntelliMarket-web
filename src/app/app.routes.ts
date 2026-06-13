@@ -14,9 +14,11 @@ import { RegisterCustomer } from './pages/auth/register/register-customer/regist
 import { RegisterSeller } from './pages/auth/register/register-seller/register-seller';
 import { ProfileDetail } from './pages/profile/detail/detail';
 import { ProfileEdit } from './pages/profile/edit/edit';
+import { StoreFormComponent } from './pages/store/store-form/store-form';
+import { ListComponent } from './pages/inventory/list/list';
 
 export const routes: Routes = [
-  // 1. MÓDULO DE AUTENTICACIÓN Y SEGURIDAD (Tus Pantallas)
+  // 1. MÓDULO DE AUTENTICACIÓN Y SEGURIDAD (Rutas Públicas de Ingreso)
   {
     path: 'auth',
     component: AuthLayout,
@@ -27,33 +29,36 @@ export const routes: Routes = [
     ]
   },
 
-  // Tu módulo de perfiles
+  // Módulo compartido de perfiles básicos
   { path: 'profile', component: ProfileDetail },
   { path: 'profile/edit', component: ProfileEdit },
-
-  // 2. MÓDULO PÚBLICO (Tienda / Landing)
-  {
-    path: '',
-    component: LayoutClient,
-    children: [
-      { path: '', component: Landing },
-      { path: 'reviews', component: Reviews },
-      { path: 'seller', component: LandingSeller },
-      { path: 'seller/login', component: LoginSeller }
-    ]
-  },
   
-  // 3. MÓDULO PRIVADO (Vendedor antiguo)
+  // 2. MÓDULO PRIVADO DEL VENDEDOR (Tiene prioridad alta para interceptar /seller)
   {
     path: 'seller',
-    component: LayoutSeller,
+    component: LayoutSeller, 
     children: [
-      { path: 'catalog', component: CatalogSeller },
+      { path: 'inventory', component: ListComponent },          // Tu panel operativo / bodega
+      { path: 'store/create', component: StoreFormComponent },    // Formulario de StoreRequest obligatorio
+      { path: 'catalog', component: CatalogSeller },            // Vistas antiguas si las necesitas
       { path: 'catalog/product/:id', component: ProductDetailSeller },
       { path: 'profile', component: ProfileSeller }
     ]
   },
 
-  // 4. COMODÍN DE REDIRECCIÓN
-  { path: '**', redirectTo: '' }
+  // 3. MÓDULO PÚBLICO / CLIENTE (La raíz se evalúa al final para evitar atrapar al vendedor)
+  {
+    path: '',
+    component: LayoutClient,
+    children: [
+      { path: '', component: Landing },                         // Catálogo de compras general del comprador
+      { path: 'reviews', component: Reviews },
+      { path: 'join-as-seller', component: LandingSeller },     // Cambiado de 'seller' a 'join-as-seller' para romper el choque de rutas
+      { path: 'seller/login-old', component: LoginSeller }      // Ruta de login antigua por si acaso
+    ]
+  },
+
+  // Redirecciones de seguridad por defecto
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: '**', redirectTo: 'auth/login' }
 ];

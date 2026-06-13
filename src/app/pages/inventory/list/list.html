@@ -1,0 +1,84 @@
+<div class="seller-dashboard">
+  <header class="dashboard-header">
+    <div>
+      <h1>Panel de mi Bodega</h1>
+      <p class="subtitle">Gestiona el catálogo de tu tienda (ID Tienda: {{ storeId }})</p>
+    </div>
+    @if (products.length > 0) {
+      <button class="btn-add-product" [routerLink]="['/seller/inventory/new']">
+        ➕ Agregar Producto
+      </button>
+    }
+  </header>
+
+  @if (products.length > 0) {
+    <div class="metrics-grid">
+      <div class="metric-card" (click)="changeTab('all')" [class.active]="currentTab === 'all'">
+        <h3>Total Productos</h3>
+        <p class="metric-value">{{ products.length }}</p>
+      </div>
+      <div class="metric-card alert-card" (click)="changeTab('alerts')" [class.active]="currentTab === 'alerts'">
+        <h3>Alertas Críticas</h3>
+        <p class="metric-value">{{ alerts.length }}</p>
+      </div>
+    </div>
+  }
+
+  <main class="catalog-section">
+    @if (products.length === 0) {
+      <div class="empty-state-box animate-fade-in">
+        <div class="empty-icon">🏪</div>
+        <h2>¡Bienvenidos a tu nueva tienda!</h2>
+        <p>Tu catálogo de productos está vacío actualmente. Comienza a abastecer tu negocio registrando tu primer artículo.</p>
+        <button class="btn-primary-action" [routerLink]="['/seller/inventory/new']">
+          🚀 Registrar mi Primer Producto
+        </button>
+      </div>
+    } 
+    @else {
+      <h2>{{ currentTab === 'all' ? 'Inventario General' : 'Productos por Agotarse' }}</h2>
+      
+      @if (currentTab === 'alerts' && alertMessage) {
+        <div class="info-banner-alerts">
+          📢 {{ alertMessage }}
+        </div>
+      } 
+      @else {
+        <div class="table-container">
+          <table class="design-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (product of displayList; track product.id) {
+                <tr>
+                  <td><strong>{{ product.name }}</strong></td>
+                  <td><span class="badge-category">{{ product.category }}</span></td>
+                  <td>S/. {{ product.price }}</td>
+                  <td>
+                    <span [class.stock-low]="product.stock <= 5">
+                      {{ product.stock }} u.
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn-edit" (click)="onEdit(product.id)">✏️ Editar</button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="text-center">No hay productos registrados en esta sección.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  </main>
+</div>

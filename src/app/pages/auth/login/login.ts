@@ -2,6 +2,8 @@ import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
+import { TokenService } from '../../../services/token.service';
+import { ProfileService } from '../../../services/profile.service'; // Asegúrate de tener esta importación
 
 @Component({
   selector: 'app-login',
@@ -13,15 +15,14 @@ import { AuthService } from '../../../services/auth.service';
 export class Login {
   private router = inject(Router);
   private authService = inject(AuthService);
-  
-  // 1. Inyectamos la herramienta para forzar la actualización visual
+  private tokenService = inject(TokenService); 
+  private profileService = inject(ProfileService); // Inyectamos el servicio de perfiles
   private cdr = inject(ChangeDetectorRef); 
 
   email = '';
   password = '';
   errorMessage = '';
 
-  // 2. Este método limpia el error en cuanto el usuario vuelve a teclear
   ocultarError() {
     if (this.errorMessage) {
       this.errorMessage = '';
@@ -29,22 +30,34 @@ export class Login {
   }
 
   onLogin() {
-    this.errorMessage = '';
-    
     this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: (response) => {
-        console.log('Autenticación exitosa', response);
-        this.router.navigate(['/']); 
-      },
-      error: (err) => {
-        console.error('Error en el backend:', err);
-        
-        // Asignamos el mensaje y borramos la clave
-        this.errorMessage = 'Correo o contraseña incorrectos.';
-        this.password = '';
-        
-        // 3. ¡La magia! Le decimos a Angular que refresque la pantalla de inmediato
-        this.cdr.detectChanges();
+      next: (response: any) => {
+        // 1. Guardamos el token
+        this.tokenService.save(response.token, response.email, 'PENDING'); 
+
+        // 2. FORZAR CONSULTA DE PERFIL (La única fuente de verdad real ahora mismo)
+        // Usamos el servicio de perfil para ver si existe como 'Owner' o como 'Customer'
+        this.profileService.getOwnerProfile().subscribe({
+          next: (profile: any) => {
+            // Si el servicio de dueño responde, es VENDEDOR
+            const role = 'SELLER';
+            localStorage.setItem('role', role);
+            
+            // Lógica de navegación
+            const storeId = profile.storeId || (profile.store ? profile.store.id : null);
+            if (storeId) {
+              localStorage.setItem('intellimarket.storeId', storeId.toString());
+              this.router.navigate(['/seller/inventory']);
+            } else {
+              this.router.navigate(['/seller/store/create']);
+            }
+          },
+          error: () => {
+            // Si getOwnerProfile falla (404/403), asumimos que es CLIENTE
+            localStorage.setItem('role', 'CUSTOMER');
+            this.router.navigate(['/']);
+          }
+        });
       }
     });
   }

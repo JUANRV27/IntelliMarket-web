@@ -1,0 +1,216 @@
+/* ==========================================================================
+   Contenedor Principal y Cabecera
+   ========================================================================== */
+.inventory-container {
+  padding: 24px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.header-actions h2 {
+  font-size: 24px;
+  color: #1a202c;
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Botón Registrar (US-05) */
+.btn-primary {
+  background-color: #0056b3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background-color: #004085;
+}
+
+/* ==========================================================================
+   Sistema de Pestañas (Tabs de Figma)
+   ========================================================================== */
+.tabs-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0px;
+}
+
+.tabs-container button {
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: #718096;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tabs-container button:hover {
+  color: #2d3748;
+}
+
+/* Estado Activo de la Pestaña */
+.tabs-container button.active {
+  color: #0056b3;
+  font-weight: 600;
+}
+
+.tabs-container button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #0056b3;
+}
+
+/* Badges numéricos dentro de las pestañas */
+.tab-badge {
+  background-color: #edf2f7;
+  color: #4a5568;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+button.active .tab-badge {
+  background-color: #ebf8ff;
+  color: #2b6cb0;
+}
+
+/* ==========================================================================
+   Tablas de Datos (US-07)
+   ========================================================================== */
+.table-responsive {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th {
+  background-color: #f7fafc;
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 16px;
+  border-bottom: 2px solid #edf2f7;
+}
+
+td {
+  padding: 16px;
+  border-bottom: 1px solid #edf2f7;
+  color: #2d3748;
+  font-size: 14px;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* Badges de Categorías */
+.badge {
+  display: inline-block;
+  background-color: #e2e8f0;
+  color: #4a5568;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Botón Editar (US-06) */
+.btn-edit {
+  background-color: #edf2f7;
+  color: #2b6cb0;
+  border: 1px solid #cbd5e0;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+  background-color: #ebf8ff;
+  border-color: #bee3f8;
+}
+
+/* ==========================================================================
+   Sección de Alertas Críticas (US-08)
+   ========================================================================== */
+.critical-banner {
+  background-color: #fff5f5;
+  border-left: 4px solid #e53e3e;
+  color: #c53030;
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Fila de peligro en la tabla de alertas */
+.row-danger {
+  background-color: #fffaf0;
+}
+
+.text-danger {
+  color: #e53e3e;
+}
+
+/* Tarjeta de No Alertas (Estado Vacío Exitoso) */
+.no-alerts-card {
+  background-color: #f0fff4;
+  border: 1px solid #c6f6d5;
+  color: #22543d;
+  padding: 24px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.text-center {
+  text-align: center;
+  color: #718096;
+  font-style: italic;
+  padding: 32px !important;
+}

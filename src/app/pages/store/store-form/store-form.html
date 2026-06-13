@@ -1,0 +1,31 @@
+<div class="store-shell">
+  <div class="store-container">
+    <h2>Registra tu Tienda</h2>
+    <p class="subtitle">Configura los datos iniciales de tu negocio para empezar a vender</p>
+
+    @if (errorMessage) {
+      <div class="error-banner">{{ errorMessage }}</div>
+    }
+
+    <form (ngSubmit)="onCreateStore()" #formStore="ngForm">
+      <div class="form-group">
+        <label for="name">Nombre de la Tienda:</label>
+        <input type="text" id="name" name="name" [(ngModel)]="name" maxlength="30" placeholder="Ej. Mi Bodega Express" required />
+      </div>
+
+      <div class="form-group">
+        <label for="address">Dirección de la Tienda:</label>
+        <input type="text" id="address" name="address" [(ngModel)]="address" placeholder="Ej. Av. Universitaria 456" required />
+      </div>
+
+      <div class="form-group">
+        <label for="district">Distrito:</label>
+        <input type="text" id="district" name="district" [(ngModel)]="district" maxlength="50" placeholder="Ej. La Molina" required />
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn-submit">Crear y Abrir Tienda</button>
+      </div>
+    </form>
+  </div>
+</div>
