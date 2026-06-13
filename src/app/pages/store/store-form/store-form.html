@@ -4,27 +4,74 @@
     <p class="subtitle">Configura los datos iniciales de tu negocio para empezar a vender</p>
 
     @if (errorMessage) {
-      <div class="error-banner">{{ errorMessage }}</div>
+      <div class="error-banner">
+        <span class="icon">⚠️</span> {{ errorMessage }}
+      </div>
     }
 
     <form (ngSubmit)="onCreateStore()" #formStore="ngForm">
+      
       <div class="form-group">
-        <label for="name">Nombre de la Tienda:</label>
-        <input type="text" id="name" name="name" [(ngModel)]="name" maxlength="30" placeholder="Ej. Mi Bodega Express" required />
+        <label for="name">Nombre de la Tienda <span class="required">*</span></label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          [(ngModel)]="name" 
+          #nameCtrl="ngModel"
+          maxlength="30" 
+          placeholder="Ej. Mi Bodega Express" 
+          required 
+          [class.input-error]="nameCtrl.invalid && nameCtrl.touched"
+        />
+        @if (nameCtrl.invalid && nameCtrl.touched) {
+          <small class="error-text">El nombre de la tienda es obligatorio.</small>
+        }
       </div>
 
       <div class="form-group">
-        <label for="address">Dirección de la Tienda:</label>
-        <input type="text" id="address" name="address" [(ngModel)]="address" placeholder="Ej. Av. Universitaria 456" required />
+        <label for="address">Dirección de la Tienda <span class="required">*</span></label>
+        <input 
+          type="text" 
+          id="address" 
+          name="address" 
+          [(ngModel)]="address" 
+          #addressCtrl="ngModel"
+          placeholder="Ej. Av. Universitaria 456" 
+          required 
+          [class.input-error]="addressCtrl.invalid && addressCtrl.touched"
+        />
+        @if (addressCtrl.invalid && addressCtrl.touched) {
+          <small class="error-text">Necesitamos tu dirección para ubicar la tienda.</small>
+        }
       </div>
 
       <div class="form-group">
-        <label for="district">Distrito:</label>
-        <input type="text" id="district" name="district" [(ngModel)]="district" maxlength="50" placeholder="Ej. La Molina" required />
+        <label for="district">Distrito <span class="required">*</span></label>
+        <input 
+          type="text" 
+          id="district" 
+          name="district" 
+          [(ngModel)]="district" 
+          #districtCtrl="ngModel"
+          maxlength="50" 
+          placeholder="Ej. La Molina" 
+          required 
+          [class.input-error]="districtCtrl.invalid && districtCtrl.touched"
+        />
+        @if (districtCtrl.invalid && districtCtrl.touched) {
+          <small class="error-text">El distrito es obligatorio.</small>
+        }
       </div>
 
       <div class="actions">
-        <button type="submit" class="btn-submit">Crear y Abrir Tienda</button>
+        <button 
+          type="submit" 
+          class="btn-submit" 
+          [disabled]="formStore.invalid"
+          [class.btn-disabled]="formStore.invalid">
+          Crear y Abrir Tienda
+        </button>
       </div>
     </form>
   </div>

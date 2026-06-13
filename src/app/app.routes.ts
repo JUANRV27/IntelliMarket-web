@@ -17,48 +17,51 @@ import { ProfileEdit } from './pages/profile/edit/edit';
 import { StoreFormComponent } from './pages/store/store-form/store-form';
 import { ListComponent } from './pages/inventory/list/list';
 
+import { authGuard } from './core/guards/auth.guard';
+import { publicGuard } from './core/guards/public.guard';
+
 export const routes: Routes = [
-  // 1. MÓDULO DE AUTENTICACIÓN Y SEGURIDAD (Rutas Públicas de Ingreso)
+  // 1. MÓDULO DE AUTENTICACIÓN (Público - Solo entran si NO tienen sesión)
   {
     path: 'auth',
     component: AuthLayout,
     children: [
-      { path: 'login', component: Login },
-      { path: 'register/customer', component: RegisterCustomer },
-      { path: 'register/seller', component: RegisterSeller }
+      { path: 'login', component: Login, canActivate: [publicGuard] },
+      { path: 'register/customer', component: RegisterCustomer, canActivate: [publicGuard] },
+      { path: 'register/seller', component: RegisterSeller, canActivate: [publicGuard] }
     ]
   },
 
-  // Módulo compartido de perfiles básicos
-  { path: 'profile', component: ProfileDetail },
-  { path: 'profile/edit', component: ProfileEdit },
+  // Módulo compartido de perfiles básicos (Privado - Solo con sesión)
+  { path: 'profile', component: ProfileDetail, canActivate: [authGuard] },
+  { path: 'profile/edit', component: ProfileEdit, canActivate: [authGuard] },
   
-  // 2. MÓDULO PRIVADO DEL VENDEDOR (Tiene prioridad alta para interceptar /seller)
+  // 2. MÓDULO PRIVADO DEL VENDEDOR (Protegido por authGuard)
   {
     path: 'seller',
-    component: LayoutSeller, 
+    component: LayoutSeller,
+    canActivate: [authGuard], // <--- Protege TODAS las rutas hijas de un solo golpe
     children: [
-      { path: 'inventory', component: ListComponent },          // Tu panel operativo / bodega
-      { path: 'store/create', component: StoreFormComponent },    // Formulario de StoreRequest obligatorio
-      { path: 'catalog', component: CatalogSeller },            // Vistas antiguas si las necesitas
+      { path: 'inventory', component: ListComponent },
+      { path: 'store/create', component: StoreFormComponent },
+      { path: 'catalog', component: CatalogSeller },
       { path: 'catalog/product/:id', component: ProductDetailSeller },
       { path: 'profile', component: ProfileSeller }
     ]
   },
 
-  // 3. MÓDULO PÚBLICO / CLIENTE (La raíz se evalúa al final para evitar atrapar al vendedor)
+  // 3. MÓDULO PÚBLICO / CLIENTE (Ruta raíz principal)
   {
     path: '',
     component: LayoutClient,
     children: [
-      { path: '', component: Landing },                         // Catálogo de compras general del comprador
+      { path: '', component: Landing }, 
       { path: 'reviews', component: Reviews },
-      { path: 'join-as-seller', component: LandingSeller },     // Cambiado de 'seller' a 'join-as-seller' para romper el choque de rutas
-      { path: 'seller/login-old', component: LoginSeller }      // Ruta de login antigua por si acaso
+      { path: 'join-as-seller', component: LandingSeller },
+      { path: 'seller/login-old', component: LoginSeller }
     ]
   },
 
-  // Redirecciones de seguridad por defecto
-  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'auth/login' }
+  // 4. RUTAS COMODÍN (Si escriben algo que no existe, los mandamos al inicio)
+  { path: '**', redirectTo: '' }
 ];
