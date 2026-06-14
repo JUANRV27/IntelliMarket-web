@@ -16,9 +16,12 @@ import { ProfileDetail } from './pages/profile/detail/detail';
 import { ProfileEdit } from './pages/profile/edit/edit';
 import { StoreFormComponent } from './pages/store/store-form/store-form';
 import { ListComponent } from './pages/inventory/list/list';
+import { FormComponent } from './pages/inventory/form/form';
+import { StockSeller } from '../app/pages/inventory/stock/stock-seller';
 
 import { authGuard } from './core/guards/auth.guard';
 import { publicGuard } from './core/guards/public.guard';
+import { StoreSettings } from './pages/store/store-settings/store-settings';
 
 export const routes: Routes = [
   // 1. MÓDULO DE AUTENTICACIÓN (Público - Solo entran si NO tienen sesión)
@@ -40,13 +43,16 @@ export const routes: Routes = [
   {
     path: 'seller',
     component: LayoutSeller,
-    canActivate: [authGuard], // <--- Protege TODAS las rutas hijas de un solo golpe
+    canActivate: [authGuard], 
     children: [
       { path: 'inventory', component: ListComponent },
+      { path: 'inventory/new', component: FormComponent }, // 💡 ¡AQUÍ ESTÁ LA PIEZA FALTANTE!
       { path: 'store/create', component: StoreFormComponent },
       { path: 'catalog', component: CatalogSeller },
       { path: 'catalog/product/:id', component: ProductDetailSeller },
-      { path: 'profile', component: ProfileSeller }
+      { path: 'profile', component: ProfileSeller },
+      { path: 'stock', component: StockSeller },
+      { path: 'settings', component: StoreSettings }
     ]
   },
 

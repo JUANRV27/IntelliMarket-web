@@ -3,7 +3,9 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
-import { ProfileService } from '../../../services/profile.service'; // Asegúrate de tener esta importación
+import { ProfileService } from '../../../services/profile.service';
+import { InventoryService } from '../../../services/inventory.service';
+import { StoreService } from '../../../services/store.service';
 
 @Component({
   selector: 'app-login',
@@ -16,8 +18,10 @@ export class Login {
   private router = inject(Router);
   private authService = inject(AuthService);
   private tokenService = inject(TokenService); 
-  private profileService = inject(ProfileService); // Inyectamos el servicio de perfiles
+  private profileService = inject(ProfileService); 
   private cdr = inject(ChangeDetectorRef); 
+  private inventoryService = inject(InventoryService);
+  private storeService = inject(StoreService);
 
   email = '';
   password = '';
@@ -29,35 +33,37 @@ export class Login {
     }
   }
 
+  // login.ts — onLogin() reescrito
   onLogin() {
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: (response: any) => {
-        // 1. Guardamos el token
-        this.tokenService.save(response.token, response.email, 'PENDING'); 
+    this.errorMessage = '';
 
-        // 2. FORZAR CONSULTA DE PERFIL (La única fuente de verdad real ahora mismo)
-        // Usamos el servicio de perfil para ver si existe como 'Owner' o como 'Customer'
-        this.profileService.getOwnerProfile().subscribe({
-          next: (profile: any) => {
-            // Si el servicio de dueño responde, es VENDEDOR
-            const role = 'SELLER';
-            localStorage.setItem('role', role);
-            
-            // Lógica de navegación
-            const storeId = profile.storeId || (profile.store ? profile.store.id : null);
-            if (storeId) {
-              localStorage.setItem('intellimarket.storeId', storeId.toString());
-              this.router.navigate(['/seller/inventory']);
-            } else {
+    this.authService.login({
+      email: this.email.trim(),
+      password: this.password.trim()
+    }).subscribe({
+      next: (response) => {
+        // El token ya se guarda en authService vía tap() con el rol correcto
+        const role = response.role;
+
+        if (role === 'SELLER') {
+          // Verificamos si ya tiene tienda
+          this.storeService.getMyStore().subscribe({
+            next: (store) => {
+              localStorage.setItem('intellimarket.storeId', store.id.toString());
+              this.router.navigate(['/seller/catalog']);
+            },
+            error: () => {
+              // 404 = no tiene tienda aún
               this.router.navigate(['/seller/store/create']);
             }
-          },
-          error: () => {
-            // Si getOwnerProfile falla (404/403), asumimos que es CLIENTE
-            localStorage.setItem('role', 'CUSTOMER');
-            this.router.navigate(['/']);
-          }
-        });
+          });
+        } else {
+          // CUSTOMER
+          this.router.navigate(['/']);
+        }
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message || 'Correo o contraseña incorrectos.';
       }
     });
   }

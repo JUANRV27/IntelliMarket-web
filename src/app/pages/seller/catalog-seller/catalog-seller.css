@@ -87,6 +87,56 @@
   pointer-events: none;
 }
 
+/* 💡 NUEVO: Contenedor para alinear los botones a la derecha sin romper el flujo flex */
+.ops-actions-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* 💡 NUEVO: Botones Base Utilitarios (Primary & Secondary) respetando tus variables de diseño */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px; /* Alineado milimétricamente con la altura de la barra de búsqueda */
+  padding: 0 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--neutral-light);
+  color: var(--neutral-dark);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: #e2e8f0;
+  color: var(--neutral-dark);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
 /* Grid Area */
 .catalog-grid-section {
   padding: 60px 170px;
@@ -306,6 +356,7 @@
   resize: vertical;
 }
 
+/* Responsiveness Media Queries Extendiéndose a los nuevos botones */
 @media (max-width: 1024px) {
   .catalog-ops-bar,
   .catalog-grid-section,
@@ -318,6 +369,15 @@
   .catalog-ops-bar {
     flex-direction: column;
     align-items: stretch;
+    gap: 16px;
+  }
+  .ops-actions-group {
+    width: 100%;
+    flex-direction: column; /* Apila los botones en móviles */
+    align-items: stretch;
+  }
+  .ops-actions-group .btn {
+    width: 100%; /* Botones a lo ancho completo en teléfonos */
   }
   .search-box {
     max-width: 100%;

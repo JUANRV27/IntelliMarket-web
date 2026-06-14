@@ -29,9 +29,30 @@ export class FormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.storeId = this.inventoryService.getActualStoreId();
     
-    // Evaluamos la URL actual usando la ruta activa
+    const savedStoreId = localStorage.getItem('intellimarket.storeId') || '1';
+    this.storeId = savedStoreId;
+
+    // 💡 TRUCO DEFENSIVO: Si el ID guardado es el del usuario (ej: 18), 
+    // le preguntamos al stock cuál es el verdadero ID de la tienda para no romper el backend.
+    this.inventoryService.getStockByStore(this.storeId).subscribe({
+      next: (products: any[]) => {
+        if (products && products.length > 0) {
+          // Extraemos el storeId real desde el primer producto del stock
+          const realId = products[0].storeId || products[0].store?.id;
+          if (realId) {
+            this.storeId = realId.toString();
+            localStorage.setItem('intellimarket.storeId', this.storeId);
+            console.log('-> ID de tienda corregido con éxito desde el stock real:', this.storeId);
+          }
+        }
+      },
+      error: (err) => console.error('No se pudo verificar el ID real de la tienda desde el stock:', err)
+    });
+    
+    console.log('=== FORMULARIO DE PRODUCTO ===');
+    console.log('ID de tienda inicial:', this.storeId);
+    
     this.productId = this.route.snapshot.paramMap.get('productId');
     if (this.productId) {
       this.isEditMode = true;
@@ -81,7 +102,7 @@ export class FormComponent implements OnInit {
       this.inventoryService.updateProduct(this.productId, this.storeId, requestData).subscribe({
         next: (res) => {
           alert(res.message); // Muestra el mensaje de éxito enviado por el backend
-          this.router.navigate(['/inventory']);
+          this.router.navigate(['/seller/inventory']);
         },
         error: (err) => alert('Error al actualizar el producto: ' + err.message)
       });
@@ -90,7 +111,7 @@ export class FormComponent implements OnInit {
       this.inventoryService.createProduct(this.storeId, requestData).subscribe({
         next: (res) => {
           alert(res.message); // Muestra el mensaje de éxito enviado por el backend
-          this.router.navigate(['/inventory']);
+          this.router.navigate(['/seller/inventory']);
         },
         error: (err) => alert('Error al registrar el producto: ' + err.message)
       });

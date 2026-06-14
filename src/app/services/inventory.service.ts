@@ -28,6 +28,7 @@ export class InventoryService {
    */
   createProduct(storeId: string, request: ProductsRequest): Observable<ApiResponseWrapper> {
     const params = new HttpParams().set('storeId', storeId);
+    // Forzamos la cadena exacta combinando la url base con /products
     return this.http.post<ApiResponseWrapper>(`${this.baseUrl}/products`, request, { params });
   }
 
@@ -37,6 +38,8 @@ export class InventoryService {
    */
   updateProduct(productId: string, storeId: string, request: ProductsRequest): Observable<ApiResponseWrapper> {
     const params = new HttpParams().set('storeId', storeId);
+    // Forzamos la cadena exacta combinando la url base con /products
+    console.log(`[HTTP PUT] Actualizando producto a: ${this.baseUrl}/products/${productId}?storeId=${storeId}`);
     return this.http.put<ApiResponseWrapper>(`${this.baseUrl}/products/${productId}`, request, { params });
   }
 
@@ -61,5 +64,17 @@ export class InventoryService {
 
   getActualStoreId(): string {
   return localStorage.getItem('intellimarket.storeId') || '1';
-}
+  }
+
+  getStoresByOwner(): Observable<any[]> {
+    // Ajusta esta URL según tu controlador de tiendas
+    return this.http.get<any[]>(`http://localhost:8080/api/v1/stores`);
+  }
+
+  // Stock de tienda
+  getStockReal(storeId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/stock`, {
+      params: { storeId }
+    });
+  }
 }

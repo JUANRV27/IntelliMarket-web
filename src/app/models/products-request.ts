@@ -5,6 +5,7 @@ export interface ProductsRequest {
   description: string;
   category: Category;
   // BigDecimal price
+  stock: number;
   unitPrice: number;
   imageUrl: string;
 }

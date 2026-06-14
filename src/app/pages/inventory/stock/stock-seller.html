@@ -1,0 +1,85 @@
+<div class="seller-stock-page animate-fade-in">
+  <section class="stock-hero">
+    <button class="btn-back" (click)="goToCatalog()"><- Volver al Catálogo</button>
+    <div class="stock-hero-content">
+      <h2 class="hero-title">Lista de stock de productos</h2>
+      <p class="hero-subtitle">Monitoreo en tiempo real del inventario físico en bodega y almacén.</p>
+      
+      <div class="stock-filters">
+        <button 
+          class="filter-tab-btn" 
+          [class.active]="selectedCategory() === 'Todos'"
+          (click)="setCategory('Todos')"
+        >Todas las categorías</button>
+        
+        <button *ngFor="let cat of categories"
+          class="filter-tab-btn" 
+          [class.active]="selectedCategory() === cat"
+          (click)="setCategory(cat)"
+        >
+          {{ cat }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stock-ops-bar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Filtrar por nombre o descripción de producto..." 
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+    </div>
+    <div class="stock-counter">
+      Items en pantalla: <strong>{{ filteredStock().length }}</strong>
+    </div>
+  </section>
+
+  <section class="stock-table-section">
+    @if (filteredStock().length === 0) {
+      <div class="empty-stock-box animate-fade-in">
+        <div class="empty-icon">📊</div>
+        <h3>No hay existencias registradas</h3>
+        <p>No se encontraron registros de stock bajo los criterios seleccionados.</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table class="premium-stock-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Descripción</th>
+              <th class="text-right">Precio Unitario</th>
+              <th class="text-center">Existencias (Stock)</th>
+              <th class="text-center">Estado Almacén</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of filteredStock(); track item.id; let idx = $index) {
+              <tr class="stock-row">
+                <td><span class="badge-id">#{{ item.id }}</span></td>
+                <td><strong class="product-name-cell">{{ item.name }}</strong></td>
+                <td><span class="badge-category">{{ item.category }}</span></td>
+                <td><p class="product-desc-cell">{{ item.description }}</p></td>
+                <td class="text-right Math">S/ {{ (item.price || item.unitPrice) | number: '1.2-2' }}</td>
+                <td class="text-center font-bold">
+                  <span class="stock-number">{{ item.stock }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="stock-indicator-pill" [ngClass]="getStockStatusClass(item.stock)">
+                    {{ item.stock <= 10 ? 'Crítico' : (item.stock <= 15 ? 'Bajo' : 'Óptimo') }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</div>

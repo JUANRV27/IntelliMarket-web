@@ -1,0 +1,62 @@
+<div class="store-settings-page animate-fade-in">
+  <div class="settings-card">
+    <div class="settings-header">
+      <h2>⚙️ Configuración de mi Tienda</h2>
+      <p>Modifica los datos comerciales y de localización de tu negocio en la plataforma.</p>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-box">
+        <p>Cargando datos comerciales...</p>
+      </div>
+    } @else {
+      <form (ngSubmit)="onSubmitStore()" class="settings-form">
+        
+        <div class="form-group">
+          <label for="storeName">Nombre de la Tienda</label>
+          <input 
+            type="text" 
+            id="storeName"
+            class="form-control"
+            [ngModel]="storeName()" 
+            (ngModelChange)="storeName.set($event)"
+            name="storeName"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="storeAddress">Dirección Física Almacén/Tienda</label>
+          <input 
+            type="text" 
+            id="storeAddress"
+            class="form-control"
+            [ngModel]="storeAddress()" 
+            (ngModelChange)="storeAddress.set($event)"
+            name="storeAddress"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="storeDistrict">Distrito / Ubicación</label>
+          <input 
+            type="text" 
+            id="storeDistrict"
+            class="form-control"
+            [ngModel]="storeDistrict()" 
+            (ngModelChange)="storeDistrict.set($event)"
+            name="storeDistrict"
+            required
+          />
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="cancel()">Cancelar</button>
+          <button type="submit" class="btn-submit">Guardar Configuración</button>
+        </div>
+
+      </form>
+    }
+  </div>
+</div>

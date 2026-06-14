@@ -1,0 +1,67 @@
+.seller-stock-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.stock-hero {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #fff;
+  padding: 2.5rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+.hero-title { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+.hero-subtitle { color: #94a3b8; font-size: 1rem; margin-bottom: 1.5rem; }
+
+.stock-ops-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.table-container {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.premium-stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+.premium-stock-table th {
+  background: #f8fafc;
+  padding: 1rem 1.5rem;
+  color: #64748b;
+  font-weight: 600;
+  border-bottom: 2px solid #e2e8f0;
+}
+.premium-stock-table td {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+}
+.stock-row:hover { background-color: #f8fafc; }
+
+/* Indicadores de Almacén */
+.stock-indicator-pill {
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+.status-danger { background: #fee2e2; color: #ef4444; }
+.status-warning { background: #fef3c7; color: #d97706; }
+.status-success { background: #dcfce7; color: #22c55e; }
+
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.font-bold { font-weight: 700; }
