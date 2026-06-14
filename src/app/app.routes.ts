@@ -29,7 +29,13 @@ export const routes: Routes = [
     children: [
       { path: 'catalog', component: CatalogSeller },
       { path: 'catalog/product/:id', component: ProductDetailSeller },
-      { path: 'profile', component: ProfileSeller }
+      { path: 'profile', component: ProfileSeller },
+      
+      { 
+        path: 'suppliers', 
+        title: 'Mis Proveedores - IntelliMarket',
+        loadComponent: () => import('./pages/seller/suppliers-seller/suppliers-seller').then(m => m.SuppliersSeller) 
+      }
     ]
   },
 
