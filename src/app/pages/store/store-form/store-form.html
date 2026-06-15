@@ -1,78 +1,112 @@
 <div class="store-shell">
-  <div class="store-container">
-    <h2>Registra tu Tienda</h2>
-    <p class="subtitle">Configura los datos iniciales de tu negocio para empezar a vender</p>
-
-    @if (errorMessage) {
-      <div class="error-banner">
-        <span class="icon">⚠️</span> {{ errorMessage }}
+  <div class="store-layout-container animate-fade-in">
+    
+    <div class="store-visual-panel">
+      <div class="panel-overlay-content">
+        <div class="brand-badge">IntelliMarket Enterprise</div>
+        <div class="panel-hero-text">
+          <h1>¡Da el gran salto digital!</h1>
+          <p>Únete a la red de logística y abastecimiento inteligente más grande del mercado comercial.</p>
+        </div>
+        <div class="panel-footer-features">
+          <div class="feature-item"><span>✦</span> Catálogo Real automatizado</div>
+          <div class="feature-item"><span>✦</span> Control de stock crítico a tiempo real</div>
+        </div>
       </div>
-    }
+    </div>
 
-    <form (ngSubmit)="onCreateStore()" #formStore="ngForm">
-      
-      <div class="form-group">
-        <label for="name">Nombre de la Tienda <span class="required">*</span></label>
-        <input 
-          type="text" 
-          id="name" 
-          name="name" 
-          [(ngModel)]="name" 
-          #nameCtrl="ngModel"
-          maxlength="30" 
-          placeholder="Ej. Mi Bodega Express" 
-          required 
-          [class.input-error]="nameCtrl.invalid && nameCtrl.touched"
-        />
-        @if (nameCtrl.invalid && nameCtrl.touched) {
-          <small class="error-text">El nombre de la tienda es obligatorio.</small>
+    <div class="store-form-panel">
+      <div class="form-wrapper">
+        <div class="form-header">
+          <h2>Registra tu Tienda</h2>
+          <p class="subtitle">Configura los datos iniciales de tu negocio para empezar a vender</p>
+        </div>
+
+        @if (errorMessage) {
+          <div class="error-banner animate-fade-in">
+            <span class="icon">⚠️</span>
+            <div class="error-msg-content">
+              <strong>Error de registro:</strong> {{ errorMessage }}
+            </div>
+          </div>
         }
-      </div>
 
-      <div class="form-group">
-        <label for="address">Dirección de la Tienda <span class="required">*</span></label>
-        <input 
-          type="text" 
-          id="address" 
-          name="address" 
-          [(ngModel)]="address" 
-          #addressCtrl="ngModel"
-          placeholder="Ej. Av. Universitaria 456" 
-          required 
-          [class.input-error]="addressCtrl.invalid && addressCtrl.touched"
-        />
-        @if (addressCtrl.invalid && addressCtrl.touched) {
-          <small class="error-text">Necesitamos tu dirección para ubicar la tienda.</small>
-        }
-      </div>
+        <form (ngSubmit)="onCreateStore()" #formStore="ngForm" class="modern-form">
+          
+          <div class="form-group">
+            <label for="name">Nombre de la Tienda <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-addon-icon">🏪</span>
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                [(ngModel)]="name" 
+                #nameCtrl="ngModel"
+                maxlength="30" 
+                placeholder="Ej. Mi Bodega Express" 
+                required 
+                [class.input-error]="nameCtrl.invalid && nameCtrl.touched"
+              />
+            </div>
+            @if (nameCtrl.invalid && nameCtrl.touched) {
+              <small class="error-text">El nombre de la tienda es obligatorio.</small>
+            }
+          </div>
 
-      <div class="form-group">
-        <label for="district">Distrito <span class="required">*</span></label>
-        <input 
-          type="text" 
-          id="district" 
-          name="district" 
-          [(ngModel)]="district" 
-          #districtCtrl="ngModel"
-          maxlength="50" 
-          placeholder="Ej. La Molina" 
-          required 
-          [class.input-error]="districtCtrl.invalid && districtCtrl.touched"
-        />
-        @if (districtCtrl.invalid && districtCtrl.touched) {
-          <small class="error-text">El distrito es obligatorio.</small>
-        }
-      </div>
+          <div class="form-group">
+            <label for="address">Dirección de la Tienda <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-addon-icon">📍</span>
+              <input 
+                type="text" 
+                id="address" 
+                name="address" 
+                [(ngModel)]="address" 
+                #addressCtrl="ngModel"
+                placeholder="Ej. Av. Universitaria 456" 
+                required 
+                [class.input-error]="addressCtrl.invalid && addressCtrl.touched"
+              />
+            </div>
+            @if (addressCtrl.invalid && addressCtrl.touched) {
+              <small class="error-text">Necesitamos tu dirección para ubicar la tienda.</small>
+            }
+          </div>
 
-      <div class="actions">
-        <button 
-          type="submit" 
-          class="btn-submit" 
-          [disabled]="formStore.invalid"
-          [class.btn-disabled]="formStore.invalid">
-          Crear y Abrir Tienda
-        </button>
+          <div class="form-group">
+            <label for="district">Distrito <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-addon-icon">🏙️</span>
+              <input 
+                type="text" 
+                id="district" 
+                name="district" 
+                [(ngModel)]="district" 
+                #districtCtrl="ngModel"
+                maxlength="50" 
+                placeholder="Ej. La Molina" 
+                required 
+                [class.input-error]="districtCtrl.invalid && districtCtrl.touched"
+              />
+            </div>
+            @if (districtCtrl.invalid && districtCtrl.touched) {
+              <small class="error-text">El distrito es obligatorio.</small>
+            }
+          </div>
+
+          <div class="actions">
+            <button 
+              type="submit" 
+              class="btn-submit" 
+              [disabled]="formStore.invalid"
+              [class.btn-disabled]="formStore.invalid">
+              Crear y Abrir Tienda ⚡
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
+
   </div>
 </div>
