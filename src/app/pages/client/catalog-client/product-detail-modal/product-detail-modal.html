@@ -1,0 +1,145 @@
+<!-- Modal backdrop -->
+<div class="modal-backdrop" *ngIf="isOpen" (click)="close()"></div>
+
+<!-- Modal content -->
+<div class="modal-container" *ngIf="isOpen">
+  <div class="modal-content">
+    <!-- Header -->
+    <div class="modal-header">
+      <h2>Detalles del Producto</h2>
+      <button class="close-btn" (click)="close()">✕</button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <div class="product-detail-grid">
+        <!-- Imagen del producto -->
+        <div class="product-image-section">
+          <img 
+            [src]="product?.imageUrl || 'assets/default-product.png'" 
+            [alt]="product?.name"
+            class="product-image"
+          />
+          <span class="category-badge">{{ product?.category }}</span>
+        </div>
+
+        <!-- Información del producto -->
+        <div class="product-info-section">
+          <h3 class="product-name">{{ product?.name }}</h3>
+          
+          <div class="price-section">
+            <p class="price">S/ {{ product?.price | number:'1.2-2' }}</p>
+            <span class="stock-badge" [class.low-stock]="product?.stock <= 5">
+              Stock: {{ product?.stock || 0 }} unids.
+            </span>
+          </div>
+
+          <div class="description">
+            <h4>Descripción</h4>
+            <p>{{ product?.description || 'Sin descripción disponible' }}</p>
+          </div>
+
+          <div class="actions">
+            <button 
+              class="btn-add-cart"
+              [disabled]="product?.stock === 0"
+              (click)="agregarAlCarrito()"
+            >
+              {{ product?.stock === 0 ? 'Agotado' : '🛒 Agregar al carrito' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de Reseñas -->
+      <div class="reviews-section">
+        <h3>Reseñas del Producto</h3>
+
+        <!-- Botón para agregar reseña -->
+        <button class="btn-new-review" (click)="toggleReviewForm()">
+          + Escribir una reseña
+        </button>
+
+        <!-- Formulario de nueva reseña -->
+        @if (showReviewForm()) {
+          <div class="review-form">
+            <h4>Tu Reseña</h4>
+            <div class="form-group">
+              <label>Nombre *</label>
+              <input 
+                type="text" 
+                [ngModel]="reviewAuthor()" 
+                (ngModelChange)="reviewAuthor.set($event)"
+                placeholder="Tu nombre"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Calificación *</label>
+              <div class="star-rating">
+                @for (star of [1,2,3,4,5]; track star) {
+                  <button 
+                    type="button"
+                    class="star-btn"
+                    [class.selected]="reviewRating() >= star"
+                    (click)="reviewRating.set(star)"
+                  >
+                    ⭐
+                  </button>
+                }
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Comentario *</label>
+              <textarea 
+                [ngModel]="reviewComment()" 
+                (ngModelChange)="reviewComment.set($event)"
+                placeholder="Comparte tu experiencia con este producto..."
+                rows="4"
+              ></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button 
+                class="btn-submit"
+                [disabled]="isSubmittingReview()"
+                (click)="enviarResena()"
+              >
+                {{ isSubmittingReview() ? 'Enviando...' : 'Enviar Reseña' }}
+              </button>
+              <button 
+                class="btn-cancel"
+                (click)="showReviewForm.set(false)"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Lista de reseñas -->
+        @if (loadingReviews()) {
+          <p class="loading">Cargando reseñas...</p>
+        } @else if (reviews().length === 0) {
+          <p class="no-reviews">No hay reseñas aún. ¡Sé el primero en dejar una!</p>
+        } @else {
+          <div class="reviews-list">
+            @for (review of reviews(); track review.id) {
+              <div class="review-card">
+                <div class="review-header">
+                  <div>
+                    <p class="review-author">{{ review.author }}</p>
+                    <p class="review-rating">{{ renderStars(review.rating) }}</p>
+                  </div>
+                  <span class="review-date">{{ review.createdAt | date:'short' }}</span>
+                </div>
+                <p class="review-comment">{{ review.comment }}</p>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, map, catchError, of, switchMap } from 'rxjs';
 import { environment } from '../../environments/environments';
 import { ProductsRequest } from '../models/products-request';
 import { ProductsResponse } from '../models/products-response';
+import { Review, ReviewRequest } from '../models/review.model';
 
 // Interfaz para envolver la respuesta del HashMap de tu Java
 export interface ApiResponseWrapper {
@@ -66,6 +67,38 @@ export class InventoryService {
   }
 
   /**
+   * Obtiene productos de TODAS las tiendas
+   * Combina los productos de todas las tiendas disponibles
+   */
+  getAllProductsFromAllStores(): Observable<any[]> {
+    // Primero obtenemos todas las tiendas
+    return this.http.get<any[]>(`${environment.apiUrl}/v1/stores`).pipe(
+      switchMap((stores: any[]) => {
+        // Si no hay tiendas, retornamos array vacío
+        if (!stores || stores.length === 0) {
+          return of([]);
+        }
+
+        // Creamos un array de peticiones (una por cada tienda)
+        const productRequests = stores.map(store => 
+          this.getStockByStore(store.id).pipe(
+            catchError(() => of([])) // Si falla una tienda, retornamos array vacío para esa tienda
+          )
+        );
+
+        // Ejecutamos todas las peticiones en paralelo
+        return forkJoin(productRequests).pipe(
+          map((results: any[][]) => {
+            // Combinamos todos los arrays de productos en uno solo
+            return results.flat();
+          })
+        );
+      }),
+      catchError(() => of([])) // Si falla obtener tiendas, retornamos array vacío
+    );
+  }
+
+  /**
    * Utilidades locales y de otras épicas
    */
   getActualStoreId(): string {
@@ -76,4 +109,20 @@ export class InventoryService {
     // Usando la variable de entorno para evitar problemas de hardcoding
     return this.http.get<any[]>(`${environment.apiUrl}/stores`);
   }
-}
+  /**
+   * Obtiene las reseñas de un producto específico
+   * GET: /api/v1/reviews/product/{productId}
+   */
+  getProductReviews(productId: string | number): Observable<Review[]> {
+    return this.http.get<Review[]>(`${environment.apiUrl}/v1/reviews/product/${productId}`).pipe(
+      catchError(() => of([])) // Retorna array vacío si falla
+    );
+  }
+
+  /**
+   * Crea una nueva reseña para un producto
+   * POST: /api/v1/reviews
+   */
+  createProductReview(review: ReviewRequest): Observable<Review> {
+    return this.http.post<Review>(`${environment.apiUrl}/v1/reviews`, review);
+  }}
