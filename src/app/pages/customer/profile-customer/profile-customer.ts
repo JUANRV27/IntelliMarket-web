@@ -6,27 +6,26 @@ import { ProfileService } from '../../../services/profile.service';
 import { TokenService } from '../../../services/token.service';
 
 @Component({
-  selector: 'app-profile-seller',
+  selector: 'app-profile-customer',
   imports: [FormsModule, CommonModule],
   standalone: true,
-  templateUrl: './profile-seller.html',
-  styleUrl: './profile-seller.css'
+  templateUrl: './profile-customer.html',
+  styleUrl: './profile-customer.css'
 })
-export class ProfileSeller implements OnInit {
+export class ProfileCustomer implements OnInit {
   private profileService = inject(ProfileService);
-  private tokenService  = inject(TokenService);
-  private router        = inject(Router);
+  private tokenService   = inject(TokenService);
+  private router         = inject(Router);
 
-  isLoading     = signal(true);
-  errorMessage  = signal('');
-  isFirstTime   = signal(false);   // true → mostrar formulario de bienvenida
-  isEditing     = signal(false);
+  isLoading    = signal(true);
+  errorMessage = signal('');
+  isFirstTime  = signal(false);
+  isEditing    = signal(false);
 
-  profileData   = signal<any>(null);
+  profileData  = signal<any>(null);
 
-  // Campos editables
-  editPhone = '';
-  editDni   = '';
+  editPhone   = '';
+  editAddress = '';
 
   ngOnInit(): void {
     if (!this.tokenService.token) {
@@ -38,7 +37,7 @@ export class ProfileSeller implements OnInit {
 
   loadProfile(): void {
     this.isLoading.set(true);
-    this.profileService.getOwnerProfile().subscribe({
+    this.profileService.getCustomerProfile().subscribe({
       next: (data) => {
         this.profileData.set(data);
         this.isLoading.set(false);
@@ -46,18 +45,17 @@ export class ProfileSeller implements OnInit {
         // Si phone está vacío → primera vez
         if (!data.phone) {
           this.isFirstTime.set(true);
-          this.editPhone = '';
-          this.editDni   = '';
+          this.editPhone   = '';
+          this.editAddress = '';
         }
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage.set('No se pudo cargar el perfil. Intente de nuevo.');
         this.isLoading.set(false);
       }
     });
   }
 
-  // Guardar datos en primera visita
   completeProfile(): void {
     if (!this.editPhone.trim()) {
       alert('El número de teléfono es obligatorio.');
@@ -67,8 +65,8 @@ export class ProfileSeller implements OnInit {
   }
 
   startEditing(): void {
-    this.editPhone = this.profileData()?.phone || '';
-    this.editDni   = this.profileData()?.dni   || '';
+    this.editPhone   = this.profileData()?.phone   || '';
+    this.editAddress = this.profileData()?.address || '';
     this.isEditing.set(true);
   }
 
@@ -85,9 +83,9 @@ export class ProfileSeller implements OnInit {
   }
 
   private saveToBackend(): void {
-    this.profileService.updateOwnerProfile({
-      phone: this.editPhone,
-      dni:   this.editDni
+    this.profileService.updateCustomerProfile({
+      phone:   this.editPhone,
+      address: this.editAddress
     }).subscribe({
       next: (updated) => {
         this.profileData.set(updated);

@@ -178,6 +178,16 @@ export class CatalogSeller implements OnInit {
     this.newProdCategory.set(Category.ELECTRONICA);
   }
 
+  goToSettingsView(): void {
+    console.log('[CATALOG] Redirigiendo a la vista de configuración de la tienda...');
+    this.router.navigate(['/seller/settings']);
+  }
+
+  goToProfile(): void {
+    console.log('[CATALOG] Navegando al perfil del vendedor...');
+    this.router.navigate(['/seller/profile']);
+  }
+
   deleteProduct(id: string, event: Event): void {
     event.stopPropagation();
     event.preventDefault();

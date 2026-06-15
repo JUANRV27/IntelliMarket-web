@@ -17,10 +17,10 @@
         <p class="error-msg">{{ errorMessage() }}</p>
 
       } @else if (isFirstTime()) {
-        <!-- ── PRIMERA VEZ: formulario de bienvenida ── -->
+        <!-- ── PRIMERA VEZ ── -->
         <div class="form-section-block">
           <h2 class="form-section-title">¡Completa tu perfil para continuar!</h2>
-          <p class="form-help">Estos datos nos ayudan a identificarte como vendedor en IntelliMarket.</p>
+          <p class="form-help">Necesitamos estos datos para gestionar tus pedidos.</p>
 
           <div class="fields-row-double">
             <div class="form-input-group">
@@ -30,9 +30,9 @@
             </div>
 
             <div class="form-input-group">
-              <label class="form-label">DNI</label>
-              <input type="text" class="form-field" [(ngModel)]="editDni"
-                     placeholder="Ej: 12345678" maxlength="8" />
+              <label class="form-label">Dirección de entrega</label>
+              <input type="text" class="form-field" [(ngModel)]="editAddress"
+                     placeholder="Ej: Av. Lima 123, Miraflores" />
             </div>
           </div>
 
@@ -73,11 +73,11 @@
             </div>
 
             <div class="form-input-group">
-              <label class="form-label">DNI</label>
+              <label class="form-label">Dirección de entrega</label>
               @if (isEditing()) {
-                <input type="text" class="form-field" [(ngModel)]="editDni" maxlength="8" />
+                <input type="text" class="form-field" [(ngModel)]="editAddress" />
               } @else {
-                <div class="view-field-box">{{ profileData()?.dni || '—' }}</div>
+                <div class="view-field-box">{{ profileData()?.address || '—' }}</div>
               }
             </div>
           </div>
