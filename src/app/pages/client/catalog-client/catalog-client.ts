@@ -6,6 +6,8 @@ import { InventoryService } from '../../../services/inventory.service';
 import { MarketStateService } from '../../../services/market-state';
 import { CartService } from '../../../services/cart.service';
 import { ProductDetailModal } from '../catalog-client/product-detail-modal/product-detail-modal';
+// Importar Category de category-products.ts de models
+import { Category } from '../../../models/category-products';
 @Component({
   selector: 'app-catalog-client',
   standalone: true,
@@ -31,7 +33,15 @@ export class CatalogClient implements OnInit {
   isModalOpen = signal(false);
 
   // Lista de categorías únicas para los botones de filtro
-  categories = ['Todos', 'Abarrotes', 'Bebidas', 'Lácteos', 'Limpieza', 'Otros'];
+  /*categories: Category[] = [
+    { id: 'todos', name: 'Todos' },
+    { id: 'abarrotes', name: 'Abarrotes' },
+    { id: 'bebidas', name: 'Bebidas' },
+    { id: 'lácteos', name: 'Lácteos' },
+    { id: 'limpieza', name: 'Limpieza' },
+    { id: 'otros', name: 'Otros' }
+  ];*/
+  public categories = Object.values(Category);
 
   ngOnInit() {
     this.cargarProductos();

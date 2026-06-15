@@ -106,4 +106,3 @@ export class ProductDetailModal implements OnInit {
     return '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
   }
 }
-
