@@ -9,7 +9,7 @@ import { CartService } from '../../../services/cart.service';
 @Component({
   selector: 'app-catalog-client',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './catalog-client.html',
   styleUrl: './catalog-client.css'
 })
@@ -61,8 +61,12 @@ export class CatalogClient implements OnInit {
     const allProducts = this.products();
 
     return allProducts.filter(product => {
+      const productName = product.name || product.nombre || '';
+      const productCategory = product.category || product.categoria || '';
+
       const matchesSearch = product.name.toLowerCase().includes(query);
       const matchesCategory = category === 'Todos' || product.category === category;
+
       return matchesSearch && matchesCategory;
     });
   });
@@ -70,6 +74,17 @@ export class CatalogClient implements OnInit {
   seleccionarCategoria(category: string) {
     this.selectedCategory.set(category);
   }
+
+  /*cargarCatalogo() {
+    this.inventoryService.getPublicProducts().subscribe({
+      next: (data) => {
+        this.products.set(data);
+      },
+      error: (err) => {
+        console.error('Error al cargar el catálogo:', err);
+      }
+    });
+  }*/
 
   agregarAlCarrito(product: any) {
     this.cartService.addToCart(product);
