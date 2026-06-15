@@ -38,7 +38,7 @@
     } @else {
       <div class="card-grid">
         @for (prod of filteredProducts(); track prod.id) {
-          <div class="product-card">
+          <div class="product-card" (click)="abrirDetalleProducto(prod)">
             <div class="card-image">
               <img [src]="prod.imageUrl || 'assets/default-product.png'" [alt]="prod.name">
               <span class="category-tag">{{ prod.category }}</span>
@@ -59,7 +59,7 @@
               <button 
                 class="btn-add-cart" 
                 [disabled]="prod.stock === 0"
-                (click)="agregarAlCarrito(prod)">
+                (click)="agregarAlCarrito(prod); $event.stopPropagation()">
                 {{ prod.stock === 0 ? 'Agotado' : '🛒 Agregar al carrito' }}
               </button>
             </div>
@@ -69,3 +69,10 @@
     }
   }
 </div>
+
+<!-- Modal de detalles del producto -->
+<app-product-detail-modal 
+  [product]="selectedProduct()" 
+  [isOpen]="isModalOpen()"
+  (closeModal)="cerrarModal()"
+></app-product-detail-modal>

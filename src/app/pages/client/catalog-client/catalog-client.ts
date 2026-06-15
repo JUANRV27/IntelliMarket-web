@@ -5,11 +5,11 @@ import { RouterLink } from '@angular/router';
 import { InventoryService } from '../../../services/inventory.service';
 import { MarketStateService } from '../../../services/market-state';
 import { CartService } from '../../../services/cart.service';
-
+import { ProductDetailModal } from '../catalog-client/product-detail-modal/product-detail-modal';
 @Component({
   selector: 'app-catalog-client',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, ProductDetailModal],
   templateUrl: './catalog-client.html',
   styleUrl: './catalog-client.css'
 })
@@ -26,6 +26,10 @@ export class CatalogClient implements OnInit {
   products = signal<any[]>([]);
   loading = signal(true);
 
+  // Estado del modal
+  selectedProduct = signal<any>(null);
+  isModalOpen = signal(false);
+
   // Lista de categorías únicas para los botones de filtro
   categories = ['Todos', 'Abarrotes', 'Bebidas', 'Lácteos', 'Limpieza', 'Otros'];
 
@@ -35,17 +39,16 @@ export class CatalogClient implements OnInit {
 
   cargarProductos() {
     this.loading.set(true);
-    // Intentamos recuperar el storeId del localStorage para ver los productos de la bodega
-    const storeId = localStorage.getItem('intellimarket.storeId') || '1';
 
-    this.inventoryService.getStockByStore(storeId).subscribe({
+    // Cargamos productos de TODAS las tiendas
+    this.inventoryService.getAllProductsFromAllStores().subscribe({
       next: (data: any[]) => {
         // Si el backend responde con éxito, usamos sus productos reales
         this.products.set(data);
         this.loading.set(false);
       },
       error: (err) => {
-        console.warn('Backend offline o sin tienda. Usando productos locales por defecto.', err);
+        console.warn('Backend offline o sin tiendas. Usando productos locales por defecto.', err);
         // FALLBACK: Si falla el backend, cargamos los productos estáticos del MarketState
         const locales = this.marketStateService.products().filter(p => p.isVisible);
         this.products.set(locales);
@@ -89,5 +92,15 @@ export class CatalogClient implements OnInit {
   agregarAlCarrito(product: any) {
     this.cartService.addToCart(product);
     alert(`¡${product.name} agregado al carrito!`);
+  }
+
+  abrirDetalleProducto(product: any) {
+    this.selectedProduct.set(product);
+    this.isModalOpen.set(true);
+  }
+
+  cerrarModal() {
+    this.isModalOpen.set(false);
+    this.selectedProduct.set(null);
   }
 }
