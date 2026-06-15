@@ -6,11 +6,16 @@
       <h1 routerLink="/seller/catalog" style="cursor: pointer;">IntelliMarket</h1>
     </div>
 
-    <!-- Navigation tabs from Figma -->
+    <!-- Nombre de la tienda en el centro -->
+    <div class="store-name-badge">
+      🏪 {{ storeName() }}
+    </div>
+
+    <!-- Navigation tabs -->
     <nav class="top-bar-nav">
       <a routerLink="/seller/catalog" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
       <a routerLink="/seller/catalog" routerLinkActive="active">Productos</a>
-      <a routerLink="/seller/catalog" routerLinkActive="active">Estadisticas</a>
+      <a routerLink="/seller/catalog" routerLinkActive="active">Estadísticas</a>
       <a routerLink="/seller/profile" routerLinkActive="active">Perfil</a>
     </nav>
 
@@ -18,10 +23,10 @@
       <button class="client-btn" routerLink="/">Ver Tienda</button>
       <button class="logout-btn" (click)="logout()">Salir</button>
       <a routerLink="/seller/profile">
-        <img 
-          alt="Avatar" 
-          class="avatar" 
-          src="http://localhost:3845/assets/6897de514b470658bd03c50e647fc563112bb87f.svg" 
+        <img
+          alt="Avatar"
+          class="avatar"
+          src="http://localhost:3845/assets/6897de514b470658bd03c50e647fc563112bb87f.svg"
         />
       </a>
     </div>
@@ -32,7 +37,7 @@
     <router-outlet></router-outlet>
   </main>
 
-  <!-- Seller Footer from Figma design -->
+  <!-- Footer -->
   <footer class="seller-footer">
     <div class="footer-container">
       <p>© 2023 IntelliMarket. Todos los derechos reservados.</p>

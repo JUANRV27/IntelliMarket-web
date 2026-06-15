@@ -77,4 +77,8 @@ export class InventoryService {
       params: { storeId }
     });
   }
+
+  getProductByIdAndStore(productId: string, storeId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/store/${storeId}/products/${productId}`);
+  }
 }

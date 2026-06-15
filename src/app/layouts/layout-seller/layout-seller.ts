@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
-import { MarketStateService } from '../../services/market-state';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-layout-seller',
@@ -8,12 +8,20 @@ import { MarketStateService } from '../../services/market-state';
   templateUrl: './layout-seller.html',
   styleUrl: './layout-seller.css'
 })
-export class LayoutSeller {
-  router = inject(Router);
-  stateService = inject(MarketStateService);
+export class LayoutSeller implements OnInit {
+  private router       = inject(Router);
+  private tokenService = inject(TokenService);
+
+  storeName = signal('Mi Tienda');
+
+  ngOnInit(): void {
+    // Lee el nombre guardado al hacer login o crear tienda
+    const saved = localStorage.getItem('intellimarket.storeName');
+    if (saved) this.storeName.set(saved);
+  }
 
   logout(): void {
-    this.stateService.logoutAsSeller();
-    this.router.navigate(['/seller/login']);
+    this.tokenService.clear();
+    this.router.navigate(['/login']);
   }
 }

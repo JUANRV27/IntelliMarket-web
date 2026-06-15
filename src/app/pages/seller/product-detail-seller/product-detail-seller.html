@@ -1,13 +1,10 @@
 <div class="product-detail-page animate-fade-in" *ngIf="product() as prod">
-  <!-- Back Nav -->
   <div class="detail-header-nav">
     <a routerLink="/seller/catalog" class="back-link">← Regresar al Catálogo</a>
   </div>
 
-  <!-- Core Product Info Row -->
   <div class="product-main-card" [class.not-available]="!prod.isVisible">
     
-    <!-- Image Box -->
     <div class="product-img-box">
       <img [alt]="prod.name" [src]="prod.image" />
       @if (!prod.isVisible) {
@@ -17,24 +14,22 @@
       }
     </div>
 
-    <!-- Details Box -->
     <div class="product-details-box">
       @if (isEditing()) {
-        <!-- Edit Mode Form -->
         <div class="edit-fields-container">
           <div class="form-input-group">
             <label class="form-label">Nombre del Producto</label>
-            <input type="text" class="form-field" [(ngModel)]="editName" />
+            <input type="text" class="form-field" [ngModel]="editName()" (ngModelChange)="editName.set($event)" />
           </div>
 
           <div class="form-input-group">
             <label class="form-label">Precio (S/.)</label>
-            <input type="number" class="form-field" [(ngModel)]="editPrice" />
+            <input type="number" class="form-field" [ngModel]="editPrice()" (ngModelChange)="editPrice.set($event)" />
           </div>
 
           <div class="form-input-group">
             <label class="form-label">Descripción & Especificaciones</label>
-            <textarea class="form-field textarea-field" [(ngModel)]="editDescription"></textarea>
+            <textarea class="form-field textarea-field" [ngModel]="editDescription()" (ngModelChange)="editDescription.set($event)"></textarea>
           </div>
 
           <div class="edit-actions-row">
@@ -43,8 +38,7 @@
           </div>
         </div>
       } @else {
-        <!-- View Mode -->
-        <div class="brand-crumb">IntelliMarket | Catálogo</div>
+        <div class="brand-crumb">IntelliMarket | Catálogo Real</div>
         <h2 class="product-title-text">{{ prod.name }}</h2>
         
         <div class="price-rating-row">
@@ -61,9 +55,8 @@
           <p>{{ prod.description }}</p>
         </div>
 
-        <!-- Figma buttons -->
         <div class="product-actions-btn-group">
-          <button class="btn btn-primary" style="width: auto;">Consultar Stock</button>
+          <button class="btn btn-primary" style="width: auto;" (click)="checkStockAlert()">Consultar Stock</button>
           <button class="btn btn-secondary" style="width: auto; background-color: var(--neutral-gray);" (click)="toggleEditMode()">
             Editar detalle
           </button>
@@ -72,7 +65,6 @@
 
       <hr class="divider" />
 
-      <!-- Figma Toggle Switch "Destacar producto" -->
       <div class="toggle-control-row">
         <div class="toggle-info">
           <span class="toggle-label">Visible en catálogo</span>
@@ -91,12 +83,11 @@
     </div>
   </div>
 
-  <!-- Related Products -->
   <section class="related-section">
     <h3 class="related-title">Productos relacionados</h3>
     <div class="card-grid">
       @for (rel of relatedProducts(); track rel.id) {
-        <div class="premium-card rel-card" [routerLink]="['/seller/catalog/product', rel.id]" style="cursor: pointer;">
+        <div class="premium-card rel-card" [routerLink]="['/seller/product', rel.id]" style="cursor: pointer;">
           <div class="card-img-container" style="height: 200px;">
             <span class="card-tag">{{ rel.tag }}</span>
             <img [alt]="rel.name" [src]="rel.image" />
@@ -110,7 +101,6 @@
     </div>
   </section>
 
-  <!-- Public Reviews -->
   <section class="opinions-section">
     <h3 class="opinions-title">Leer opiniones del público</h3>
     
@@ -121,15 +111,14 @@
           <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
         </div>
       </div>
-      <p class="opinion-text">Demoro un poco en llegar pero el producto llegó en excelente estado. Bien helado.</p>
+      <p class="opinion-text">Demoró un poco en llegar pero el producto se entregó en excelente estado. Súper recomendado.</p>
       
-      <!-- Mock image attachments from figma design -->
       <div class="opinion-attachments">
         <div class="attachment-img">
-          <img src="http://localhost:3845/assets/db5b1d5267eb692db4a8a1fa37538bcab790e3ab.png" alt="Attach 1" />
+          <img src="https://via.placeholder.com/150" alt="Attach 1" />
         </div>
         <div class="attachment-img">
-          <img src="http://localhost:3845/assets/db5b1d5267eb692db4a8a1fa37538bcab790e3ab.png" alt="Attach 2" />
+          <img src="https://via.placeholder.com/150" alt="Attach 2" />
         </div>
       </div>
     </div>

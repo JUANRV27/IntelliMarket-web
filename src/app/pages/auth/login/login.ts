@@ -15,50 +15,45 @@ import { StoreService } from '../../../services/store.service';
   styleUrl: './login.css'
 })
 export class Login {
-  private router = inject(Router);
-  private authService = inject(AuthService);
-  private tokenService = inject(TokenService); 
-  private profileService = inject(ProfileService); 
-  private cdr = inject(ChangeDetectorRef); 
+  private router         = inject(Router);
+  private authService    = inject(AuthService);
+  private tokenService   = inject(TokenService);
+  private profileService = inject(ProfileService);
+  private cdr            = inject(ChangeDetectorRef);
   private inventoryService = inject(InventoryService);
-  private storeService = inject(StoreService);
+  private storeService   = inject(StoreService);
 
-  email = '';
-  password = '';
+  email        = '';
+  password     = '';
   errorMessage = '';
 
   ocultarError() {
-    if (this.errorMessage) {
-      this.errorMessage = '';
-    }
+    if (this.errorMessage) this.errorMessage = '';
   }
 
-  // login.ts — onLogin() reescrito
   onLogin() {
     this.errorMessage = '';
 
     this.authService.login({
-      email: this.email.trim(),
+      email:    this.email.trim(),
       password: this.password.trim()
     }).subscribe({
       next: (response) => {
-        // El token ya se guarda en authService vía tap() con el rol correcto
         const role = response.role;
 
         if (role === 'SELLER') {
-          // Verificamos si ya tiene tienda
           this.storeService.getMyStore().subscribe({
             next: (store) => {
-              localStorage.setItem('intellimarket.storeId', store.id.toString());
+              // ✅ Guardar ID y NOMBRE de la tienda
+              localStorage.setItem('intellimarket.storeId',   store.id.toString());
+              localStorage.setItem('intellimarket.storeName', store.name);
               this.router.navigate(['/seller/catalog']);
             },
             error: () => {
-              // 404 = no tiene tienda aún
               this.router.navigate(['/seller/store/create']);
             }
           });
         } else {
-          // CUSTOMER
           this.router.navigate(['/']);
         }
       },

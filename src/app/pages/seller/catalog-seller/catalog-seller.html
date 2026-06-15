@@ -56,6 +56,7 @@
               </div>
               <div class="card-manage-actions">
                 <button class="btn-manage-edit" (click)="openEditModal(prod)">⚙️ Editar</button>
+                <button class="btn-manage-detail" (click)="viewDetails(prod.id)">🔍 Ver Detalle</button>
                 <button class="btn-manage-delete" (click)="deleteProduct(prod.id, $event)">🗑️</button>
               </div>
             </div>

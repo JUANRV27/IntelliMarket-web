@@ -197,4 +197,10 @@ export class CatalogSeller implements OnInit {
       this.productsInStock.update(prods => prods.filter(p => p.id !== id));
     }
   }
+
+  viewDetails(id: string): void {
+    console.log(`[CATALOG] Navegando al detalle del producto: ${id}`);
+    // Asegúrate de que esta ruta coincida con la que pusiste en app.routes.ts
+    this.router.navigate(['/seller/product', id]);
+  }
 }

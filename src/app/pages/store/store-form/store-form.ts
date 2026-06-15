@@ -46,6 +46,7 @@ export class StoreFormComponent {
         // enviado por el backend (res.id) y reemplazamos el id erróneo en el LocalStorage.
         if (res && res.id) {
           localStorage.setItem('intellimarket.storeId', res.id.toString());
+          localStorage.setItem('intellimarket.storeName', res.name);
           console.log(`[STORAGE] Sincronizado intellimarket.storeId con el ID real de BD: ${res.id}`);
         } else {
           console.warn('El backend no retornó un ID válido en la respuesta. Usando valor "1" de contingencia.');
