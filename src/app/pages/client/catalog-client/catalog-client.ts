@@ -9,7 +9,7 @@ import { CartService } from '../../../services/cart.service';
 @Component({
   selector: 'app-catalog-client',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './catalog-client.html',
   styleUrl: './catalog-client.css'
 })
