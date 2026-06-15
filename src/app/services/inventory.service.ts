@@ -69,7 +69,7 @@ export class InventoryService {
    * Utilidades locales y de otras épicas
    */
   getActualStoreId(): string {
-    return localStorage.getItem('intellimarket.storeId') || '1';
+  return localStorage.getItem('intellimarket.storeId') || '1'; // Valor por defecto si no se encuentra el storeId
   }
 
   getStoresByOwner(): Observable<any[]> {

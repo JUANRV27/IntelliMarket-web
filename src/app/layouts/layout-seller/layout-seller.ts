@@ -15,13 +15,13 @@ export class LayoutSeller implements OnInit {
   storeName = signal('Mi Tienda');
 
   ngOnInit(): void {
-    // Lee el nombre guardado al hacer login o crear tienda
     const saved = localStorage.getItem('intellimarket.storeName');
     if (saved) this.storeName.set(saved);
   }
 
   logout(): void {
     this.tokenService.clear();
-    this.router.navigate(['/login']);
+    // ✅ FIX: ruta correcta
+    this.router.navigate(['/auth/login']);
   }
 }

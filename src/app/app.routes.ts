@@ -49,10 +49,10 @@ export const routes: Routes = [
     canActivate: [authGuard], 
     children: [
       { path: 'inventory', component: ListComponent },
-      { path: 'inventory/new', component: FormComponent }, // 💡 ¡AQUÍ ESTÁ LA PIEZA FALTANTE!
+      { path: 'inventory/new', component: FormComponent }, // ¡AQUÍ ESTÁ LA PIEZA FALTANTE!
       { path: 'store/create', component: StoreFormComponent },
       { path: 'catalog', component: CatalogSeller },
-      { path: 'catalog/product/:id', component: ProductDetailSeller },
+      { path: 'product/:id', component: ProductDetailSeller },
       { path: 'profile', component: ProfileSeller },
       { path: 'stock', component: StockSeller },
       { path: 'settings', component: StoreSettings }
