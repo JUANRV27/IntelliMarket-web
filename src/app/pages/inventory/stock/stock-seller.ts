@@ -38,8 +38,8 @@ export class StockSeller implements OnInit {
 
   loadStockReal(): void {
     console.log('[STOCK-SELLER] Invocando US-07 para la tienda:', this.storeId());
-    this.inventoryService.getStockReal(this.storeId()).subscribe({
-      next: (data) => {
+    this.inventoryService.getStockByStore(this.storeId()).subscribe({
+      next: (data: any[]) => {
         console.log('[STOCK-SELLER] Datos de stock crudos de IntelliJ:', data);
         this.inventoryStock.set(data);
       },
