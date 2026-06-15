@@ -8,7 +8,7 @@ import { StoreResponse } from '../models/store-response';
 @Injectable({ providedIn: 'root' })
 export class StoreService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/v1/stores`;  // con /v1/
+  private readonly baseUrl = `${environment.apiUrl}/stores`;  // con /v1/
 
   createStore(body: StoreRequest): Observable<StoreResponse> {
     return this.http.post<StoreResponse>(this.baseUrl, body);

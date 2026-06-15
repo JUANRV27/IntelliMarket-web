@@ -46,7 +46,7 @@
             
             <div class="card-body">
               <h3>{{ prod.name }}</h3>
-              <p class="price">S/ {{ prod.price | number:'1.2-2' }}</p>
+              <p class="price">S/ {{ ($any(prod).unitPrice || prod.price) | number:'1.2-2' }}</p>
               
               @if (prod.stock !== undefined) {
                 <p class="stock-info" [class.low-stock]="prod.stock <= 5">

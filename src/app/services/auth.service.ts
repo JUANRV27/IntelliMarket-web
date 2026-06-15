@@ -10,7 +10,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly tokenService = inject(TokenService);
   // ✅ FIX: ruta correcta con /v1/
-  private readonly baseUrl = `${environment.apiUrl}/v1/auth`;
+  private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   login(body: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, body).pipe(

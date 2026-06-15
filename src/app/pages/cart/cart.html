@@ -22,7 +22,7 @@
             
             <div class="item-details">
               <h4>{{ item.name }}</h4>
-              <p class="unit-price">Precio unitario: S/ {{ item.price | number:'1.2-2' }}</p>
+              <p class="unit-price">Precio unitario: S/ {{ ($any(item).unitPrice || item.price) | number:'1.2-2' }}</p>
             </div>
             
             <div class="item-quantity">
@@ -30,7 +30,7 @@
             </div>
             
             <div class="item-total">
-              <p>S/ {{ (item.price * item.quantity) | number:'1.2-2' }}</p>
+              <p>S/ {{ (($any(item).unitPrice || item.price) * item.quantity) | number:'1.2-2' }}</p>
             </div>
             
             <div class="item-actions">

@@ -5,6 +5,7 @@ export interface CartItem {
   productId: string;
   name: string;
   price: number;
+  unitPrice?: number;
   imageUrl: string;
   quantity: number;
 }
@@ -22,34 +23,44 @@ export class CartService {
   );
 
   totalPrice = computed(() => 
-    this.cartItems().reduce((acc, item) => acc + (item.price * item.quantity), 0)
+    this.cartItems().reduce((acc, item) =>  {
+      const itemPrice = item.unitPrice || item.price || 0; // Aseguramos que siempre haya un precio válido
+      return acc + (itemPrice * item.quantity);
+    }, 0)
+      
   );
 
   addToCart(product: any) {
-    this.cartItems.update(items => {
-      // Verificar si el producto ya está en el carrito
-      const existingItem = items.find(item => item.productId === product.id);
-      
+    const currentItems = this.cartItems();
+
+    const targetId = product.id || product.productId;
+    const existingItem = currentItems.find(item => item.productId === targetId);
+
       if (existingItem) {
         // Si existe, le sumamos 1 a la cantidad
-        return items.map(item => 
-          item.productId === product.id 
-            ? { ...item, quantity: item.quantity + 1 } 
-            : item
-        );
-      }
-      
+        this.updateQuantity(existingItem.productId, existingItem.quantity + 1);
+      } else {
+      const precioCorrecto = product.unitPrice || product.price || 0;
       // Si es nuevo, lo agregamos a la lista con cantidad 1
       const newItem: CartItem = {
-        productId: product.id,
+        productId: targetId,
         name: product.name,
-        price: product.price,
         imageUrl: product.imageUrl || 'assets/default-product.png',
+        price: precioCorrecto,
+        unitPrice: precioCorrecto,
         quantity: 1
       };
-      
-      return [...items, newItem];
-    });
+
+      this.cartItems.set([...currentItems, newItem]);
+    }
+  }
+
+  updateQuantity(productId: string, newQuantity: number) {
+    this.cartItems.update(items =>
+      items.map(item =>
+        item.productId === productId ? { ...item, quantity: newQuantity } : item
+      )
+    );
   }
 
   removeFromCart(productId: string) {
