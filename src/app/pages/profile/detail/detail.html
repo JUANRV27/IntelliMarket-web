@@ -20,7 +20,7 @@
           <span class="value">{{ profile()?.phone || 'No registrado' }}</span>
         </div>
 
-        @if (userRole === 'SELLER') {
+        @if (userRole() === 'SELLER') {
           <div class="info-row">
             <span class="label">DNI del Titular:</span>
             <span class="value">{{ profile()?.dni || 'No registrado' }}</span>

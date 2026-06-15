@@ -8,7 +8,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   
   // Obtenemos el token (ajusta esto si en tu TokenService se llama distinto, ej: tokenService.token())
   // Si tu servicio usa localStorage directamente, también puedes usar: localStorage.getItem('token')
-  const token = tokenService.token;
+  const token = tokenService.token();
 
   // Si el usuario tiene un token guardado (es decir, inició sesión)
   if (token) {

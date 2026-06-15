@@ -27,7 +27,7 @@ export class ProfileEdit implements OnInit {
   }
 
   precargarDatosReales() {
-    const esVendedor = this.userRole === 'SELLER' || this.userRole === 'ROLE_SELLER';
+    const esVendedor = this.userRole() === 'SELLER' || this.userRole() === 'ROLE_SELLER';
 
     const request = esVendedor 
       ? this.profileService.getOwnerProfile() 
@@ -47,7 +47,7 @@ export class ProfileEdit implements OnInit {
   }
 
   onGuardar() {
-    const esVendedor = this.userRole === 'SELLER' || this.userRole === 'ROLE_SELLER';
+    const esVendedor = this.userRole() === 'SELLER' || this.userRole() === 'ROLE_SELLER';
 
     const updateRequest = esVendedor
       ? this.profileService.updateOwnerProfile({ phone: this.phone, dni: this.dni })

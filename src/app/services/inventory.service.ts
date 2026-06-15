@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 import { ProductsRequest } from '../models/products-request';
 import { ProductsResponse } from '../models/products-response';
 import { InventoryResponse } from '../models/inventory-response';
@@ -28,7 +28,6 @@ export class InventoryService {
    */
   createProduct(storeId: string, request: ProductsRequest): Observable<ApiResponseWrapper> {
     const params = new HttpParams().set('storeId', storeId);
-    // Forzamos la cadena exacta combinando la url base con /products
     return this.http.post<ApiResponseWrapper>(`${this.baseUrl}/products`, request, { params });
   }
 
@@ -38,8 +37,6 @@ export class InventoryService {
    */
   updateProduct(productId: string, storeId: string, request: ProductsRequest): Observable<ApiResponseWrapper> {
     const params = new HttpParams().set('storeId', storeId);
-    // Forzamos la cadena exacta combinando la url base con /products
-    console.log(`[HTTP PUT] Actualizando producto a: ${this.baseUrl}/products/${productId}?storeId=${storeId}`);
     return this.http.put<ApiResponseWrapper>(`${this.baseUrl}/products/${productId}`, request, { params });
   }
 
@@ -55,7 +52,6 @@ export class InventoryService {
   /**
    * US-08: Alertas de Stock Crítico
    * GET: /api/inventory/alerts?storeId={id}
-   * Nota: Como puede devolver un objeto con un mensaje de "vacío" o la lista, usamos 'any' para manejar el condicional en la vista.
    */
   getCriticalStock(storeId: string): Observable<any> {
     const params = new HttpParams().set('storeId', storeId);
@@ -63,15 +59,13 @@ export class InventoryService {
   }
 
   getActualStoreId(): string {
-  return localStorage.getItem('intellimarket.storeId') || '1';
+    return localStorage.getItem('intellimarket.storeId') || '1';
   }
 
   getStoresByOwner(): Observable<any[]> {
-    // Ajusta esta URL según tu controlador de tiendas
-    return this.http.get<any[]>(`http://localhost:8080/api/v1/stores`);
+    return this.http.get<any[]>(`${environment.apiUrl}/stores`);
   }
 
-  // Stock de tienda
   getStockReal(storeId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/stock`, {
       params: { storeId }

@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class TokenService {
@@ -6,25 +6,34 @@ export class TokenService {
   private readonly EMAIL_KEY = 'intellimarket.email';
   private readonly ROLE_KEY = 'intellimarket.role';
 
-  isLoggedIn = signal<boolean>(!!this.token);
+  // Señales reactivas
+  token = signal<string | null>(localStorage.getItem(this.TOKEN_KEY));
+  email = signal<string | null>(localStorage.getItem(this.EMAIL_KEY));
+  role = signal<string | null>(localStorage.getItem(this.ROLE_KEY));
 
-  get token(): string | null { return localStorage.getItem(this.TOKEN_KEY); }
-  get email(): string | null { return localStorage.getItem(this.EMAIL_KEY); }
-  get role(): string | null { return localStorage.getItem(this.ROLE_KEY); }
-
-  getRole(): string | null {
-    return this.role;
-  }
+  // Estado de login calculado automáticamente
+  isLoggedIn = computed(() => !!this.token());
 
   save(token: string, email: string, role: string) {
     localStorage.setItem(this.TOKEN_KEY, token);
     localStorage.setItem(this.EMAIL_KEY, email);
     localStorage.setItem(this.ROLE_KEY, role);
-    this.isLoggedIn.set(true);
+
+    // Actualizamos las señales
+    this.token.set(token);
+    this.email.set(email);
+    this.role.set(role);
   }
 
   clear() {
     localStorage.clear();
-    this.isLoggedIn.set(false);
+    this.token.set(null);
+    this.email.set(null);
+    this.role.set(null);
+  }
+
+  getRole(): string | null {
+    return this.role();
+
   }
 }

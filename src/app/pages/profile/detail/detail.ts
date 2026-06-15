@@ -24,7 +24,7 @@ export class ProfileDetail implements OnInit {
   }
 
   cargarPerfil() {
-    const esVendedor = this.userRole === 'SELLER' || this.userRole === 'ROLE_SELLER';
+    const esVendedor = this.userRole() === 'SELLER' || this.userRole() === 'ROLE_SELLER';
 
     const request = esVendedor 
       ? this.profileService.getOwnerProfile() 
