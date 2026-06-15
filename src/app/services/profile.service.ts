@@ -9,7 +9,7 @@ export class ProfileService {
   private readonly http = inject(HttpClient);
   
   // Usamos la URL base configurada en tus environments
-  private readonly baseUrl = `${environment.apiUrl}/profiles`;
+  private readonly baseUrl = `${environment.apiUrl}/v1/profiles`;
 
   // --- MÉTODOS PARA EL DUEÑO (SELLER) ---
   getOwnerProfile(): Observable<ProfileResponse> {
