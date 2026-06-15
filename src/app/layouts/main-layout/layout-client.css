@@ -101,3 +101,51 @@
 .logout-btn:hover {
   background-color: #c0392b;
 }
+
+/* Estilos generales para el botón del carrito */
+.cart-btn {
+  position: relative; /* Crucial para que el badge se posicione respecto a este botón */
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #2c3e50;
+  padding: 8px;
+  transition: transform 0.2s;
+}
+
+.cart-btn:hover {
+  transform: scale(1.05);
+}
+
+.cart-btn .icon {
+  font-size: 1.4rem;
+}
+
+/* El pequeño globo de notificación */
+.cart-badge {
+  position: absolute;
+  top: 0px;
+  right: -5px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 18px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Animación sutil cuando se agrega un nuevo producto */
+@keyframes popIn {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+/* Estilo para el enlace activo */
+.active {
+  color: #27ae60 !important;
+  font-weight: bold;
+}

@@ -46,7 +46,7 @@ export class CatalogSeller implements OnInit {
       this.loadRealCatalog();
     } else {
       console.error('No se encontró storeId en LocalStorage. Redirigiendo...');
-      this.router.navigate(['/login']); // O a la vista de creación de tienda
+      this.router.navigate(['/auth/login']); // O a la vista de creación de tienda
     }
   }
 

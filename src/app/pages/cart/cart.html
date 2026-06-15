@@ -1,0 +1,75 @@
+<div class="cart-shell">
+  <div class="cart-header">
+    <h2>Mi Carrito de Compras</h2>
+  </div>
+
+  @if (cartService.cartItems().length === 0) {
+    <div class="empty-cart">
+      <span class="icon">🛒</span>
+      <h3>Tu carrito está vacío</h3>
+      <p>Parece que aún no has agregado nada. ¡Descubre nuestros increíbles productos!</p>
+      <a routerLink="/catalog" class="btn-primary">Ir al catálogo</a>
+    </div>
+  } @else {
+  <div class="cart-content">
+      
+      <div class="cart-items">
+        @for (item of cartService.cartItems(); track item.productId) {
+          <div class="cart-item-card">
+            <div class="item-img">
+              <img [src]="item.imageUrl" [alt]="item.name">
+            </div>
+            
+            <div class="item-details">
+              <h4>{{ item.name }}</h4>
+              <p class="unit-price">Precio unitario: S/ {{ item.price | number:'1.2-2' }}</p>
+            </div>
+            
+            <div class="item-quantity">
+              <span>Cant: <strong>{{ item.quantity }}</strong></span>
+            </div>
+            
+            <div class="item-total">
+              <p>S/ {{ (item.price * item.quantity) | number:'1.2-2' }}</p>
+            </div>
+            
+            <div class="item-actions">
+              <button class="btn-remove" (click)="eliminarItem(item.productId)" title="Eliminar producto">
+                🗑️
+              </button>
+            </div>
+          </div>
+        }
+        
+        <div class="cart-actions-bottom">
+          <button class="btn-clear" (click)="vaciarCarrito()">Vaciar carrito</button>
+        </div>
+      </div>
+
+      <div class="cart-summary">
+        <h3>Resumen de Compra</h3>
+        
+        <div class="summary-row">
+          <span>Productos ({{ cartService.totalItems() }}):</span>
+          <span>S/ {{ cartService.totalPrice() | number:'1.2-2' }}</span>
+        </div>
+        
+        <div class="summary-row">
+          <span>Envío:</span>
+          <span style="color: #27ae60; font-weight: 500;">Gratis</span>
+        </div>
+        
+        <hr>
+        
+        <div class="summary-row total">
+          <span>Total a pagar:</span>
+          <span>S/ {{ cartService.totalPrice() | number:'1.2-2' }}</span>
+        </div>
+        
+        <button class="btn-checkout" (click)="procederAlPago()">Proceder al Pago</button>
+        <a routerLink="/catalog" class="btn-continue">Seguir comprando</a>
+      </div>
+      
+    </div>
+  }
+</div>

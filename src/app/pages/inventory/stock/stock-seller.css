@@ -65,3 +65,58 @@
 .text-right { text-align: right; }
 .text-center { text-align: center; }
 .font-bold { font-weight: 700; }
+
+/* Contenedor principal */
+.stock-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  padding: 25px;
+  border: 1px solid #e2e8f0;
+  margin-top: 20px;
+}
+
+/* Tabla moderna */
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.stock-table th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  padding: 16px;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.stock-table td {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0; /* La línea separadora mágica */
+  color: #1e293b;
+  vertical-align: middle;
+}
+
+/* Efecto hover en las filas */
+.stock-table tbody tr:hover {
+  background-color: #f1f5f9;
+  transition: background-color 0.2s ease;
+}
+
+/* Etiquetas de estado (Opcional) */
+.badge-ok {
+  background: #dcfce7;
+  color: #166534;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+.badge-low {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}

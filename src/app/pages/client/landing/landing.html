@@ -35,7 +35,9 @@
             <h4 class="card-title">{{ prod.name }}</h4>
             <div class="card-action">
               <span class="card-price">S/. {{ prod.price | number: '1.2-2' }}</span>
-              <button class="card-icon-btn" title="Consultar o ver detalle" [routerLink]="['/seller/catalog/product', prod.id]">🔍</button>
+              <button class="btn-icon" (click)="agregarAlCarrito(prod)" title="Agregar al carrito">
+  🛒
+</button>
             </div>
           </div>
         </div>

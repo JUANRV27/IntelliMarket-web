@@ -19,6 +19,9 @@ import { ListComponent } from './pages/inventory/list/list';
 import { FormComponent } from './pages/inventory/form/form';
 import { StockSeller } from '../app/pages/inventory/stock/stock-seller';
 
+import { CatalogClient } from './pages/client/catalog-client/catalog-client';
+import { CartComponent } from './pages/cart/cart';
+
 import { authGuard } from './core/guards/auth.guard';
 import { publicGuard } from './core/guards/public.guard';
 import { StoreSettings } from './pages/store/store-settings/store-settings';
@@ -64,7 +67,10 @@ export const routes: Routes = [
       { path: '', component: Landing }, 
       { path: 'reviews', component: Reviews },
       { path: 'join-as-seller', component: LandingSeller },
-      { path: 'seller/login-old', component: LoginSeller }
+      { path: 'seller/login-old', component: LoginSeller },
+
+      { path: 'catalog', component: CatalogClient },
+      { path: 'cart', component: CartComponent }
     ]
   },
 

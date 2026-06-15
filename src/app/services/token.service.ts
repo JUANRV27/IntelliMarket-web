@@ -12,6 +12,10 @@ export class TokenService {
   get email(): string | null { return localStorage.getItem(this.EMAIL_KEY); }
   get role(): string | null { return localStorage.getItem(this.ROLE_KEY); }
 
+  getRole(): string | null {
+    return this.role;
+  }
+
   save(token: string, email: string, role: string) {
     localStorage.setItem(this.TOKEN_KEY, token);
     localStorage.setItem(this.EMAIL_KEY, email);

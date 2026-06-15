@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MarketStateService, Product } from '../../../services/market-state';
 import { DecimalPipe } from '@angular/common';
+import {CartService} from '../../../services/cart.service';
 
 @Component({
   selector: 'app-landing',
@@ -11,6 +12,7 @@ import { DecimalPipe } from '@angular/common';
 })
 export class Landing {
   stateService = inject(MarketStateService);
+  cartService = inject(CartService);
 
   // Filter visible products for display on landing page
   get featuredProducts(): Product[] {
@@ -23,5 +25,9 @@ export class Landing {
 
   scrollToProducts(element: HTMLElement): void {
     element.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  agregarAlCarrito(prod: Product): void {
+    this.cartService.addToCart(prod);
   }
 }

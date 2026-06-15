@@ -16,13 +16,31 @@
 
     <div class="top-bar-right">
       
+      <a routerLink="/catalog" routerLinkActive="active" class="nav-link" style="margin-right: 15px; font-weight: bold; color: #2c3e50; text-decoration: none;">
+        Catálogo
+      </a>
+
+      @if (tokenService.getRole() === 'SELLER') {
+        <a routerLink="/seller/dashboard" class="nav-link" routerLinkActive="active" style="margin-right: 15px; font-weight: bold; color: #2c3e50; text-decoration: none;">
+          Dashboard
+        </a>
+      }
+      
+      <a routerLink="/cart" class="cart-btn" routerLinkActive="active" style="margin-right: 20px;">
+        <span class="icon">🛒</span>
+        @if (cartService.totalItems() > 0) {
+          <span class="cart-badge">{{ cartService.totalItems() }}</span>
+        }
+      </a>
+
       @if (!tokenService.isLoggedIn()) {
         <button class="seller-btn" routerLink="/auth/login">Ingresar</button>
         <a routerLink="/auth/login" title="Acceso">
           <img 
             alt="Avatar" 
             class="avatar" 
-            src="http://localhost:3845/assets/6897de514b470658bd03c50e647fc563112bb87f.svg" 
+            src="assets/default-avatar.svg" 
+            onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=User'"
           />
         </a>
       } 
@@ -42,7 +60,7 @@
 
   <footer class="client-footer">
     <div class="footer-container">
-      <p>© 2023 Bodega de Barrio. Todos los derechos reservados.</p>
+      <p>© 2026 Bodega de Barrio. Todos los derechos reservados.</p>
       <p class="footer-middle">Síguenos en nuestras redes sociales:</p>
       <p class="footer-links">Facebook | Instagram | Twitter</p>
     </div>
