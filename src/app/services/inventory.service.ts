@@ -19,7 +19,7 @@ export class InventoryService {
   private http = inject(HttpClient);
   
   // Ruta base que apunta a tu controlador de inventarios unificado (/api/v1/inventory)
-  private baseUrl = `${environment.apiUrl}/inventory`;
+  private baseUrl = `${environment.apiUrl}/v1/inventory`;
 
   /**
    * US-05: Registrar un nuevo producto
