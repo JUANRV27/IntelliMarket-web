@@ -1,6 +1,6 @@
 [build]
     command = "npm run build" # Comando de compilación
-    publish = "dist/pagoya-web/browser" # Carpeta que se publica
+    publish = "dist/IntelliMarketWeb/browser" # Carpeta que se publica
 [build.environment]
     NODE_VERSION = "22" # Angular 21 necesita Node 20+
 # PROXY DE LA API -> va PRIMERO
