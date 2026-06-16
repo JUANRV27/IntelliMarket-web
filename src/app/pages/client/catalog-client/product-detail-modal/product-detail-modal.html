@@ -28,7 +28,7 @@
           <h3 class="product-name">{{ product?.name }}</h3>
           
           <div class="price-section">
-            <p class="price">S/ {{ product?.price | number:'1.2-2' }}</p>
+            <p class="price">S/ {{ product?.unitPrice | number:'1.2-2' }}</p>
             <span class="stock-badge" [class.low-stock]="product?.stock <= 5">
               Stock: {{ product?.stock || 0 }} unids.
             </span>

@@ -43,7 +43,7 @@ export class CartService {
       const newItem: CartItem = {
         productId: product.id,
         name: product.name,
-        price: product.price,
+        price: product.unitPrice,
         imageUrl: product.imageUrl || 'assets/default-product.png',
         quantity: 1
       };
