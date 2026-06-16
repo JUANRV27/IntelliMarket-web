@@ -1,24 +1,36 @@
 <div class="seller-stock-page animate-fade-in">
+  
   <section class="stock-hero">
-    <button class="btn-back" (click)="goToCatalog()"><- Volver al Catálogo</button>
+    <div class="top-nav-bar">
+      <button class="btn-back" (click)="goToCatalog()">
+        <span class="back-icon">←</span> Volver al Catálogo
+      </button>
+    </div>
+    
     <div class="stock-hero-content">
-      <h2 class="hero-title">Lista de stock de productos</h2>
-      <p class="hero-subtitle">Monitoreo en tiempo real del inventario físico en bodega y almacén.</p>
+      <div class="hero-text-group">
+        <h2 class="hero-title">Lista de Stock de Productos</h2>
+        <p class="hero-subtitle">Monitoreo en tiempo real del inventario físico en bodega y almacén.</p>
+      </div>
       
-      <div class="stock-filters">
-        <button 
-          class="filter-tab-btn" 
-          [class.active]="selectedCategory() === 'Todos'"
-          (click)="setCategory('Todos')"
-        >Todas las categorías</button>
-        
-        <button *ngFor="let cat of categories"
-          class="filter-tab-btn" 
-          [class.active]="selectedCategory() === cat"
-          (click)="setCategory(cat)"
-        >
-          {{ cat }}
-        </button>
+      <div class="stock-filters-container">
+        <div class="stock-filters">
+          <button 
+            class="filter-tab-btn" 
+            [class.active]="selectedCategory() === 'Todos'"
+            (click)="setCategory('Todos')"
+          >
+            📦 Todas las categorías
+          </button>
+          
+          <button *ngFor="let cat of categories"
+            class="filter-tab-btn" 
+            [class.active]="selectedCategory() === cat"
+            (click)="setCategory(cat)"
+          >
+            {{ cat }}
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -34,7 +46,7 @@
       />
     </div>
     <div class="stock-counter">
-      Items en pantalla: <strong>{{ filteredStock().length }}</strong>
+      Items en pantalla: <span class="counter-badge">{{ filteredStock().length }}</span>
     </div>
   </section>
 
@@ -66,7 +78,7 @@
                 <td><strong class="product-name-cell">{{ item.name }}</strong></td>
                 <td><span class="badge-category">{{ item.category }}</span></td>
                 <td><p class="product-desc-cell">{{ item.description }}</p></td>
-                <td class="text-right Math">S/ {{ (item.price || item.unitPrice) | number: '1.2-2' }}</td>
+                <td class="text-right price-cell">S/ {{ (item.price || item.unitPrice) | number: '1.2-2' }}</td>
                 <td class="text-center font-bold">
                   <span class="stock-number">{{ item.stock }}</span>
                 </td>

@@ -13,6 +13,8 @@ export interface CartItem {
   providedIn: 'root'
 })
 export class CartService {
+  // CONSTANTE DE LLAVE DE SEGURIDAD PARA LOCAL STORAGE
+  //private readonly STORAGE_KEY = 'intellimarket.cart_items';
   // Estado reactivo principal
   cartItems = signal<CartItem[]>([]);
 

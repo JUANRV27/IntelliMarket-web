@@ -1,122 +1,314 @@
+/* Base de la Página */
 .seller-stock-page {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 24px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
+
+/* 🏢 HERO SECTION Y NAVEGACIÓN SUPERIOR */
 .stock-hero {
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  color: #fff;
-  padding: 2.5rem;
   border-radius: 16px;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  padding: 28px 32px;
+  color: #ffffff;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-.hero-title { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
-.hero-subtitle { color: #94a3b8; font-size: 1rem; margin-bottom: 1.5rem; }
 
+.top-nav-bar {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 14px;
+}
+
+/* 🔙 BOTÓN VOLVER AL CATÁLOGO OPTIMIZADO */
+.btn-back {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-back:hover {
+  background-color: #ffffff;
+  color: #0f172a;
+  border-color: #ffffff;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.back-icon {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Contenido Interno del Hero */
+.stock-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hero-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+
+.hero-subtitle {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+/* 🗂️ BOTONES DE FILTRADO (Segmented Layout) */
+.stock-filters-container {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.stock-filters-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.stock-filters-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+.stock-filters {
+  display: flex;
+  gap: 8px;
+  background-color: rgba(15, 23, 42, 0.4);
+  padding: 6px;
+  border-radius: 12px;
+  width: fit-content;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-tab-btn {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.filter-tab-btn:hover:not(.active) {
+  color: #f1f5f9;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Estado de Botón Activado Comercial */
+.filter-tab-btn.active {
+  background-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* 🔍 BARRA DE OPERACIONES */
 .stock-ops-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
+  gap: 16px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.search-box {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.search-box input {
+  width: 100%;
+  height: 40px;
+  padding: 0 16px 0 40px;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #0f172a;
+  transition: all 0.15s ease;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.stock-counter {
+  font-size: 13px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.counter-badge {
+  background-color: #e2e8f0;
+  color: #334155;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* 📊 TABLA DE INVENTARIO PREMIUM */
+.stock-table-section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
 }
 
 .table-container {
-  background: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
 }
+
 .premium-stock-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.95rem;
+  font-size: 14px;
 }
+
 .premium-stock-table th {
-  background: #f8fafc;
-  padding: 1rem 1.5rem;
-  color: #64748b;
-  font-weight: 600;
-  border-bottom: 2px solid #e2e8f0;
-}
-.premium-stock-table td {
-  padding: 1.2rem 1.5rem;
-  border-bottom: 1px solid #f1f5f9;
-  color: #334155;
-  vertical-align: middle;
-}
-.stock-row:hover { background-color: #f8fafc; }
-
-/* Indicadores de Almacén */
-.stock-indicator-pill {
-  padding: 0.35rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  display: inline-block;
-}
-.status-danger { background: #fee2e2; color: #ef4444; }
-.status-warning { background: #fef3c7; color: #d97706; }
-.status-success { background: #dcfce7; color: #22c55e; }
-
-.text-right { text-align: right; }
-.text-center { text-align: center; }
-.font-bold { font-weight: 700; }
-
-/* Contenedor principal */
-.stock-container {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  padding: 25px;
-  border: 1px solid #e2e8f0;
-  margin-top: 20px;
-}
-
-/* Tabla moderna */
-.stock-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.stock-table th {
   background-color: #f8fafc;
   color: #475569;
   font-weight: 600;
-  padding: 16px;
-  border-bottom: 2px solid #cbd5e1;
+  padding: 14px 20px;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.stock-table td {
-  padding: 16px;
-  border-bottom: 1px solid #e2e8f0; /* La línea separadora mágica */
-  color: #1e293b;
+.stock-row {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.stock-row:hover {
+  background-color: #f8fafc;
+}
+
+.stock-row td {
+  padding: 14px 20px;
   vertical-align: middle;
+  color: #334155;
 }
 
-/* Efecto hover en las filas */
-.stock-table tbody tr:hover {
+/* Badges Internos */
+.badge-id {
   background-color: #f1f5f9;
-  transition: background-color 0.2s ease;
+  color: #64748b;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-/* Etiquetas de estado (Opcional) */
-.badge-ok {
-  background: #dcfce7;
-  color: #166534;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.85rem;
+.product-name-cell {
+  color: #0f172a;
+  font-size: 14px;
 }
 
-.badge-low {
-  background: #fee2e2;
-  color: #991b1b;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.85rem;
+.badge-category {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.product-desc-cell {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.price-cell {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.stock-number {
+  font-size: 14px;
+  color: #0f172a;
+}
+
+/* 💊 PASTILLAS DE ESTADO DE ALMACÉN */
+.stock-indicator-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 70px;
+}
+
+.status-warning {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.status-success {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+/* Estado extra por si baja de 5 */
+.status-danger {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+/* Animación Suave */
+.animate-fade-in {
+  animation: fadeIn 0.35s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
