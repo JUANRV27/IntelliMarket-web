@@ -11,7 +11,7 @@ import { Category } from '../../../models/category-products';
 @Component({
   selector: 'app-catalog-client',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ProductDetailModal],
+  imports: [CommonModule, FormsModule, ProductDetailModal],
   templateUrl: './catalog-client.html',
   styleUrl: './catalog-client.css'
 })
@@ -32,15 +32,6 @@ export class CatalogClient implements OnInit {
   selectedProduct = signal<any>(null);
   isModalOpen = signal(false);
 
-  // Lista de categorías únicas para los botones de filtro
-  /*categories: Category[] = [
-    { id: 'todos', name: 'Todos' },
-    { id: 'abarrotes', name: 'Abarrotes' },
-    { id: 'bebidas', name: 'Bebidas' },
-    { id: 'lácteos', name: 'Lácteos' },
-    { id: 'limpieza', name: 'Limpieza' },
-    { id: 'otros', name: 'Otros' }
-  ];*/
   public categories = Object.values(Category);
 
   ngOnInit() {
@@ -74,11 +65,15 @@ export class CatalogClient implements OnInit {
     const allProducts = this.products();
 
     return allProducts.filter(product => {
+      // Normalizamos accesos por compatibilidad backend/local
       const productName = product.name || product.nombre || '';
       const productCategory = product.category || product.categoria || '';
 
-      const matchesSearch = product.name.toLowerCase().includes(query);
-      const matchesCategory = category === 'Todos' || product.category === category;
+      // 1. Validar coincidencia de texto
+      const matchesSearch = productName.toLowerCase().includes(query);
+
+      // 2. Validar coincidencia de categoría comercial ('Todos' ignora este filtro)
+      const matchesCategory = category === 'Todos' || productCategory === category;
 
       return matchesSearch && matchesCategory;
     });

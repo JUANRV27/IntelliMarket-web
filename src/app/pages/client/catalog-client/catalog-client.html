@@ -15,6 +15,12 @@
     </div>
 
     <div class="catalog-filters">
+      <button 
+        class="filter-btn"
+        [class.active]="selectedCategory() === 'Todos'"
+        (click)="seleccionarCategoria('Todos')">
+        Todas
+      </button>
       @for (cat of categories; track cat) {
         <button 
           class="filter-btn"
