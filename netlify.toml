@@ -1,0 +1,18 @@
+[build]
+    command = "npm run build" # Comando de compilación
+    publish = "dist/pagoya-web/browser" # Carpeta que se publica
+[build.environment]
+    NODE_VERSION = "22" # Angular 21 necesita Node 20+
+# PROXY DE LA API -> va PRIMERO
+# La app llama a /api y Netlify reenvía /api/* al backend en Render.
+[[redirects]]
+    from = "/api/*"
+    to = "https://pagoya-api-5q7k.onrender.com/api/:splat"
+    status = 200
+    force = true
+# FALLBACK SPA -> va AL FINAL
+# Cualquier ruta no-archivo sirve index.html (routing de Angular).
+[[redirects]]
+    from = "/*"
+    to = "/index.html"
+    status = 200
