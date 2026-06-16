@@ -1,7 +1,9 @@
 .reviews-page {
-  padding: 40px 170px;
-  max-width: 1440px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 40px 24px;
+  overflow-x: hidden;
 }
 
 .reviews-header-nav {
@@ -119,8 +121,8 @@
 
 .reviews-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
 }
 
 .review-item-card {
@@ -180,11 +182,12 @@
 
 @media (max-width: 1024px) {
   .reviews-page {
-    padding: 30px 40px;
+    padding: 30px 20px;
   }
-  
+
   .reviews-container {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
 }
 
