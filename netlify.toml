@@ -7,7 +7,7 @@
 # La app llama a /api y Netlify reenvía /api/* al backend en Render.
 [[redirects]]
     from = "/api/*"
-    to = "https://pagoya-api-5q7k.onrender.com/api/:splat"
+    to = "https://intellimarket-api.onrender.com/:splat"
     status = 200
     force = true
 # FALLBACK SPA -> va AL FINAL
