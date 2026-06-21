@@ -5,22 +5,58 @@
     
     <div class="form-group">
       <label>Nombre</label>
-      <input type="text" name="firstName" [(ngModel)]="firstName" placeholder="Tu nombre" required>
+      <input type="text" 
+      name="firstName" 
+      [(ngModel)]="firstName" 
+      placeholder="Tu nombre" 
+      #firstNameInput="ngModel"
+      [class.input-error]="firstNameInput.invalid && firstNameInput.touched"
+      required>
+      @if (firstNameInput.invalid && firstNameInput.touched) {
+        <span class="error-hint">Este campo es obligatorio.</span>
+      }
     </div>
 
     <div class="form-group">
       <label>Apellido</label>
-      <input type="text" name="lastName" [(ngModel)]="lastName" placeholder="Tu apellido" required>
+      <input type="text" 
+      name="lastName" 
+      [(ngModel)]="lastName" 
+      placeholder="Tu apellido" 
+      #lastNameInput="ngModel"
+      [class.input-error]="lastNameInput.invalid && lastNameInput.touched"
+      required>
+      @if (lastNameInput.invalid && lastNameInput.touched) {
+        <span class="error-hint">Este campo es obligatorio.</span>
+      }
     </div>
 
     <div class="form-group">
       <label>Correo Electrónico</label>
-      <input type="email" name="email" [(ngModel)]="email" placeholder="ejemplo@correo.com" required>
+      <input type="email" 
+      name="email" 
+      [(ngModel)]="email" 
+      placeholder="ejemplo@correo.com" 
+      #emailInput="ngModel"
+      [class.input-error]="emailInput.invalid && emailInput.touched"
+      required>
+      @if (emailInput.invalid && emailInput.touched) {
+        <span class="error-hint">Este campo es obligatorio.</span>
+      }
     </div>
     
     <div class="form-group">
       <label>Contraseña</label>
-      <input type="password" name="password" [(ngModel)]="password" placeholder="••••••••" required>
+      <input type="password" 
+      name="password" 
+      [(ngModel)]="password" 
+      placeholder="••••••••" 
+      #passwordInput="ngModel"
+      [class.input-error]="passwordInput.invalid && passwordInput.touched"
+      required>
+      @if (passwordInput.invalid && passwordInput.touched) {
+        <span class="error-hint">Este campo es obligatorio.</span>
+      }
     </div>
     
     <button type="submit" class="btn-primary">Crear Cuenta</button>

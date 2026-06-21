@@ -47,11 +47,24 @@ export class ProfileEdit implements OnInit {
   }
 
   onGuardar() {
+    if (!this.phone.trim()) {
+      alert('El número de teléfono es obligatorio.');
+      return;
+    }
+
     const esVendedor = this.userRole === 'SELLER' || this.userRole === 'ROLE_SELLER';
 
     const updateRequest = esVendedor
-      ? this.profileService.updateOwnerProfile({ phone: this.phone, dni: this.dni })
-      : this.profileService.updateCustomerProfile({ phone: this.phone, address: this.address });
+      /*? this.profileService.updateOwnerProfile({ phone: this.phone, dni: this.dni })
+      : this.profileService.updateCustomerProfile({ phone: this.phone, address: this.address });*/
+      ? this.profileService.updateOwnerProfile({
+        phone: this.phone.trim(),
+        dni: this.dni.trim() || undefined   // Si está vacío, no mandarlo
+      })
+      : this.profileService.updateCustomerProfile({
+          phone: this.phone.trim(),
+          address: this.address.trim() || undefined
+      });
 
     updateRequest.subscribe({
       next: () => {

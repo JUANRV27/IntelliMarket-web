@@ -24,7 +24,11 @@ export class TokenService {
   }
 
   clear() {
-    localStorage.clear();
+    // Limpiar solo datos de sesión, NO el carrito
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.EMAIL_KEY);
+    localStorage.removeItem(this.ROLE_KEY);
+    // Nota: NO limpiamos 'intellimarket.cart_items' para que persista el carrito
     this.isLoggedIn.set(false);
   }
 }

@@ -14,7 +14,8 @@ export interface CartItem {
 })
 export class CartService {
   // CONSTANTE DE LLAVE DE SEGURIDAD PARA LOCAL STORAGE
-  //private readonly STORAGE_KEY = 'intellimarket.cart_items';
+  private readonly STORAGE_KEY = 'intellimarket.cart_items';
+
   // Estado reactivo principal
   cartItems = signal<CartItem[]>([]);
 
@@ -26,6 +27,39 @@ export class CartService {
   totalPrice = computed(() => 
     this.cartItems().reduce((acc, item) => acc + (item.price * item.quantity), 0)
   );
+
+  constructor() {
+    // Cargar el carrito guardado al inicializar el servicio
+    this.loadCartFromStorage();
+  }
+
+  /**
+   * Carga el carrito desde localStorage
+   */
+  private loadCartFromStorage() {
+    try {
+      const savedCart = localStorage.getItem(this.STORAGE_KEY);
+      if (savedCart) {
+        const items = JSON.parse(savedCart);
+        this.cartItems.set(items);
+        console.log('✅ Carrito cargado desde localStorage:', items);
+      }
+    } catch (error) {
+      console.warn('Error al cargar carrito desde localStorage:', error);
+    }
+  }
+
+  /**
+   * Guarda el carrito en localStorage
+   */
+  private saveCartToStorage() {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.cartItems()));
+      console.log('✅ Carrito guardado en localStorage');
+    } catch (error) {
+      console.warn('Error al guardar carrito en localStorage:', error);
+    }
+  }
 
   addToCart(product: any) {
     this.cartItems.update(items => {
@@ -45,21 +79,38 @@ export class CartService {
       const newItem: CartItem = {
         productId: product.id,
         name: product.name,
-        price: product.unitPrice,
+        price: product.unitPrice || product.price,
         imageUrl: product.imageUrl || 'assets/default-product.png',
         quantity: 1
       };
       
       return [...items, newItem];
     });
+
+    // Guardar en localStorage después de agregar
+    this.saveCartToStorage();
   }
 
   removeFromCart(productId: string) {
     // Filtramos el array para dejar fuera al producto que queremos eliminar
     this.cartItems.update(items => items.filter(item => item.productId !== productId));
+    
+    // Guardar en localStorage después de eliminar
+    this.saveCartToStorage();
   }
 
   clearCart() {
     this.cartItems.set([]);
+    
+    // Guardar en localStorage (vaciar)
+    this.saveCartToStorage();
+  }
+
+  /**
+   * Recarga el carrito desde localStorage
+   * Útil cuando el usuario inicia sesión
+   */
+  reloadCartFromStorage() {
+    this.loadCartFromStorage();
   }
 }

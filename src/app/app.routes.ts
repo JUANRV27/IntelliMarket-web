@@ -28,7 +28,7 @@ import { StoreSettings } from './pages/store/store-settings/store-settings';
 
 export const routes: Routes = [
   // 1. MÓDULO DE AUTENTICACIÓN (Público - Solo entran si NO tienen sesión)
-  {
+  /*{
     path: 'auth',
     component: AuthLayout,
     children: [
@@ -36,14 +36,33 @@ export const routes: Routes = [
       { path: 'register/customer', component: RegisterCustomer, canActivate: [publicGuard] },
       { path: 'register/seller', component: RegisterSeller, canActivate: [publicGuard] }
     ]
+  },*/
+  // 1. AUTH — lazy, solo carga si el usuario va a /auth
+  {
+    path: 'auth',
+    loadComponent: () => import('./shared/layouts/auth-layout/auth-layout').then(m => m.AuthLayout),
+    children: [
+      { path: 'login',              canActivate: [publicGuard], loadComponent: () => import('./pages/auth/login/login').then(m => m.Login) },
+      { path: 'register/customer',  canActivate: [publicGuard], loadComponent: () => import('./pages/auth/register/register-customer/register-customer').then(m => m.RegisterCustomer) },
+      { path: 'register/seller',    canActivate: [publicGuard], loadComponent: () => import('./pages/auth/register/register-seller/register-seller').then(m => m.RegisterSeller) }
+    ]
   },
 
   // Módulo compartido de perfiles básicos (Privado - Solo con sesión)
-  { path: 'profile', component: ProfileDetail, canActivate: [authGuard] },
-  { path: 'profile/edit', component: ProfileEdit, canActivate: [authGuard] },
+  /*{ path: 'profile', component: ProfileDetail, canActivate: [authGuard] },
+  { path: 'profile/edit', component: ProfileEdit, canActivate: [authGuard] },*/
+   // 2. PROFILE — rutas hijas bajo /profile
+  {
+    path: 'profile',
+    canActivate: [authGuard],
+    children: [
+      { path: '',     loadComponent: () => import('./pages/profile/detail/detail').then(m => m.ProfileDetail) },
+      { path: 'edit', loadComponent: () => import('./pages/profile/edit/edit').then(m => m.ProfileEdit) }
+    ]
+  },
   
   // 2. MÓDULO PRIVADO DEL VENDEDOR (Protegido por authGuard)
-  {
+  /*{
     path: 'seller',
     component: LayoutSeller,
     canActivate: [authGuard], 
@@ -57,10 +76,38 @@ export const routes: Routes = [
       { path: 'stock', component: StockSeller },
       { path: 'settings', component: StoreSettings }
     ]
+  },*/
+
+  {
+    path: 'seller',
+    canActivate: [authGuard],
+    loadComponent: () => import('./layouts/layout-seller/layout-seller').then(m => m.LayoutSeller),
+    children: [
+      { path: 'catalog',       loadComponent: () => import('./pages/seller/catalog-seller/catalog-seller').then(m => m.CatalogSeller) },
+      { path: 'product/:id',   loadComponent: () => import('./pages/seller/product-detail-seller/product-detail-seller').then(m => m.ProductDetailSeller) },
+      { path: 'profile',       loadComponent: () => import('./pages/seller/profile-seller/profile-seller').then(m => m.ProfileSeller) },
+      { path: 'stock',         loadComponent: () => import('./pages/inventory/stock/stock-seller').then(m => m.StockSeller) },
+      { path: 'store/create',  loadComponent: () => import('./pages/store/store-form/store-form').then(m => m.StoreFormComponent) },
+      { path: 'settings',      loadComponent: () => import('./pages/store/store-settings/store-settings').then(m => m.StoreSettings) },
+      // Inventario usa su propio archivo de rutas hijas (ya estaba bien hecho)
+      { path: 'inventory',     loadChildren: () => import('./pages/inventory/inventory.routes').then(m => m.INVENTORY_ROUTES) }
+    ]
+  },
+  // 4. CLIENTE / PÚBLICO — lazy layout + rutas hijas
+  {
+    path: '',
+    loadComponent: () => import('./layouts/main-layout/layout-client').then(m => m.LayoutClient),
+    children: [
+      { path: '',              loadComponent: () => import('./pages/client/landing/landing').then(m => m.Landing) },
+      { path: 'reviews',       loadComponent: () => import('./pages/client/reviews/reviews').then(m => m.Reviews) },
+      { path: 'catalog',       loadComponent: () => import('./pages/client/catalog-client/catalog-client').then(m => m.CatalogClient) },
+      { path: 'cart',          loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent) },
+      { path: 'join-as-seller', loadComponent: () => import('./pages/seller/landing-seller/landing-seller').then(m => m.LandingSeller) }
+    ]
   },
 
   // 3. MÓDULO PÚBLICO / CLIENTE (Ruta raíz principal)
-  {
+  /*{
     path: '',
     component: LayoutClient,
     children: [
@@ -72,7 +119,7 @@ export const routes: Routes = [
       { path: 'catalog', component: CatalogClient },
       { path: 'cart', component: CartComponent }
     ]
-  },
+  },*/
 
   // 4. RUTAS COMODÍN (Si escriben algo que no existe, los mandamos al inicio)
   { path: '**', redirectTo: '' }

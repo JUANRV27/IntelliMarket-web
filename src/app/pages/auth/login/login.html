@@ -5,12 +5,32 @@
     
     <div class="form-group">
       <label>Correo Electrónico</label>
-      <input type="email" name="email" [(ngModel)]="email" (ngModelChange)="ocultarError()" placeholder="ejemplo@correo.com" required>
+      <input type="email" 
+      name="email" 
+      [(ngModel)]="email" 
+      (ngModelChange)="ocultarError()" 
+      placeholder="ejemplo@correo.com" 
+      required
+      #emailInput="ngModel"
+      [class.input-error]="emailInput.invalid && emailInput.touched">
+      @if (emailInput.invalid && emailInput.touched) {
+        <span class="error-hint">Este campo es obligatorio.</span>
+      }
     </div>
     
     <div class="form-group">
       <label>Contraseña</label>
-      <input type="password" name="password" [(ngModel)]="password" (ngModelChange)="ocultarError()" placeholder="••••••••" required>
+      <input type="password" 
+      name="password" 
+      [(ngModel)]="password" 
+      (ngModelChange)="ocultarError()" 
+      placeholder="••••••••" 
+      required
+      #passwordInput="ngModel"
+      [class.input-error]="passwordInput.invalid && passwordInput.touched">
+      @if (passwordInput.invalid && passwordInput.touched) {
+        <span class="error-hint">Este campo es obligatorio.</span>
+      }
     </div>
     
     <button type="submit" class="btn-primary">Entrar a mi cuenta</button>
