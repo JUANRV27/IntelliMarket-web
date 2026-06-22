@@ -22,6 +22,8 @@ export class FormComponent implements OnInit {
   public isEditMode: boolean = false;
   private productId: string | null = null;
   public storeId: string = '1'; // ID simulado de la tienda activa del vendedor
+  // Variable para almacenar y renderizar la previsualización en la interfaz
+  public imagePreview: string | null = null;
   
 
   // Enumeración de Category de productos
@@ -66,8 +68,36 @@ export class FormComponent implements OnInit {
       category: ['', [Validators.required]],
       description: ['', [Validators.required, Validators.maxLength(130)]],
       price: [null, [Validators.required, Validators.min(0.10), Validators.max(200.00)]],
-      stock: [null, [Validators.required, Validators.min(0)]]
+      stock: [null, [Validators.required, Validators.min(0)]],
+      imageUrl: ['', [Validators.required]]
     });
+  }
+
+  // Abre el explorador, lee la imagen y la inyecta al Reactive Form
+  public onFileSelected(event: Event): void {
+    const element = event.currentTarget as HTMLInputElement;
+    const files = element.files;
+
+    if (files && files.length > 0) {
+      const file = files[0];
+
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecciona un archivo de imagen válido.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        
+        this.imagePreview = base64String; // Actualiza la vista previa en el HTML
+        
+        // Setea el valor en el control reactivo y marca el control como tocado
+        this.productForm.get('imageUrl')?.setValue(base64String);
+        this.productForm.get('imageUrl')?.markAsTouched();
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   private preloadProductData(productId: string): void {
@@ -81,8 +111,12 @@ export class FormComponent implements OnInit {
             category: productToEdit.category,
             description: productToEdit.description,
             price: productToEdit.price, // Mapeado correctamente desde tu DTO aplanado
-            stock: productToEdit.stock
+            imageUrl: productToEdit.imageUrl // Mapeado correctamente desde tu DTO aplanado
           });
+
+          if (productToEdit.imageUrl) {
+            this.imagePreview = productToEdit.imageUrl;
+          }
         }
       },
       error: (err) => console.error('Error al precargar los datos del producto:', err)
