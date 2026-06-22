@@ -101,13 +101,46 @@
           </div>
 
           <div class="form-input-group">
-            <label>... {{ isEditing() ? 'Stock Actual' : 'Stock Inicial' }}</label>
+            <label>{{ isEditing() ? 'Stock Actual' : 'Stock Inicial' }}</label>
             <input type="number" class="form-field" [ngModel]="newProdStock()" (ngModelChange)="newProdStock.set($event)" />
           </div>
 
           <div class="form-input-group">
             <label>Descripción</label>
             <textarea class="form-field" [ngModel]="newProdDescription()" (ngModelChange)="newProdDescription.set($event)"></textarea>
+          </div>
+
+          <div class="form-input-group">
+            <label>Imagen del Producto</label>
+            
+            <input 
+              type="file" 
+              id="modalFileInput" 
+              accept="image/*" 
+              (change)="onFileSelected($event)" 
+              #fileInputBrowser 
+              style="display: none;"
+            >
+            
+            <button 
+              type="button" 
+              class="btn btn-secondary" 
+              style="display: block; width: 100%; margin-top: 4px; background-color: #64748b; color: white; padding: 8px; border-radius: 6px; border: none; cursor: pointer;"
+              (click)="fileInputBrowser.click()"
+            >
+              📂 Seleccionar Imagen desde Equipo
+            </button>
+
+            @if (newProdImageUrl()) {
+              <div class="preview-box" style="margin-top: 12px; text-align: center;">
+                <span style="font-size: 11px; color: #64748b; display: block; margin-bottom: 4px;">Vista previa actual:</span>
+                <img 
+                  [src]="newProdImageUrl()" 
+                  alt="Preview image" 
+                  style="max-height: 140px; max-width: 100%; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 4px;"
+                >
+              </div>
+            }
           </div>
         </div>
 

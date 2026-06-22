@@ -33,6 +33,8 @@ export class CatalogSeller implements OnInit {
   newProdStock = signal<number>(10); // Campo necesario para la US-05
   newProdCategory = signal<Category>(Category.ELECTRONICA);
 
+  newProdImageUrl = signal<string>('');
+
   private router = inject(Router);
   // 💡 Mapeamos los valores del Enum dinámicamente para que tu HTML los renderice sin cambios
   public categories = Object.values(Category);
@@ -108,9 +110,33 @@ export class CatalogSeller implements OnInit {
     this.newProdDescription.set(product.description);
     this.newProdStock.set(product.stock);
     this.newProdCategory.set(product.category);
+    this.newProdImageUrl.set(product.imageUrl);
     
     // Abrimos el modal
     this.showAddModal.set(true);
+  }
+
+  // Captura el archivo físico de la máquina y lo transforma a Base64
+  onFileSelected(event: Event): void {
+    const element = event.currentTarget as HTMLInputElement;
+    const files = element.files;
+
+    if (files && files.length > 0) {
+      const file = files[0];
+
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecciona un archivo de imagen válido (PNG, JPG, JPEG).');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        // Seteamos la señal con la cadena de texto de la imagen
+        this.newProdImageUrl.set(base64String); 
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   // 3. Modifica tu método closeModal para limpiar los estados de edición
@@ -134,7 +160,7 @@ export class CatalogSeller implements OnInit {
       description: this.newProdDescription(),
       unitPrice: this.newProdPrice() || 0,
       stock: this.newProdStock(),
-      imageUrl: 'https://via.placeholder.com/150' // Puedes agregar un campo para URL de imagen si quieres
+      imageUrl: this.newProdImageUrl() || 'https://via.placeholder.com/150' // Puedes agregar un campo para URL de imagen si quieres
     };
 
     if (this.isEditing()) {
@@ -176,6 +202,7 @@ export class CatalogSeller implements OnInit {
     this.newProdDescription.set('');
     this.newProdStock.set(10);
     this.newProdCategory.set(Category.ELECTRONICA);
+    this.newProdImageUrl.set('');
   }
 
   goToSettingsView(): void {
