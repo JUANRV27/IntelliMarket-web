@@ -48,6 +48,15 @@
       <div class="card-grid">
         @for (prod of filteredProducts(); track prod.id) {
           <div class="premium-card catalog-product-card">
+
+            <div class="card-image-wrapper" style="width: 100%; height: 150px; min-height: 150px; background-color: #f8fafc; display: flex; align-items: center; justify-content: center; border-top-left-radius: 12px; border-top-right-radius: 12px; overflow: hidden; border-bottom: 1px solid #e2e8f0;">
+              <img 
+                [src]="prod.imageUrl || 'https://via.placeholder.com/150'" 
+                alt="Imagen de {{ prod.name }}" 
+                style="max-width: 100%; max-height: 100%; object-fit: contain; display: block; padding: 8px;"
+              >
+            </div>
+
             <div class="card-content">
               <h4 class="card-title">{{ prod.name }}</h4>
               <p>{{ prod.description }}</p>
