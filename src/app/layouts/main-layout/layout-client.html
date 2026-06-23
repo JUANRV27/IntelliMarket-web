@@ -1,68 +1,51 @@
-<div class="layout-client-container">
-  <header class="top-bar">
-    <div class="top-bar-logo">
-      <button class="menu-icon-btn" routerLink="/">☰</button>
-      <h1 routerLink="/" style="cursor: pointer;">IntelliMarket</h1>
-    </div>
+<header class="main-navbar">
+  <div class="nav-left">
+    <a routerLink="/" class="nav-logo">IntelliMarket</a>
+    <a routerLink="/catalog" class="nav-link">Catálogo</a>
+  </div>
 
-    <div class="top-bar-search">
-      <span class="search-icon">🔍</span>
-      <input 
-        type="text" 
-        placeholder="Buscar productos en tu bodega local..." 
-        (input)="onSearch($event)"
-      />
-    </div>
-
-    <div class="top-bar-right">
-      
-      <a routerLink="/catalog" routerLinkActive="active" class="nav-link" style="margin-right: 15px; font-weight: bold; color: #2c3e50; text-decoration: none;">
-        Catálogo
-      </a>
-
-      @if (tokenService.getRole() === 'SELLER') {
-        <a routerLink="/seller/dashboard" class="nav-link" routerLinkActive="active" style="margin-right: 15px; font-weight: bold; color: #2c3e50; text-decoration: none;">
-          Dashboard
-        </a>
+  <div class="nav-right">
+    <a routerLink="/cart" class="cart-btn" title="Carrito de compras">
+      <span class="cart-icon">🛒</span>
+      @if (cartService.totalItems() > 0) {
+        <span class="cart-badge">{{ cartService.totalItems() }}</span>
       }
-      
-      <a routerLink="/cart" class="cart-btn" routerLinkActive="active" style="margin-right: 20px;">
-        <span class="icon">🛒</span>
-        @if (cartService.totalItems() > 0) {
-          <span class="cart-badge">{{ cartService.totalItems() }}</span>
+    </a>
+
+    @if (!tokenService.isLoggedIn()) {
+      <a routerLink="/auth/login" class="btn-login">Iniciar Sesión</a>
+    } @else {
+      <div class="user-menu-container">
+        
+        @if (menuAbierto()) {
+          <div class="menu-overlay" (click)="cerrarMenu()"></div>
         }
-      </a>
 
-      @if (!tokenService.isLoggedIn()) {
-        <button class="seller-btn" routerLink="/auth/login">Ingresar</button>
-        <a routerLink="/auth/login" title="Acceso">
-          <img 
-            alt="Avatar" 
-            class="avatar" 
-            src="assets/default-avatar.svg" 
-            onerror="this.src='https://api.dicebear.com/7.x/initials/svg?seed=User'"
-          />
-        </a>
-      } 
-      @else {
-        <button class="seller-btn profile-btn" routerLink="/profile">Mi Perfil</button>
-        <button class="logout-btn" (click)="onLogout()" title="Cerrar Sesión">
-          Cerrar Sesión
+        <button class="avatar-circle-btn" (click)="toggleMenu()" title="Mi cuenta">
+          <div class="avatar-circle">
+            <span class="avatar-icon">👤</span>
+          </div>
         </button>
-      }
 
-    </div>
-  </header>
+        @if (menuAbierto()) {
+          <div class="user-dropdown-menu">
+            <a routerLink="/profile" class="dropdown-item" (click)="cerrarMenu()">
+              👤 Mi Perfil
+            </a>
+            <a routerLink="/history" class="dropdown-item" (click)="cerrarMenu()">
+              📦 Historial de Compras
+            </a>
+            <hr class="dropdown-divider">
+            <button class="dropdown-item logout-item" (click)="onLogout()">
+              🚪 Cerrar Sesión
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</header>
 
-  <main class="client-main-content">
-    <router-outlet></router-outlet>
-  </main>
-
-  <footer class="client-footer">
-    <div class="footer-container">
-      <p>© 2026 Bodega de Barrio. Todos los derechos reservados.</p>
-      <p class="footer-middle">Síguenos en nuestras redes sociales:</p>
-      <p class="footer-links">Facebook | Instagram | Twitter</p>
-    </div>
-  </footer>
-</div>
+<main class="layout-content">
+  <router-outlet></router-outlet>
+</main>

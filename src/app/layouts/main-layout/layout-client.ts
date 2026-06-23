@@ -1,36 +1,37 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet, RouterLink, Router, RouterLinkActive } from '@angular/router';
-import { MarketStateService } from '../../services/market-state';
-import { TokenService } from '../../services/token.service';
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { CartService } from '../../services/cart.service'; // Ajusta la ruta si es necesario
+import { CartService } from '../../services/cart.service';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-layout-client',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  standalone: true,
+  imports: [RouterModule],
   templateUrl: './layout-client.html',
-  styleUrl: './layout-client.css'
+  styleUrls: ['./layout-client.css']
 })
 export class LayoutClient {
-  router = inject(Router);
-  stateService = inject(MarketStateService);
-  
-  // Inyectamos el servicio de manera pública
+  authService = inject(AuthService);
   cartService = inject(CartService);
-
-  // Inyectamos los servicios de seguridad para el Navbar
   tokenService = inject(TokenService);
-  private authService = inject(AuthService);
+  router = inject(Router);
 
-  onSearch(event: any): void {
-    console.log('Search query:', event.target.value);
+  // Señal para controlar la apertura del menú desplegable
+  menuAbierto = signal(false);
+
+  toggleMenu(): void {
+    this.menuAbierto.update(v => !v);
   }
 
-  // Método para cerrar sesión y volver al inicio
+  cerrarMenu(): void {
+    this.menuAbierto.set(false);
+  }
+
   onLogout(): void {
-    this.cartService.clearCart(); // Limpiar el carrito al cerrar sesión
+    this.cerrarMenu();
+    this.cartService.clearCart();
     this.authService.logout();
     this.router.navigate(['/']);
   }
 }
-

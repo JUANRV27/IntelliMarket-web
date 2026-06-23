@@ -1,0 +1,52 @@
+<div class="history-container">
+  <h2>Mi Historial de Compras</h2>
+
+  <div class="filters-card">
+    <div class="filter-group">
+      <label>Desde:</label>
+      <input type="date" [ngModel]="startDate()" (ngModelChange)="startDate.set($event)">
+    </div>
+    <div class="filter-group">
+      <label>Hasta:</label>
+      <input type="date" [ngModel]="endDate()" (ngModelChange)="endDate.set($event)">
+    </div>
+    <button class="btn-clear" (click)="startDate.set(''); endDate.set('')">Limpiar Filtros</button>
+  </div>
+
+  <div class="orders-list">
+    @if (filteredOrders().length === 0) {
+      <div class="empty-state">No se encontraron compras en estas fechas.</div>
+    } @else {
+      @for (order of filteredOrders(); track order.id) {
+        <div class="order-card">
+          <div class="order-header">
+            <span class="order-id">{{ order.id }}</span>
+            <span class="order-date">{{ order.date }}</span>
+          </div>
+          <div class="order-body">
+            <p><strong>Tienda:</strong> {{ order.store }}</p>
+            <div class="order-products-detail">
+              <p class="detail-title">Productos:</p>
+              <ul>
+                @for (prod of order.products; track prod.id) {
+                  <li>
+                    <span class="prod-name">{{ prod.productName }}</span> 
+                    <span class="prod-qty">x{{ prod.quantity }}</span>
+                    <span class="prod-sub">S/ {{ prod.subtotal | number:'1.2-2' }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+            
+            <p class="order-total">Total: S/ {{ order.total | number:'1.2-2' }}</p>
+          </div>
+          <div class="order-footer">
+            <span class="status-badge" [class.status-transit]="order.status === 'En camino'">
+              {{ order.status }}
+            </span>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>
