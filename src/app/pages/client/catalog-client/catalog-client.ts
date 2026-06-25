@@ -1,13 +1,12 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { InventoryService } from '../../../services/inventory.service';
-import { MarketStateService } from '../../../services/market-state';
 import { CartService } from '../../../services/cart.service';
 import { ProductDetailModal } from '../catalog-client/product-detail-modal/product-detail-modal';
-// Importar Category de category-products.ts de models
 import { Category } from '../../../models/category-products';
+import { ProductsResponse } from '../../../models/products-response';
+
 @Component({
   selector: 'app-catalog-client',
   standalone: true,
@@ -17,64 +16,52 @@ import { Category } from '../../../models/category-products';
 })
 export class CatalogClient implements OnInit {
   private inventoryService = inject(InventoryService);
-  private marketStateService = inject(MarketStateService);
   private cartService = inject(CartService);
 
-  // Estados para los filtros y búsqueda
   searchQuery = signal('');
   selectedCategory = signal('Todos');
-  
-  // Lista raw de productos que traeremos del backend o local
-  products = signal<any[]>([]);
+
+  products = signal<ProductsResponse[]>([]);
   loading = signal(true);
 
-  // Estado del modal
-  selectedProduct = signal<any>(null);
+  selectedProduct = signal<ProductsResponse | null>(null);
   isModalOpen = signal(false);
 
   public categories = Object.values(Category);
 
   ngOnInit() {
     this.cargarProductos();
+    this.inicializarCarrito();
   }
 
   cargarProductos() {
     this.loading.set(true);
 
-    // Cargamos productos de TODAS las tiendas
     this.inventoryService.getAllProductsFromAllStores().subscribe({
-      next: (data: any[]) => {
-        // Si el backend responde con éxito, usamos sus productos reales
+      next: (data: ProductsResponse[]) => {
+        console.log('📡 DATOS DEL BACKEND (con storeId real):', data);
         this.products.set(data);
         this.loading.set(false);
       },
       error: (err) => {
-        console.warn('Backend offline o sin tiendas. Usando productos locales por defecto.', err);
-        // FALLBACK: Si falla el backend, cargamos los productos estáticos del MarketState
-        const locales = this.marketStateService.products().filter(p => p.isVisible);
-        this.products.set(locales);
+        console.error('Error al cargar el inventario global:', err);
         this.loading.set(false);
       }
     });
   }
 
-  // Lógica de filtrado en tiempo real con computed (reciclada del vendedor)
+  inicializarCarrito() {
+    this.cartService.loadCartFromBackend().subscribe();
+  }
+
   filteredProducts = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     const category = this.selectedCategory();
-    const allProducts = this.products();
 
-    return allProducts.filter(product => {
-      // Normalizamos accesos por compatibilidad backend/local
-      const productName = product.name || product.nombre || '';
-      const productCategory = product.category || product.categoria || '';
-
-      // 1. Validar coincidencia de texto
-      const matchesSearch = productName.toLowerCase().includes(query);
-
-      // 2. Validar coincidencia de categoría comercial ('Todos' ignora este filtro)
-      const matchesCategory = category === 'Todos' || productCategory === category;
-
+    return this.products().filter(prod => {
+      if (!prod) return false;
+      const matchesSearch = prod.name?.toLowerCase().includes(query) || false;
+      const matchesCategory = category === 'Todos' || prod.category === category;
       return matchesSearch && matchesCategory;
     });
   });
@@ -83,24 +70,32 @@ export class CatalogClient implements OnInit {
     this.selectedCategory.set(category);
   }
 
-  /*cargarCatalogo() {
-    this.inventoryService.getPublicProducts().subscribe({
-      next: (data) => {
-        this.products.set(data);
-      },
+  agregarAlCarrito(prod: ProductsResponse) {
+    const productId = prod.id;
+
+    // ✅ FIX: el backend ahora SIEMPRE manda el storeId real del producto.
+    // Ya no usamos localStorage ni el fallback hardcodeado a 18.
+    const storeId = (prod as any).storeId;
+
+    if (!storeId) {
+      console.error('🔴 El producto no tiene storeId. Verifica que el backend lo esté mandando:', prod);
+      alert('No se pudo determinar la tienda de este producto. Intenta recargar la página.');
+      return;
+    }
+
+    console.log(`📦 Enviando al carrito -> productId: ${productId}, storeId: ${storeId}`);
+
+    this.cartService.addToCartBackend(productId, storeId, 1).subscribe({
+      next: () => alert(`¡${prod.name} agregado al carrito con éxito!`),
       error: (err) => {
-        console.error('Error al cargar el catálogo:', err);
+        console.error('🔴 Error en el backend:', err.error);
+        alert(`Error: ${err.error?.message || 'No disponible en esta tienda'}`);
       }
     });
-  }*/
-
-  agregarAlCarrito(product: any) {
-    this.cartService.addToCart(product);
-    alert(`¡${product.name} agregado al carrito!`);
   }
 
-  abrirDetalleProducto(product: any) {
-    this.selectedProduct.set(product);
+  abrirDetalleProducto(prod: ProductsResponse) {
+    this.selectedProduct.set(prod);
     this.isModalOpen.set(true);
   }
 

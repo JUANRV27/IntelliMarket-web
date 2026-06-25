@@ -41,7 +41,8 @@
       <div class="empty-state">
         <p>No encontramos productos que coincidan con tu búsqueda.</p>
       </div>
-    } @else {
+    } 
+    @else {
       <div class="card-grid">
         @for (prod of filteredProducts(); track prod.id) {
           <div class="product-card" (click)="abrirDetalleProducto(prod)">
@@ -60,7 +61,7 @@
                 </p>
               }
             </div>
-
+            
             <div class="card-actions">
               <button 
                 class="btn-add-cart" 
@@ -74,6 +75,7 @@
       </div>
     }
   }
+  
 </div>
 
 <!-- Modal de detalles del producto -->

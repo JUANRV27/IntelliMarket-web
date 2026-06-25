@@ -30,7 +30,7 @@ export class LayoutClient {
 
   onLogout(): void {
     this.cerrarMenu();
-    this.cartService.clearCart();
+    this.cartService.clearCartBackend();
     this.authService.logout();
     this.router.navigate(['/']);
   }

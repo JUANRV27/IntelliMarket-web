@@ -12,64 +12,101 @@
     </div>
   } @else {
   <div class="cart-content">
-      
+
       <div class="cart-items">
-        @for (item of cartService.cartItems(); track item.productId) {
+        @for (item of cartService.cartItems(); track item.id) {
           <div class="cart-item-card">
             <div class="item-img">
-              <img [src]="item.imageUrl" [alt]="item.name">
+              <img [src]="item.imageUrl" [alt]="item.productName">
             </div>
-            
+
             <div class="item-details">
-              <h4>{{ item.name }}</h4>
-              <p class="unit-price">Precio unitario: S/ {{ item.price | number:'1.2-2' }}</p>
+              <h4>{{ item.productName }}</h4>
+              <p class="unit-price">Precio unitario: S/ {{ item.unitPrice | number:'1.2-2' }}</p>
             </div>
-            
+
             <div class="item-quantity">
               <span>Cant: <strong>{{ item.quantity }}</strong></span>
             </div>
-            
+
             <div class="item-total">
-              <p>S/ {{ (item.price * item.quantity) | number:'1.2-2' }}</p>
+              <p>S/ {{ (item.unitPrice * item.quantity) | number:'1.2-2' }}</p>
             </div>
-            
+
             <div class="item-actions">
-              <button class="btn-remove" (click)="eliminarItem(item.productId)" title="Eliminar producto">
+              <button class="btn-remove" (click)="eliminarItem(item.id)" title="Eliminar producto">
                 🗑️
               </button>
             </div>
           </div>
         }
-        
+
         <div class="cart-actions-bottom">
-          <button class="btn-clear" (click)="vaciarCarrito()">Vaciar carrito</button>
+          <button class="btn-clear" (click)="vaciarCarrito()" [disabled]="isCheckoutLoading()">Vaciar carrito</button>
         </div>
       </div>
 
       <div class="cart-summary">
         <h3>Resumen de Compra</h3>
-        
+
         <div class="summary-row">
           <span>Productos ({{ cartService.totalItems() }}):</span>
           <span>S/ {{ cartService.totalPrice() | number:'1.2-2' }}</span>
         </div>
-        
+
         <div class="summary-row">
           <span>Envío:</span>
           <span style="color: #27ae60; font-weight: 500;">Gratis</span>
         </div>
-        
+
         <hr>
-        
+
         <div class="summary-row total">
           <span>Total a pagar:</span>
           <span>S/ {{ cartService.totalPrice() | number:'1.2-2' }}</span>
         </div>
-        
-        <button class="btn-checkout" (click)="procederAlPago()">Proceder al Pago</button>
+
+        <button class="btn-checkout" (click)="procederAlPago()" [disabled]="isCheckoutLoading()">
+          {{ isCheckoutLoading() ? 'Procesando Checkout...' : 'Proceder al Pago' }}
+        </button>
         <a routerLink="/catalog" class="btn-continue">Seguir comprando</a>
       </div>
-      
+
     </div>
   }
 </div>
+
+@if (showPaymentModal()) {
+  <div class="payment-modal-overlay">
+    <div class="payment-modal-card">
+      <div class="payment-modal-header">
+        <h3>💳 Pasarela de Pago Integrada</h3>
+        <p class="subtitle">Validación de Transacciones Seguras para IntelliMarket</p>
+      </div>
+
+      @if (isProcessingTransaction()) {
+        <div class="payment-processing-box">
+          <div class="payment-spinner"></div>
+          <p>Validando fondos e intercomunicando con la banca central...</p>
+        </div>
+      } @else {
+        <div class="payment-amount-box">
+          <span class="label">Monto total de la transacción:</span>
+          <h2 class="amount">S/ {{ cartService.totalPrice() | number:'1.2-2' }}</h2>
+        </div>
+
+        <div class="payment-actions-container">
+          <!-- ✅ FIX: ambos botones llaman al MISMO método (procesarTransaccionSimulada),
+               solo cambia el parámetro true/false. Antes "Confirmar Pago" llamaba a
+               confirmarCompraBackend(), que usaba una URL rota e inexistente. -->
+          <button class="btn-pay-success" (click)="procesarTransaccionSimulada(true)">
+            ✅ Confirmar Pago Exitoso (COMPLETED)
+          </button>
+          <button class="btn-pay-fail" (click)="procesarTransaccionSimulada(false)">
+            ❌ Simular Fondos Insuficientes (CANCELLED)
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}
