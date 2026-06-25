@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { LayoutClient } from './layouts/main-layout/layout-client';
 import { LayoutSeller } from './layouts/layout-seller/layout-seller';
 import { Landing } from './pages/client/landing/landing';
 import { Reviews } from './pages/client/reviews/reviews';
@@ -103,9 +102,11 @@ export const routes: Routes = [
       { path: 'reviews',       loadComponent: () => import('./pages/client/reviews/reviews').then(m => m.Reviews) },
       { path: 'catalog',       loadComponent: () => import('./pages/client/catalog-client/catalog-client').then(m => m.CatalogClient) },
       { path: 'cart',          loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent) },
-      { path: 'join-as-seller', loadComponent: () => import('./pages/seller/landing-seller/landing-seller').then(m => m.LandingSeller) }
+      { path: 'join-as-seller', loadComponent: () => import('./pages/seller/landing-seller/landing-seller').then(m => m.LandingSeller) },
+      { path: 'history', loadComponent: () => import('./pages/client/purchase-history/purchase-history').then(m => m.PurchaseHistoryComponent) }
     ]
   },
+
 
   // 3. MÓDULO PÚBLICO / CLIENTE (Ruta raíz principal)
   /*{

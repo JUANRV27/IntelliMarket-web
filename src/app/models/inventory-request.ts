@@ -1,5 +1,5 @@
 export interface InventoryRequest{
-    productId: string;
+    productId: number;
     quantity: number;
     storeId: string;
     price: number;

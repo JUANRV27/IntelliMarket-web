@@ -1,7 +1,6 @@
 import { Component, inject, signal, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-//import { InventoryService } from '../../../services/inventory.service';
 import { InventoryService } from '../../../../services/inventory.service';
 import { CartService } from '../../../../services/cart.service';
 import { Review } from '../../../../models/review.model';
@@ -23,8 +22,7 @@ export class ProductDetailModal implements OnInit {
 
   reviews = signal<Review[]>([]);
   loadingReviews = signal(false);
-  
-  // Para crear nueva reseña
+
   showReviewForm = signal(false);
   reviewAuthor = signal('');
   reviewRating = signal(5);
@@ -57,8 +55,24 @@ export class ProductDetailModal implements OnInit {
   }
 
   agregarAlCarrito() {
-    this.cartService.addToCart(this.product);
-    alert(`¡${this.product.name} agregado al carrito!`);
+    if (!this.product) return;
+
+    const productId = Number(this.product.id);
+    // ✅ FIX: usar el storeId real que ahora viene del backend, sin fallback a 1
+    const storeId = Number(this.product.storeId);
+
+    if (!storeId) {
+      console.error('🔴 El producto no tiene storeId:', this.product);
+      alert('No se pudo determinar la tienda de este producto.');
+      return;
+    }
+
+    this.cartService.addToCartBackend(productId, storeId, 1).subscribe({
+      next: () => {
+        alert(`¡${this.product.name} agregado al carrito!`);
+      },
+      error: (err) => console.error('Error al añadir desde el modal:', err)
+    });
   }
 
   toggleReviewForm() {
@@ -72,7 +86,7 @@ export class ProductDetailModal implements OnInit {
     }
 
     this.isSubmittingReview.set(true);
-    
+
     const newReview = {
       productId: this.product.id,
       rating: this.reviewRating(),
@@ -82,22 +96,17 @@ export class ProductDetailModal implements OnInit {
 
     this.inventoryService.createProductReview(newReview).subscribe({
       next: (review) => {
-        // Agregar la reseña al listado
         this.reviews.update(reviews => [...reviews, review]);
-        
-        // Limpiar formulario
         this.reviewAuthor.set('');
         this.reviewComment.set('');
         this.reviewRating.set(5);
         this.showReviewForm.set(false);
         this.isSubmittingReview.set(false);
-        
         alert('¡Reseña enviada exitosamente!');
       },
       error: (err) => {
         console.error('Error al enviar reseña:', err);
         this.isSubmittingReview.set(false);
-        alert('Error al enviar la reseña. Intenta de nuevo.');
       }
     });
   }

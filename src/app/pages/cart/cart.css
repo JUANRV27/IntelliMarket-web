@@ -235,3 +235,136 @@ hr {
   .item-details { min-width: 100%; padding: 0; }
   .item-total, .item-quantity { text-align: left; }
 }
+
+.payment-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.6); /* Backdrop difuminado oscuro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.payment-modal-card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 440px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  font-family: inherit;
+}
+
+.payment-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.payment-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.payment-modal-header .subtitle {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.payment-amount-box {
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.payment-amount-box .label {
+  font-size: 13px;
+  color: #0369a1;
+  display: block;
+}
+
+.payment-amount-box .amount {
+  margin: 6px 0 0 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0284c7;
+}
+
+.payment-actions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.payment-actions-container button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-pay-success {
+  background-color: #10b981;
+  color: white;
+}
+
+.btn-pay-success:hover {
+  background-color: #059669;
+}
+
+.btn-pay-fail {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-pay-fail:hover {
+  background-color: #dc2626;
+}
+
+/* Spinner de procesamiento bancario */
+.payment-processing-box {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.payment-processing-box p {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.payment-spinner {
+  margin: 0 auto;
+  width: 45px;
+  height: 45px;
+  border: 4px solid #f1f5f9;
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: payment-spin 1s linear infinite;
+}
+
+@keyframes payment-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Evita clicks dobles bloqueando elementos deshabilitados */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed !important;
+}

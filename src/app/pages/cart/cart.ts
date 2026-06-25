@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { OrderService } from '../../services/order.service';
+import { OrderResponse } from '../../models/order-response';
 
 @Component({
   selector: 'app-cart',
@@ -11,20 +13,106 @@ import { CartService } from '../../services/cart.service';
   styleUrl: './cart.css'
 })
 export class CartComponent {
-  // Inyectamos el servicio de forma pública para usarlo directo en el HTML
   cartService = inject(CartService);
+  private orderService = inject(OrderService);
+  private router = inject(Router);
 
-  eliminarItem(productId: string) {
-    this.cartService.removeFromCart(productId);
+  public showPaymentModal = signal<boolean>(false);
+  public isCheckoutLoading = signal<boolean>(false);
+  public isProcessingTransaction = signal<boolean>(false);
+
+  // Puede haber VARIAS órdenes (una por tienda) generadas en un solo checkout
+  private pendingOrders: OrderResponse[] = [];
+  private currentPaymentIndex = 0;
+
+  ngOnInit() {
+    this.cartService.loadCartFromBackend().subscribe({
+      error: (err) => console.error('Error al recuperar el carrito del servidor:', err)
+    });
+  }
+
+  eliminarItem(itemId: number) {
+    this.cartService.removeFromCartBackend(itemId).subscribe();
   }
 
   vaciarCarrito() {
     if (confirm('¿Estás seguro de que deseas vaciar todo el carrito?')) {
-      this.cartService.clearCart();
+      this.cartService.clearCartBackend().subscribe();
     }
   }
 
+  // PASO 1: crea la(s) orden(es) agrupando por tienda y ABRE el modal de pago.
+  // Esto NO vacía el carrito todavía — eso ocurre en el backend al confirmar el pago.
   procederAlPago() {
-    alert('¡Excelente elección! La pasarela de pago con PayPal se implementará en la próxima tarea [US-15].');
+    if (this.cartService.cartItems().length === 0) {
+      alert('No hay productos en tu carrito de compras.');
+      return;
+    }
+
+    this.isCheckoutLoading.set(true);
+
+    this.orderService.checkout().subscribe({
+      next: (orders: OrderResponse[]) => {
+        this.pendingOrders = orders;
+        this.currentPaymentIndex = 0;
+
+        console.log(`✅ Se generaron ${orders.length} orden(es), una por cada tienda:`, orders);
+
+        this.isCheckoutLoading.set(false);
+        this.showPaymentModal.set(true);
+      },
+      error: (err) => {
+        this.isCheckoutLoading.set(false);
+        console.error('🔴 Error en checkout:', err.error);
+        alert('Error en checkout: ' + (err.error?.message || 'Inconsistencia de stock en tienda.'));
+      }
+    });
+  }
+
+  // PASO 2: el modal llama a ESTE único método, sea éxito o fallo.
+  // Recorre cada orden pendiente y actualiza su estado de pago una por una.
+  procesarTransaccionSimulada(exito: boolean) {
+    if (this.pendingOrders.length === 0) return;
+
+    this.isProcessingTransaction.set(true);
+    const estadoEnum = exito ? 'COMPLETED' : 'CANCELLED';
+
+    setTimeout(() => {
+      this.procesarSiguientePago(estadoEnum, exito);
+    }, 1500);
+  }
+
+  private procesarSiguientePago(estadoEnum: 'COMPLETED' | 'CANCELLED', exito: boolean) {
+    if (this.currentPaymentIndex >= this.pendingOrders.length) {
+      // Todas las órdenes ya fueron procesadas
+      this.isProcessingTransaction.set(false);
+      this.showPaymentModal.set(false);
+
+      if (exito) {
+        alert(`¡Pago procesado con éxito! Se generaron ${this.pendingOrders.length} orden(es).`);
+        this.cartService.cartState.set(null); // el carrito ya fue vaciado en el backend al hacer checkout()
+        this.router.navigate(['/history']);
+      } else {
+        alert('Transacción rechazada. El stock reservado ha sido devuelto al inventario.');
+        this.cartService.loadCartFromBackend().subscribe();
+      }
+
+      this.pendingOrders = [];
+      this.currentPaymentIndex = 0;
+      return;
+    }
+
+    const order = this.pendingOrders[this.currentPaymentIndex];
+
+    this.orderService.processPayment(order.id, estadoEnum).subscribe({
+      next: () => {
+        this.currentPaymentIndex++;
+        this.procesarSiguientePago(estadoEnum, exito);
+      },
+      error: (err) => {
+        this.isProcessingTransaction.set(false);
+        alert(`Error procesando el pago de la orden #${order.id}: ` + (err.error?.message || err.message));
+      }
+    });
   }
 }

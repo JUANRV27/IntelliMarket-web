@@ -1,7 +1,7 @@
 import {ProductsResponse} from "./products-response";
 
 export interface InventoryResponse {
-    id: string;
+    id: number;
     product: ProductsResponse;
     quantity: number;
     store: string;
