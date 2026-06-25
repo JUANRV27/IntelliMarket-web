@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
   // antes sin /v1
-  apiUrl: 'http://localhost:8080/api', //verdadero: 'https://intellimarket-api.onrender.com/api'
+  //apiUrl: 'http://localhost:8080/api', 
+  apiUrl: 'https://intellimarket-api.onrender.com/api'
 };
