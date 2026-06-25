@@ -1,6 +1,6 @@
 export interface AddToCartRequest {
+  cartId: number;
   productId: number;
-  cartId?: number | null;
   storeId: number;
   quantity: number;
 }

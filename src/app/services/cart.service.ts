@@ -39,17 +39,27 @@ export class CartService {
    * Sincroniza la adición de productos con la DB de Spring Boot (POST /api/v1/orders/cart/items)
    */
   addToCartBackend(productId: number, storeId: number, quantity: number): Observable<CartResponse> {
-    const currentCartId = this.cartState()?.id ?? null;
+    const currentCartId = this.cartState()?.id;
+
+    // Si el carrito no está inicializado aún en el cliente, enviamos 0.
+    // El backend no usa este id para buscar el carrito (lo deduce por el token JWT),
+    // pero lo exige como no nulo debido a la validación @NotNull en el DTO.
+    const cartId = currentCartId ? Number(currentCartId) : 0;
 
     const payload: AddToCartRequest = {
-      cartId: currentCartId,
-      productId,
-      storeId,
-      quantity
+      cartId,
+      productId: Number(productId),
+      storeId: Number(storeId),
+      quantity: Number(quantity)
     };
 
+    console.log('📤 Enviando payload al backend (con cartId obligatorio):', payload);
+
     return this.http.post<CartResponse>(`${this.baseUrl}/items`, payload).pipe(
-      tap(updatedCart => this.cartState.set(updatedCart))
+      tap(updatedCart => {
+        console.log('📥 Respuesta exitosa del backend:', updatedCart);
+        this.cartState.set(updatedCart);
+      })
     );
   }
 

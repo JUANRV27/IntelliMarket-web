@@ -59,7 +59,7 @@ export class ProductDetailModal implements OnInit {
 
     const productId = Number(this.product.id);
     // ✅ FIX: usar el storeId real que ahora viene del backend, sin fallback a 1
-    const storeId = Number(this.product.storeId);
+    const storeId = Number(this.product.storeId || (this.product as any).store?.id);
 
     if (!storeId) {
       console.error('🔴 El producto no tiene storeId:', this.product);

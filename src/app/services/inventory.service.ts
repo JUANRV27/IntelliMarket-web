@@ -82,6 +82,13 @@ export class InventoryService {
         // Creamos un array de peticiones (una por cada tienda)
         const productRequests = stores.map(store => 
           this.getStockByStore(store.id).pipe(
+            map((products: any[]) => {
+              if (!products) return [];
+              return products.map(p => ({
+                ...p,
+                storeId: p.storeId || p.store?.id || store.id
+              }));
+            }),
             catchError(() => of([])) // Si falla una tienda, retornamos array vacío para esa tienda
           )
         );

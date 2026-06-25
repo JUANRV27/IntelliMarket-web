@@ -75,7 +75,7 @@ export class CatalogClient implements OnInit {
 
     // ✅ FIX: el backend ahora SIEMPRE manda el storeId real del producto.
     // Ya no usamos localStorage ni el fallback hardcodeado a 18.
-    const storeId = (prod as any).storeId;
+    const storeId = (prod as any).storeId || (prod as any).store?.id;
 
     if (!storeId) {
       console.error('🔴 El producto no tiene storeId. Verifica que el backend lo esté mandando:', prod);
