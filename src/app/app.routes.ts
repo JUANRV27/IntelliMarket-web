@@ -89,6 +89,7 @@ export const routes: Routes = [
       { path: 'stock',         loadComponent: () => import('./pages/inventory/stock/stock-seller').then(m => m.StockSeller) },
       { path: 'store/create',  loadComponent: () => import('./pages/store/store-form/store-form').then(m => m.StoreFormComponent) },
       { path: 'settings',      loadComponent: () => import('./pages/store/store-settings/store-settings').then(m => m.StoreSettings) },
+      { path: 'stats',         loadComponent: () => import('./pages/seller/stats/stats').then(m => m.StatsSeller) },
       // Inventario usa su propio archivo de rutas hijas (ya estaba bien hecho)
       { path: 'inventory',     loadChildren: () => import('./pages/inventory/inventory.routes').then(m => m.INVENTORY_ROUTES) }
     ]

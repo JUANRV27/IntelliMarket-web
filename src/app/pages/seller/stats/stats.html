@@ -1,0 +1,172 @@
+<div class="stats-container">
+  <!-- Header -->
+  <div class="stats-header">
+    <div class="stats-title-group">
+      <h2>Panel de Estadísticas</h2>
+      <p>Monitorea el valor, stock y estado general de tu tienda en tiempo real.</p>
+    </div>
+    <button class="btn-refresh" (click)="loadStatsData()" [disabled]="isLoading()">
+      <span *ngIf="!isLoading()">🔄 Actualizar</span>
+      <span *ngIf="isLoading()">Cargando...</span>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-wrapper">
+    <div class="spinner"></div>
+    <p>Generando analíticas del inventario...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage()" class="error-wrapper">
+    <div class="error-icon">⚠</div>
+    <p>{{ errorMessage() }}</p>
+    <button class="btn-primary" (click)="loadStatsData()">Reintentar</button>
+  </div>
+
+  <!-- Main Content (Only when loaded successfully and not empty) -->
+  <div *ngIf="!isLoading() && !errorMessage()">
+    
+    <!-- Empty State -->
+    <div *ngIf="totalProducts() === 0" class="empty-stats-wrapper">
+      <div class="empty-icon">📦</div>
+      <h3>Tu catálogo está vacío</h3>
+      <p>Para ver estadísticas detalladas, primero debes registrar productos en tu inventario.</p>
+      <button class="btn-primary" (click)="goToStock()">Ir a Gestión de Inventario</button>
+    </div>
+
+    <div *ngIf="totalProducts() > 0">
+      <!-- KPI Grid -->
+      <div class="kpi-grid">
+        <!-- Card: Total Valuation -->
+        <div class="kpi-card val-card">
+          <div class="kpi-card-inner">
+            <div class="kpi-info">
+              <span class="kpi-label">Valor del Inventario</span>
+              <h3 class="kpi-value">S/ {{ totalValue() | number:'1.2-2' }}</h3>
+              <span class="kpi-trend positive">Costo total acumulado</span>
+            </div>
+            <div class="kpi-icon-box">💰</div>
+          </div>
+        </div>
+
+        <!-- Card: Total Physical Stock -->
+        <div class="kpi-card stock-card">
+          <div class="kpi-card-inner">
+            <div class="kpi-info">
+              <span class="kpi-label">Stock Físico Total</span>
+              <h3 class="kpi-value">{{ totalStock() | number }}</h3>
+              <span class="kpi-trend">Unidades disponibles</span>
+            </div>
+            <div class="kpi-icon-box">📦</div>
+          </div>
+        </div>
+
+        <!-- Card: Products Registered -->
+        <div class="kpi-card prod-card">
+          <div class="kpi-card-inner">
+            <div class="kpi-info">
+              <span class="kpi-label">Productos en Catálogo</span>
+              <h3 class="kpi-value">{{ totalProducts() }}</h3>
+              <span class="kpi-trend">Variedad de artículos</span>
+            </div>
+            <div class="kpi-icon-box">🏷️</div>
+          </div>
+        </div>
+
+        <!-- Card: Critical Stock -->
+        <div class="kpi-card alert-card" [class.has-alerts]="criticalStockCount() > 0">
+          <div class="kpi-card-inner">
+            <div class="kpi-info">
+              <span class="kpi-label">Stock Crítico</span>
+              <h3 class="kpi-value" [class.text-danger]="criticalStockCount() > 0">
+                {{ criticalStockCount() }}
+              </h3>
+              <span class="kpi-trend" [class.text-danger]="criticalStockCount() > 0">
+                {{ criticalStockCount() > 0 ? 'Requiere atención' : 'Nivel de stock saludable' }}
+              </span>
+            </div>
+            <div class="kpi-icon-box" [class.pulse]="criticalStockCount() > 0">
+              {{ criticalStockCount() > 0 ? '⚠️' : '✅' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Critical Stock Alert Bar / Box -->
+      <div class="critical-alert-box" *ngIf="criticalStockCount() > 0">
+        <div class="alert-box-header">
+          <span class="alert-badge">Alerta Crítica</span>
+          <h4>Tienes {{ criticalStockCount() }} productos con stock menor o igual a 10 unidades</h4>
+        </div>
+        <div class="alert-products-list">
+          <div class="alert-product-item" *ngFor="let prod of criticalStockProducts()">
+            <span class="product-name">{{ prod.name }}</span>
+            <div class="product-stock-badge" [class.danger]="prod.stock <= 5" [class.warning]="prod.stock > 5">
+              Stock: {{ prod.stock }} u.
+            </div>
+          </div>
+        </div>
+        <div class="alert-box-actions">
+          <button class="btn-alert-action" (click)="goToStock()">Actualizar Stock Ahora</button>
+        </div>
+      </div>
+
+      <!-- Detail Grid (Charts and Lists) -->
+      <div class="details-grid">
+        <!-- Categories Chart Card -->
+        <div class="detail-card">
+          <div class="detail-card-header">
+            <h3>Distribución por Categorías</h3>
+            <p>Porcentaje y cantidad de productos registrados en cada rubro.</p>
+          </div>
+          <div class="detail-card-body">
+            <div class="category-list">
+              <div class="category-item" *ngFor="let cat of categoryStats()">
+                <div class="category-meta">
+                  <span class="cat-name">{{ cat.name }}</span>
+                  <span class="cat-count">{{ cat.count }} prod. ({{ cat.totalStock }} uds)</span>
+                </div>
+                <!-- CSS progress bar -->
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" [style.width.%]="cat.percentage" [ngClass]="'bar-' + cat.name.toLowerCase()"></div>
+                </div>
+                <div class="category-value-row">
+                  <span class="cat-val-label">Valor en stock:</span>
+                  <span class="cat-val-value">S/ {{ cat.totalValue | number:'1.2-2' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Valued Products Card -->
+        <div class="detail-card">
+          <div class="detail-card-header">
+            <h3>Productos de Mayor Valor</h3>
+            <p>Top 5 productos ordenados por el costo total de su stock actual.</p>
+          </div>
+          <div class="detail-card-body">
+            <div class="top-products-list">
+              <div class="top-product-item" *ngFor="let prod of topValuedProducts(); let idx = index">
+                <div class="product-rank">{{ idx + 1 }}</div>
+                <div class="product-thumb">
+                  <img [src]="prod.imageUrl || 'assets/placeholder-product.png'" alt="{{ prod.name }}" onerror="this.src='https://placehold.co/50x50?text=Prod'" />
+                </div>
+                <div class="product-info-col">
+                  <span class="top-prod-name">{{ prod.name }}</span>
+                  <span class="top-prod-sub">Precio: S/ {{ prod.resolvedPrice | number:'1.2-2' }} | Stock: {{ prod.stock }} u.</span>
+                </div>
+                <div class="product-value-col">
+                  <span class="top-prod-value">S/ {{ prod.calculatedValue | number:'1.2-2' }}</span>
+                  <span class="top-prod-label">Valor total</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
