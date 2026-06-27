@@ -1,10 +1,12 @@
 <div class="landing-page-wrapper animate-fade-in">
-  <!-- Hero Section -->
+  
   <section class="hero-section">
     <div class="hero-content">
       <h2 class="hero-title">Bienvenido a IntelliMarket</h2>
+      <h3 class="hero-slogan">Tu bodega de siempre, ahora más inteligente y cerca de ti.</h3>
       <p class="hero-desc">Descubre los mejores productos locales para tu hogar.</p>
-      <button class="btn btn-primary" (click)="scrollToProducts(productsSection)">
+      
+      <button class="btn btn-primary" (click)="scrollToSection(featuresSection)">
         Comenzar la experiencia
       </button>
     </div>
@@ -17,84 +19,78 @@
     </div>
   </section>
 
-  <!-- Featured Products Section -->
-  <section #productsSection class="products-section">
+  <section #featuresSection class="features-section">
     <div class="section-header">
-      <h3 class="section-title">Productos Destacados</h3>
-      <p class="section-desc">Los productos más populares entre nuestros clientes.</p>
+      <h3 class="section-title text-gradient">Lo que ofrecemos</h3>
+      <p class="section-desc">Herramientas diseñadas para modernizar tu negocio y facilitar tus compras.</p>
     </div>
 
-    <div class="card-grid">
-      @for (prod of featuredProducts; track prod.id) {
-        <div class="premium-card">
-          <div class="card-img-container">
-            <span class="card-tag">{{ prod.tag }}</span>
-            <img [alt]="prod.name" [src]="prod.image" />
-          </div>
-          <div class="card-content">
-            <h4 class="card-title">{{ prod.name }}</h4>
-            <div class="card-action">
-              <span class="card-price">S/. {{ prod.price | number: '1.2-2' }}</span>
-              <button class="btn-icon" (click)="agregarAlCarrito(prod)" title="Agregar al carrito">
-  🛒
-</button>
-            </div>
-          </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🛒</div>
+        <h4 class="feature-title">Compras Rápidas</h4>
+        <p class="feature-desc">Explora el catálogo unificado de las bodegas de tu zona, compara precios y arma tu carrito sin salir de casa.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📦</div>
+        <h4 class="feature-title">Gestión Inteligente</h4>
+        <p class="feature-desc">Empodera tu negocio con nuestro sistema de control de inventario y recibe alertas automáticas de stock.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h4 class="feature-title">Asistente Virtual 24/7</h4>
+        <p class="feature-desc">¿No encuentras lo que buscas? Nuestro chatbot inteligente te ayuda a encontrar productos y ofertas al instante.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⭐</div>
+        <h4 class="feature-title">Confianza Total</h4>
+        <p class="feature-desc">Compra con seguridad  y apoya el crecimiento del comercio local.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="team-section">
+    <div class="section-header">
+      <h3 class="section-title">El equipo IntelliMarket</h3>
+      <p class="section-desc">Conoce a los creadores detrás de esta plataforma.</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-member">
+        <div class="member-img-wrapper">
+          <img src="https://ui-avatars.com/api/?name=Angel+Diaz&background=0c8ce9&color=fff&size=150" alt="Ángel Díaz" class="member-img">
         </div>
-      }
-    </div>
-  </section>
-
-  <!-- Why Choose Us Section -->
-  <section class="why-us-section">
-    <div class="why-us-header">
-      <h3 class="section-title text-gradient">¿Por qué elegirnos?</h3>
-      <p class="section-desc">Nuestra bodega ofrece productos seleccionados cuidadosamente.</p>
-      <button class="btn btn-primary btn-pill" routerLink="/reviews">Ver Reseñas Completa</button>
-    </div>
-
-    <div class="card-grid">
-      <div class="premium-card info-card">
-        <div class="info-icon">💎</div>
-        <h4 class="info-title">Calidad</h4>
-        <p class="info-desc">Seleccionamos solo los mejores productos del mercado.</p>
+        <h4 class="member-name">Ángel Díaz</h4>
+        <p class="member-role">Estudiante de Ciencias de la Computación</p>
       </div>
 
-      <div class="premium-card info-card">
-        <div class="info-icon">📍</div>
-        <h4 class="info-title">Local</h4>
-        <p class="info-desc">Apoyamos a productores locales para ofrecer frescura y autenticidad.</p>
-      </div>
-
-      <div class="premium-card info-card">
-        <div class="info-icon">🍎</div>
-        <h4 class="info-title">Variedad</h4>
-        <p class="info-desc">Una amplia selección de bebidas, abarrotes y snacks para toda tu familia.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Reviews Section -->
-  <section class="reviews-section">
-    <div class="reviews-left">
-      <h3 class="section-title">Opiniones de Nuestros Clientes</h3>
-      <p class="section-desc">Lo que dicen nuestros clientes sobre nosotros y su experiencia de compra.</p>
-    </div>
-    
-    <div class="reviews-list">
-      @for (rev of clientReviews; track rev.id) {
-        <div class="review-card">
-          <div class="review-header">
-            <span class="review-author">{{ rev.author }}</span>
-            <div class="rating-stars">
-              @for (star of [1,2,3,4,5]; track star) {
-                <span>★</span>
-              }
-            </div>
-          </div>
-          <p class="review-comment">"{{ rev.comment }}"</p>
+      <div class="team-member">
+        <div class="member-img-wrapper">
+          <img src="https://ui-avatars.com/api/?name=Mauricio+Canchis&background=0c8ce9&color=fff&size=150" alt="Mauricio Canchis" class="member-img">
         </div>
-      }
+        <h4 class="member-name">Mauricio Canchis</h4>
+        <p class="member-role">Estudiante de Ciencias de la Computación</p>
+      </div>
+
+      <div class="team-member">
+        <div class="member-img-wrapper">
+          <img src="https://ui-avatars.com/api/?name=Juan+Jose+Rodriguez&background=0c8ce9&color=fff&size=150" alt="Juan José Rodríguez" class="member-img">
+        </div>
+        <h4 class="member-name">Juan José Rodríguez</h4>
+        <p class="member-role">Estudiante de Ciencias de la Computación</p>
+      </div>
+
+      <div class="team-member">
+        <div class="member-img-wrapper">
+          <img src="https://ui-avatars.com/api/?name=Johan+Quispe&background=0c8ce9&color=fff&size=150" alt="Johan Quispe" class="member-img">
+        </div>
+        <h4 class="member-name">Johan Quispe</h4>
+        <p class="member-role">Estudiante de Ciencias de la Computación</p>
+      </div>
     </div>
   </section>
+
 </div>
