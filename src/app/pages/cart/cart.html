@@ -25,8 +25,22 @@
               <p class="unit-price">Precio unitario: S/ {{ item.unitPrice | number:'1.2-2' }}</p>
             </div>
 
-            <div class="item-quantity">
-              <span>Cant: <strong>{{ item.quantity }}</strong></span>
+            <div class="item-quantity-selector">
+              <button 
+                class="btn-qty" 
+                [disabled]="isUpdatingQuantity() || isCheckoutLoading()"
+                (click)="actualizarCantidad(item, -1)">
+                ➖
+              </button>
+              
+              <span class="qty-display">{{ item.quantity }}</span>
+              
+              <button 
+                class="btn-qty" 
+                [disabled]="isUpdatingQuantity() || isCheckoutLoading()"
+                (click)="actualizarCantidad(item, 1)">
+                ➕
+              </button>
             </div>
 
             <div class="item-total">

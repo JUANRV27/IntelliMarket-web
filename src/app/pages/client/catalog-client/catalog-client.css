@@ -20,6 +20,7 @@
   flex-direction: column;
   gap: 20px;
   margin-bottom: 40px;
+  flex-wrap: wrap;
 }
 
 .search-box input {
@@ -173,5 +174,28 @@
   padding: 40px;
   color: #7f8c8d;
   font-size: 1.2rem;
+}
+
+.store-filter-box {
+  display: flex;
+  align-items: center;
+}
+
+.store-dropdown {
+  padding: 10px 15px;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  min-width: 180px;
+}
+
+.store-dropdown:focus {
+  border-color: #27ae60; /* Color verde característico de tu proyecto */
+  box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.1);
 }
 

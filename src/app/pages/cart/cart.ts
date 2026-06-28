@@ -24,10 +24,37 @@ export class CartComponent {
   // Puede haber VARIAS órdenes (una por tienda) generadas en un solo checkout
   private pendingOrders: OrderResponse[] = [];
   private currentPaymentIndex = 0;
+  
+  public isUpdatingQuantity = signal<boolean>(false);
 
   ngOnInit() {
     this.cartService.loadCartFromBackend().subscribe({
       error: (err) => console.error('Error al recuperar el carrito del servidor:', err)
+    });
+  }
+
+  // FIX: antes intentaba usar item.productId / item.storeId, que NO existen
+  // en CartItemResponse (solo existen en AddToCartRequest). Ahora usamos
+  // el nuevo endpoint PATCH que solo necesita el id propio del CartItem.
+  actualizarCantidad(item: any, cambio: number) {
+    const nuevaCantidad = item.quantity + cambio;
+
+    if (nuevaCantidad < 1) {
+      this.eliminarItem(item.id);
+      return;
+    }
+
+    this.isUpdatingQuantity.set(true);
+
+    this.cartService.updateItemQuantity(item.id, nuevaCantidad).subscribe({
+      next: () => {
+        this.isUpdatingQuantity.set(false);
+      },
+      error: (err) => {
+        this.isUpdatingQuantity.set(false);
+        console.error('🔴 Error al modificar la cantidad:', err);
+        alert(err.error?.message || 'No hay suficiente stock en bodega para añadir más.');
+      }
     });
   }
 

@@ -113,8 +113,8 @@ export class InventoryService {
   }
 
   getStoresByOwner(): Observable<any[]> {
-    // Usando la variable de entorno para evitar problemas de hardcoding
-    return this.http.get<any[]>(`${environment.apiUrl}/stores`);
+    // FIX: faltaba el /v1/ — el backend expone /api/v1/stores, no /api/stores
+    return this.http.get<any[]>(`${environment.apiUrl}/v1/stores`);
   }
   /**
    * Obtiene las reseñas de un producto específico

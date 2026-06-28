@@ -12,10 +12,8 @@ export class CartService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/v1/orders/cart`;
 
-  // Único estado real de la aplicación (proviene de PostgreSQL)
   cartState = signal<CartResponse | null>(null);
 
-  // Señales computadas de solo lectura para la UI
   cartItems = computed(() => this.cartState()?.items || []);
 
   totalItems = computed(() =>
@@ -26,24 +24,14 @@ export class CartService {
     this.cartItems().reduce((acc, item) => acc + item.subtotal, 0)
   );
 
-  /**
-   * Carga el carrito del usuario autenticado directamente desde la base de datos (GET /api/v1/orders/cart/me)
-   */
   loadCartFromBackend(): Observable<CartResponse> {
     return this.http.get<CartResponse>(`${this.baseUrl}/me`).pipe(
       tap(cart => this.cartState.set(cart))
     );
   }
 
-  /**
-   * Sincroniza la adición de productos con la DB de Spring Boot (POST /api/v1/orders/cart/items)
-   */
   addToCartBackend(productId: number, storeId: number, quantity: number): Observable<CartResponse> {
     const currentCartId = this.cartState()?.id;
-
-    // Si el carrito no está inicializado aún en el cliente, enviamos 0.
-    // El backend no usa este id para buscar el carrito (lo deduce por el token JWT),
-    // pero lo exige como no nulo debido a la validación @NotNull en el DTO.
     const cartId = currentCartId ? Number(currentCartId) : 0;
 
     const payload: AddToCartRequest = {
@@ -53,35 +41,32 @@ export class CartService {
       quantity: Number(quantity)
     };
 
-    console.log('📤 Enviando payload al backend (con cartId obligatorio):', payload);
-
     return this.http.post<CartResponse>(`${this.baseUrl}/items`, payload).pipe(
-      tap(updatedCart => {
-        console.log('📥 Respuesta exitosa del backend:', updatedCart);
-        this.cartState.set(updatedCart);
-      })
+      tap(updatedCart => this.cartState.set(updatedCart))
     );
   }
 
   /**
-   * Elimina un ítem del carrito (DELETE /api/v1/orders/cart/items/{itemId})
+   * NUEVO: actualiza la cantidad de un item ya existente en el carrito.
+   * Solo necesita el "itemId" (el id propio del CartItem, ya disponible en
+   * CartItemResponse.id) y la nueva cantidad — NO requiere productId ni storeId,
+   * que es justo el problema que tenías: CartItemResponse no expone esos campos.
    */
+  updateItemQuantity(itemId: number, quantity: number): Observable<CartResponse> {
+    return this.http.patch<CartResponse>(`${this.baseUrl}/items/${itemId}`, { quantity }).pipe(
+      tap(updatedCart => this.cartState.set(updatedCart))
+    );
+  }
+
   removeFromCartBackend(itemId: number): Observable<CartResponse> {
     return this.http.delete<CartResponse>(`${this.baseUrl}/items/${itemId}`).pipe(
       tap(updatedCart => this.cartState.set(updatedCart))
     );
   }
 
-  /**
-   * Limpia el carrito por completo (DELETE /api/v1/orders/cart)
-   */
   clearCartBackend(): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}`).pipe(
       tap(() => this.cartState.set(null))
     );
   }
-
-  // ❌ ELIMINADO: checkoutCart() — apuntaba a /v1/orders/cart/checkout, ruta inexistente.
-  // El checkout real se hace ahora con OrderService.checkout(), que pega a /v1/orders/checkout
-  // (sin el segmento "/cart") y devuelve un array de órdenes (una por tienda).
 }

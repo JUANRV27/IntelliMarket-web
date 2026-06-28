@@ -14,6 +14,19 @@
       />
     </div>
 
+    <div class="store-filter-box">
+      <select 
+        id="storeSelect" 
+        [ngModel]="selectedStore()" 
+        (ngModelChange)="selectedStore.set($event)"
+        class="store-dropdown">
+        <option value="Todos">Todas las tiendas</option>
+        @for (store of storesList(); track store.id) {
+          <option [value]="store.id">{{ store.name }}</option>
+        }
+      </select>
+    </div>
+
     <div class="catalog-filters">
       <button 
         class="filter-btn"

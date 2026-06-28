@@ -21,8 +21,13 @@ export class CatalogClient implements OnInit {
   searchQuery = signal('');
   selectedCategory = signal('Todos');
 
+  // Filtrador por tienda / store
+  selectedStore = signal('Todos');
+
   products = signal<ProductsResponse[]>([]);
   loading = signal(true);
+
+  storeNamesMap = signal<Record<string, string>>({});
 
   selectedProduct = signal<ProductsResponse | null>(null);
   isModalOpen = signal(false);
@@ -30,8 +35,32 @@ export class CatalogClient implements OnInit {
   public categories = Object.values(Category);
 
   ngOnInit() {
-    this.cargarProductos();
+    // Ahora cargamos primero los nombres de tienda, y luego los productos.
+    this.cargarTiendasYProductos();
     this.inicializarCarrito();
+  }
+
+  cargarTiendasYProductos() {
+    this.loading.set(true);
+
+    // 1. Primero traemos las tiendas reales
+    this.inventoryService.getStoresByOwner().subscribe({
+      next: (stores: any[]) => {
+        const cache: Record<string, string> = {};
+        stores.forEach(s => {
+          cache[String(s.id)] = s.name; // Guardamos el ID con su nombre comercial real
+        });
+        this.storeNamesMap.set(cache);
+
+        // 2. Una vez que tenemos los nombres, cargamos los productos aplanados
+        this.cargarProductos();
+      },
+      error: (err) => {
+        console.error('Error al precargar nombres de tiendas:', err);
+        // Fallback por si acaso falla: cargamos los productos igual
+        this.cargarProductos();
+      }
+    });
   }
 
   cargarProductos() {
@@ -54,15 +83,39 @@ export class CatalogClient implements OnInit {
     this.cartService.loadCartFromBackend().subscribe();
   }
 
+  // Lista de tiendas para el dropdown
+  storesList = computed(() => {
+    const idsUnicos = new Set<string>();
+
+    this.products().forEach(prod => {
+      const storeId = String((prod as any).storeId || (prod as any).store?.id);
+      if (storeId && storeId !== 'undefined') {
+        idsUnicos.add(storeId);
+      }
+    });
+
+    return Array.from(idsUnicos).map(id => {
+      return {
+        id: id,
+        // Ahora storeNamesMap() sí tiene datos reales del backend
+        name: this.storeNamesMap()[id] || `Tienda ${id}`
+      };
+    });
+  });
+
   filteredProducts = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     const category = this.selectedCategory();
+    const storeFilter = this.selectedStore();
 
     return this.products().filter(prod => {
       if (!prod) return false;
+      const storeId = String((prod as any).storeId || (prod as any).store?.id);
+
       const matchesSearch = prod.name?.toLowerCase().includes(query) || false;
       const matchesCategory = category === 'Todos' || prod.category === category;
-      return matchesSearch && matchesCategory;
+      const matchStore = storeFilter === 'Todos' || storeId === storeFilter;
+      return matchesSearch && matchesCategory && matchStore;
     });
   });
 
@@ -72,9 +125,6 @@ export class CatalogClient implements OnInit {
 
   agregarAlCarrito(prod: ProductsResponse) {
     const productId = prod.id;
-
-    // ✅ FIX: el backend ahora SIEMPRE manda el storeId real del producto.
-    // Ya no usamos localStorage ni el fallback hardcodeado a 18.
     const storeId = (prod as any).storeId || (prod as any).store?.id;
 
     if (!storeId) {
