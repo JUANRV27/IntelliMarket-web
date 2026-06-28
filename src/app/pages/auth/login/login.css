@@ -110,3 +110,23 @@
   margin-top: 4px;
   display: block;
 }
+
+/* Mensaje de credenciales incorrectas */
+.login-error-msg {
+  color: #e74c3c;
+  background-color: #fdf0f0;
+  border: 1px solid #fadbd8;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
