@@ -26,10 +26,12 @@ export class PurchaseHistoryComponent implements OnInit {
     let result = this.orders();
 
     if (start) {
-      result = result.filter(o => o.createdAt >= start); // Ajusta 'createdAt' según tu DTO de Java
+      // Cambiado 'o.createdAt' por 'o.date' que es la propiedad real mapeada
+      result = result.filter(o => o.date !== 'Sin fecha' && o.date >= start);
     }
     if (end) {
-      result = result.filter(o => o.createdAt <= end);
+      // Cambiado 'o.createdAt' por 'o.date'
+      result = result.filter(o => o.date !== 'Sin fecha' && o.date <= end);
     }
     return result;
   });
