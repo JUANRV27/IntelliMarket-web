@@ -21,6 +21,22 @@
     </div>
   </section>
 
+  <section class="seller-options-section" style="margin: 15px 0;">
+    <div class="options-grid" style="display: flex; gap: 10px; justify-content: center;">
+      
+      <div class="option-card" (click)="goToSettingsView()" 
+           style="cursor: pointer; background: linear-gradient(135deg, #2c70dd 100%); width: 180px; height: 38px; border-radius: 6px; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h4 style="margin: 0; font-size: 13px; font-weight: 500;">⚙️ Configurar Tienda</h4>
+      </div>
+
+      <div class="option-card" (click)="goToProfile()" 
+           style="cursor: pointer; background: linear-gradient(135deg,  #2c70dd 100%); width: 180px; height: 38px; border-radius: 6px; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <h4 style="margin: 0; font-size: 13px; font-weight: 500;">👤 Mi Perfil</h4>
+      </div>
+
+    </div>
+  </section>
+
   <section class="catalog-ops-bar">
     <div class="search-box">
       <span class="search-icon">🔍</span>
@@ -73,17 +89,6 @@
         }
       </div>
     }
-  </section>
-
-  <section class="seller-options-section">
-    <div class="options-grid">
-      <div class="option-card" (click)="goToSettingsView()" style="cursor: pointer; background: linear-gradient(135deg, #475569 0%, #1e293b 100%);">
-        <h4>⚙️ Configurar mi Tienda</h4>
-      </div>
-      <div class="option-card" (click)="goToProfile()" style="cursor: pointer; background: linear-gradient(135deg, #475569 0%, #1e293b 100%);">
-        <h4>👤 Mi Perfil</h4>
-      </div>
-    </div>
   </section>
 
   @if (showAddModal()) {
