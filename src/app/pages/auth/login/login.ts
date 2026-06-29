@@ -18,6 +18,7 @@ export class Login {
   private router         = inject(Router);
   private authService    = inject(AuthService);
   private tokenService   = inject(TokenService);
+
   private profileService = inject(ProfileService);
   private cdr            = inject(ChangeDetectorRef);
   private inventoryService = inject(InventoryService);
@@ -61,5 +62,12 @@ export class Login {
         this.errorMessage = err.error?.message || 'Correo o contraseña incorrectos.';
       }
     });
+  }
+
+  // Limpia todo el contexto para iniciar desde cero
+  cancelarLogin() {
+    this.errorMessage = '';
+    this.email = '';
+    this.password = '';
   }
 }

@@ -36,8 +36,21 @@
     <button type="submit" class="btn-primary">Entrar a mi cuenta</button>
     
     @if (errorMessage) {
-      <div class="error-message-msg">
-        {{ errorMessage }}
+      <div class="login-modal-overlay">
+        <div class="login-modal-card">
+          <div class="login-modal-icon">⚠️</div>
+          <h3>Credenciales erróneas</h3>
+          <p class="login-modal-text">{{ errorMessage }}</p>
+          
+          <div class="login-modal-actions">
+            <button type="button" class="btn-modal-retry" (click)="ocultarError()">
+              Intentar de nuevo
+            </button>
+            <button type="button" class="btn-modal-cancel" (click)="cancelarLogin()">
+              Cancelar
+            </button>
+          </div>
+        </div>
       </div>
     }
     
