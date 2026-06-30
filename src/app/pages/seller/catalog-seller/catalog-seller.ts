@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { Category } from '../../../models/category-products';
 import { DecimalPipe, CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-catalog-seller',
@@ -16,7 +17,7 @@ import { Router } from '@angular/router';
 })
 export class CatalogSeller implements OnInit {
   private inventoryService = inject(InventoryService); // 💡 Conexión al backend
-
+  private toastService = inject(ToastService); // 💡 Inyectamos el servicio de notificaciones
   // Estado reactivo real de productos traídos de Spring Boot
   productsInStock = signal<any[]>([]);
   storeId = signal<string>('');
@@ -125,7 +126,7 @@ export class CatalogSeller implements OnInit {
       const file = files[0];
 
       if (!file.type.startsWith('image/')) {
-        alert('Por favor, selecciona un archivo de imagen válido (PNG, JPG, JPEG).');
+        this.toastService.error('Por favor, selecciona un archivo de imagen válido (PNG, JPG, JPEG).');
         return;
       }
 
@@ -150,7 +151,7 @@ export class CatalogSeller implements OnInit {
   // 💡 CONEXIÓN REAL: Registrar producto desde el modal directo a la BD (US-05)
   submitProduct(): void {
     if (!this.newProdName().trim() || !this.newProdPrice() || !this.newProdDescription().trim()) {
-      alert('Por favor complete todos los campos obligatorios');
+      this.toastService.error('Por favor complete todos los campos obligatorios');
       return;
     }
 
@@ -170,11 +171,11 @@ export class CatalogSeller implements OnInit {
       // Aquí invocas el método PUT de tu servicio de inventario
       this.inventoryService.updateProduct(this.editingProductId()!, this.storeId(), payload).subscribe({
         next: (res) => {
-          alert('¡Producto actualizado con éxito!');
+          this.toastService.success('¡Producto actualizado con éxito!');
           this.closeModal();
           this.loadRealCatalog();
         },
-        error: (err) => alert('Error al actualizar: ' + (err.error?.message || err.message))
+        error: (err) => this.toastService.error('Error al actualizar: ' + (err.error?.message || err.message))
       });
 
     } else {
@@ -182,11 +183,11 @@ export class CatalogSeller implements OnInit {
       console.log('[CATALOG] Registrando nuevo producto...', payload);
       this.inventoryService.createProduct(this.storeId(), payload).subscribe({
         next: (res) => {
-          alert('¡Producto añadido al catálogo!');
+          this.toastService.success('¡Producto añadido al catálogo!');
           this.closeModal();
           this.loadRealCatalog();
         },
-        error: (err) => alert('Error al guardar: ' + (err.error?.message || err.message))
+        error: (err) => this.toastService.error('Error al guardar: ' + (err.error?.message || err.message))
       });
     }
   }

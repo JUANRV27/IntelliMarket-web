@@ -45,7 +45,7 @@ export class Login {
         if (role === 'SELLER') {
           this.storeService.getMyStore().subscribe({
             next: (store) => {
-              // ✅ Guardar ID y NOMBRE de la tienda
+              //  Guardar ID y NOMBRE de la tienda
               localStorage.setItem('intellimarket.storeId',   store.id.toString());
               localStorage.setItem('intellimarket.storeName', store.name);
               this.router.navigate(['/seller/catalog']);
@@ -55,11 +55,12 @@ export class Login {
             }
           });
         } else {
-          this.router.navigate(['/']);
+          this.router.navigate(['/catalog']);
         }
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Correo o contraseña incorrectos.';
+        this.cdr.detectChanges(); //Fuerza render inmediato del modal
       }
     });
   }

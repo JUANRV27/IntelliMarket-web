@@ -4,6 +4,8 @@ import { RouterLink, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { OrderResponse } from '../../models/order-response';
+import { ToastService } from '../../services/toast.service';
+
 
 @Component({
   selector: 'app-cart',
@@ -16,6 +18,7 @@ export class CartComponent {
   cartService = inject(CartService);
   private orderService = inject(OrderService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   public showPaymentModal = signal<boolean>(false);
   public isCheckoutLoading = signal<boolean>(false);
@@ -53,7 +56,7 @@ export class CartComponent {
       error: (err) => {
         this.isUpdatingQuantity.set(false);
         console.error('🔴 Error al modificar la cantidad:', err);
-        alert(err.error?.message || 'No hay suficiente stock en bodega para añadir más.');
+        this.toastService.error(err.error?.message || 'No hay suficiente stock en bodega para añadir más.');
       }
     });
   }
@@ -72,7 +75,7 @@ export class CartComponent {
   // Esto NO vacía el carrito todavía — eso ocurre en el backend al confirmar el pago.
   procederAlPago() {
     if (this.cartService.cartItems().length === 0) {
-      alert('No hay productos en tu carrito de compras.');
+      this.toastService.error('No hay productos en tu carrito de compras.');
       return;
     }
 
@@ -91,7 +94,7 @@ export class CartComponent {
       error: (err) => {
         this.isCheckoutLoading.set(false);
         console.error('🔴 Error en checkout:', err.error);
-        alert('Error en checkout: ' + (err.error?.message || 'Inconsistencia de stock en tienda.'));
+        this.toastService.error('Error en checkout: ' + (err.error?.message || 'Inconsistencia de stock en tienda.'));
       }
     });
   }
@@ -116,11 +119,11 @@ export class CartComponent {
       this.showPaymentModal.set(false);
 
       if (exito) {
-        alert(`¡Pago procesado con éxito! Se generaron ${this.pendingOrders.length} orden(es).`);
+        this.toastService.success(`¡Pago procesado con éxito! Se generaron ${this.pendingOrders.length} orden(es).`);
         this.cartService.cartState.set(null); // el carrito ya fue vaciado en el backend al hacer checkout()
         this.router.navigate(['/history']);
       } else {
-        alert('Transacción rechazada. El stock reservado ha sido devuelto al inventario.');
+        this.toastService.error('Transacción rechazada. El stock reservado ha sido devuelto al inventario.');
         this.cartService.loadCartFromBackend().subscribe();
       }
 
@@ -138,7 +141,7 @@ export class CartComponent {
       },
       error: (err) => {
         this.isProcessingTransaction.set(false);
-        alert(`Error procesando el pago de la orden #${order.id}: ` + (err.error?.message || err.message));
+        this.toastService.error(`Error procesando el pago de la orden #${order.id}: ` + (err.error?.message || err.message));
       }
     });
   }

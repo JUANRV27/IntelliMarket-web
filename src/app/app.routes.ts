@@ -51,14 +51,14 @@ export const routes: Routes = [
   /*{ path: 'profile', component: ProfileDetail, canActivate: [authGuard] },
   { path: 'profile/edit', component: ProfileEdit, canActivate: [authGuard] },*/
    // 2. PROFILE — rutas hijas bajo /profile
-  {
+  /*{
     path: 'profile',
     canActivate: [authGuard],
     children: [
       { path: '',     loadComponent: () => import('./pages/profile/detail/detail').then(m => m.ProfileDetail) },
       { path: 'edit', loadComponent: () => import('./pages/profile/edit/edit').then(m => m.ProfileEdit) }
     ]
-  },
+  },*/
   
   // 2. MÓDULO PRIVADO DEL VENDEDOR (Protegido por authGuard)
   /*{
@@ -103,7 +103,16 @@ export const routes: Routes = [
       { path: 'catalog',       loadComponent: () => import('./pages/client/catalog-client/catalog-client').then(m => m.CatalogClient) },
       { path: 'cart',          loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent) },
       { path: 'join-as-seller', loadComponent: () => import('./pages/seller/landing-seller/landing-seller').then(m => m.LandingSeller) },
-      { path: 'history', loadComponent: () => import('./pages/client/purchase-history/purchase-history').then(m => m.PurchaseHistoryComponent) }
+      { path: 'history', loadComponent: () => import('./pages/client/purchase-history/purchase-history').then(m => m.PurchaseHistoryComponent) },
+
+      {
+        path: 'profile',
+        canActivate: [authGuard],
+        children: [
+          { path: '',     loadComponent: () => import('./pages/profile/detail/detail').then(m => m.ProfileDetail) },
+          { path: 'edit', loadComponent: () => import('./pages/profile/edit/edit').then(m => m.ProfileEdit) }
+        ]
+      }
     ]
   },
 

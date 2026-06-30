@@ -4,6 +4,7 @@ import { InventoryService } from '../../../services/inventory.service'; // 💡 
 import { ProductsRequest } from '../../../models/products-request';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-product-detail-seller',
@@ -16,6 +17,7 @@ export class ProductDetailSeller implements OnInit {
   route = inject(ActivatedRoute);
   router = inject(Router);
   private inventoryService = inject(InventoryService);
+  private toastService = inject(ToastService);
 
   productId = signal<string | null>(null);
   storeId = signal<string>('');
@@ -120,11 +122,11 @@ export class ProductDetailSeller implements OnInit {
         
         this.inventoryService.updateProduct(id, this.storeId(), payload).subscribe({
           next: () => {
-            alert('¡Especificaciones del producto actualizadas con éxito!');
+            this.toastService.success('¡Especificaciones del producto actualizadas con éxito!');
             this.isEditing.set(false);
             this.loadProductFromBackend(id); // Recargamos de la BD
           },
-          error: (err) => alert('Error al actualizar: ' + (err.error?.message || err.message))
+          error: (err) => this.toastService.error('Error al actualizar: ' + (err.error?.message || err.message))
         });
       }
     } else {
@@ -141,7 +143,7 @@ export class ProductDetailSeller implements OnInit {
   checkStockAlert(): void {
     const prod = this.product();
     if (prod) {
-      alert(`Inventario actual: Quedan ${prod.stock || 0} unidades físicas en almacén.`);
+      this.toastService.success(`Inventario actual: Quedan ${prod.stock || 0} unidades físicas en almacén.`);
     }
   }
 }

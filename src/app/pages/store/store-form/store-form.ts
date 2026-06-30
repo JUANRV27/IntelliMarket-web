@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { StoreService } from '../../../services/store.service';
 import { StoreRequest } from '../../../models/store-request';
 import { StoreResponse } from '../../../models/store-response';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-store-form',
@@ -16,6 +17,7 @@ import { StoreResponse } from '../../../models/store-response';
 export class StoreFormComponent {
   private storeService = inject(StoreService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   name = '';
   address = '';
@@ -53,7 +55,7 @@ export class StoreFormComponent {
           localStorage.setItem('intellimarket.storeId', '1');
         }
     
-        alert(`¡Tienda "${res.name}" creada con éxito!`);
+        this.toastService.success(`¡Tienda "${res.name}" creada con éxito!`);
         console.log('Redirigiendo al catálogo unificado...');
         this.router.navigate(['/seller/catalog']);
               },

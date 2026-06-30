@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../../services/profile.service';
 import { TokenService } from '../../../services/token.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-profile-customer',
@@ -16,6 +17,7 @@ export class ProfileCustomer implements OnInit {
   private profileService = inject(ProfileService);
   private tokenService   = inject(TokenService);
   private router         = inject(Router);
+  private toastService   = inject(ToastService);
 
   isLoading    = signal(true);
   errorMessage = signal('');
@@ -91,10 +93,10 @@ export class ProfileCustomer implements OnInit {
         this.profileData.set(updated);
         this.isFirstTime.set(false);
         this.isEditing.set(false);
-        alert('¡Perfil guardado con éxito!');
+        this.toastService.success('¡Perfil guardado con éxito!');
       },
       error: (err) => {
-        alert('Error al guardar: ' + (err.error?.message || 'Error interno'));
+        this.toastService.error('Error al guardar: ' + (err.error?.message || 'Error interno'));
       }
     });
   }

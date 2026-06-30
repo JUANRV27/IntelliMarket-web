@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
+import { ToastService } from '../../../../services/toast.service';
 
 @Component({
   selector: 'app-register-seller',
@@ -13,6 +14,7 @@ import { AuthService } from '../../../../services/auth.service';
 export class RegisterSeller {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   // Variables para el backend
   firstName = '';
@@ -37,7 +39,7 @@ export class RegisterSeller {
     this.authService.register(payload).subscribe({
       next: (res) => {
         console.log('Registro de vendedor exitoso', res);
-        alert('¡Cuenta de Negocio creada con éxito! Ahora inicia sesión.');
+        this.toastService.success('¡Negocio registrado con éxito! Ahora puedes iniciar sesión.')
         this.router.navigate(['/auth/login']);
       },
       error: (err) => {

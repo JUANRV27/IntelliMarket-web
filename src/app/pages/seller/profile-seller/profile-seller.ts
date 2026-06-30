@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ProfileService } from '../../../services/profile.service';
 import { TokenService } from '../../../services/token.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-profile-seller',
@@ -14,8 +15,9 @@ import { TokenService } from '../../../services/token.service';
 })
 export class ProfileSeller implements OnInit {
   private profileService = inject(ProfileService);
-  private tokenService  = inject(TokenService);
-  private router        = inject(Router);
+  private tokenService   = inject(TokenService);
+  private router         = inject(Router);
+  private toastService   = inject(ToastService);
 
   isLoading     = signal(true);
   errorMessage  = signal('');
@@ -60,7 +62,8 @@ export class ProfileSeller implements OnInit {
   // Guardar datos en primera visita
   completeProfile(): void {
     if (!this.editPhone.trim()) {
-      alert('El número de teléfono es obligatorio.');
+      //alert('El número de teléfono es obligatorio.');
+      this.toastService.error('El número de teléfono es obligatorio.');
       return;
     }
     this.saveToBackend();
@@ -78,7 +81,8 @@ export class ProfileSeller implements OnInit {
 
   saveProfile(): void {
     if (!this.editPhone.trim()) {
-      alert('El número de teléfono es obligatorio.');
+      //alert('El número de teléfono es obligatorio.');
+      this.toastService.error('El número de teléfono es obligatorio.');
       return;
     }
     this.saveToBackend();
@@ -93,10 +97,10 @@ export class ProfileSeller implements OnInit {
         this.profileData.set(updated);
         this.isFirstTime.set(false);
         this.isEditing.set(false);
-        alert('¡Perfil guardado con éxito!');
+        this.toastService.success('¡Perfil guardado con éxito!');
       },
       error: (err) => {
-        alert('Error al guardar: ' + (err.error?.message || 'Error interno'));
+        this.toastService.error('Error al guardar: ' + (err.error?.message || 'Error interno'));
       }
     });
   }

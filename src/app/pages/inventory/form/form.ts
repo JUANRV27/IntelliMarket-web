@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InventoryService } from '../../../services/inventory.service';
 import { ProductsRequest } from '../../../models/products-request';
+import { ToastService } from '../../../services/toast.service';
+
 
 @Component({
   selector: 'app-product-form',
@@ -17,6 +19,7 @@ export class FormComponent implements OnInit {
   private inventoryService = inject(InventoryService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private toastService = inject(ToastService);
 
   public productForm!: FormGroup;
   public isEditMode: boolean = false;
@@ -135,7 +138,7 @@ export class FormComponent implements OnInit {
       // Dispara US-06 (PUT /api/inventory/products/{id}?storeId=X)
       this.inventoryService.updateProduct(this.productId, this.storeId, requestData).subscribe({
         next: (res) => {
-          alert(res.message); // Muestra el mensaje de éxito enviado por el backend
+          this.toastService.success(res.message); // Muestra el mensaje de éxito enviado por el backend
           this.router.navigate(['/seller/inventory']);
         },
         error: (err) => alert('Error al actualizar el producto: ' + err.message)
@@ -144,10 +147,10 @@ export class FormComponent implements OnInit {
       // Dispara US-05 (POST /api/inventory/products?storeId=X)
       this.inventoryService.createProduct(this.storeId, requestData).subscribe({
         next: (res) => {
-          alert(res.message); // Muestra el mensaje de éxito enviado por el backend
+          this.toastService.success(res.message); // Muestra el mensaje de éxito enviado por el backend
           this.router.navigate(['/seller/inventory']);
         },
-        error: (err) => alert('Error al registrar el producto: ' + err.message)
+        error: (err) => this.toastService.error('Error al registrar el producto: ' + err.message)
       });
     }
   }

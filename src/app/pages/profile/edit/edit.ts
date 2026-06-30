@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TokenService } from '../../../services/token.service';
 import { ProfileService } from '../../../services/profile.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-profile-edit',
@@ -12,9 +13,10 @@ import { ProfileService } from '../../../services/profile.service';
   styleUrl: 'edit.css'
 })
 export class ProfileEdit implements OnInit {
-  private tokenService = inject(TokenService);
+  private tokenService   = inject(TokenService);
   private profileService = inject(ProfileService);
-  private router = inject(Router);
+  private router         = inject(Router);
+  private toastService   = inject(ToastService);
 
   userRole = this.tokenService.role;
   
@@ -48,7 +50,7 @@ export class ProfileEdit implements OnInit {
 
   onGuardar() {
     if (!this.phone.trim()) {
-      alert('El número de teléfono es obligatorio.');
+      this.toastService.error('El número de teléfono es obligatorio.');
       return;
     }
 
@@ -73,7 +75,7 @@ export class ProfileEdit implements OnInit {
       },
       error: (err) => {
         console.error('Error guardando en el backend', err);
-        alert('Hubo un error al guardar. Revisa la consola.');
+        this.toastService.error('Hubo un error al guardar. Revisa la consola.');
       }
     });
   }

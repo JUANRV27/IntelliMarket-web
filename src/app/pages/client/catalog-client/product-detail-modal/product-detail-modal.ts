@@ -68,9 +68,7 @@ export class ProductDetailModal implements OnInit {
     }
 
     this.cartService.addToCartBackend(productId, storeId, 1).subscribe({
-      next: () => {
-        alert(`¡${this.product.name} agregado al carrito!`);
-      },
+      next: () => {},
       error: (err) => console.error('Error al añadir desde el modal:', err)
     });
   }

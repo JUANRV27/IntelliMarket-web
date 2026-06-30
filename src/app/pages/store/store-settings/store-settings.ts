@@ -3,6 +3,8 @@ import { StoreService } from '../../../services/store.service'; // Ajusta la rut
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../services/toast.service';
+
 
 @Component({
   selector: 'app-store-settings',
@@ -14,6 +16,7 @@ import { Router } from '@angular/router';
 export class StoreSettings implements OnInit {
   private storeService = inject(StoreService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   storeId = signal<string>('');
   isLoading = signal<boolean>(true);
@@ -45,7 +48,7 @@ export class StoreSettings implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar datos de la tienda:', err);
-        alert('No se pudieron recuperar los datos de la tienda');
+        this.toastService.error('No se pudieron recuperar los datos de la tienda');
         this.isLoading.set(false);
       }
     });
@@ -54,7 +57,7 @@ export class StoreSettings implements OnInit {
   // Enviar los datos actualizados al backend
   onSubmitStore(): void {
     if (!this.storeName().trim() || !this.storeAddress().trim() || !this.storeDistrict().trim()) {
-      alert('Por favor complete todos los campos obligatorios');
+      this.toastService.error('Por favor complete todos los campos obligatorios');
       return;
     }
 
@@ -68,13 +71,13 @@ export class StoreSettings implements OnInit {
 
     this.storeService.updateStore(this.storeId(), payload).subscribe({
       next: (res) => {
-        alert('¡Datos de la tienda actualizados con éxito!');
+        this.toastService.success('¡Datos de la tienda actualizados con éxito!');
         // Opcional: Actualizar el nombre de la tienda en memoria si lo usas en un navbar
         this.router.navigate(['/seller/catalog']);
       },
       error: (err) => {
         console.error('Error al actualizar tienda:', err);
-        alert('Error al guardar cambios: ' + (err.error?.message || err.message));
+        this.toastService.error('Error al guardar cambios: ' + (err.error?.message || err.message));
       }
     });
   }

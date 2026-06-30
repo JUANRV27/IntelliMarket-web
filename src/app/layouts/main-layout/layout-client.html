@@ -1,6 +1,6 @@
 <header class="main-navbar">
   <div class="nav-left">
-    <a routerLink="/" class="nav-logo">IntelliMarket</a>
+    <a [routerLink]="tokenService.isLoggedIn() ? '/catalog' : '/'" class="nav-logo">IntelliMarket</a>
     <a routerLink="/catalog" class="nav-link">Catálogo</a>
   </div>
 

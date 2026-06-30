@@ -136,7 +136,7 @@ export class CatalogClient implements OnInit {
     console.log(`📦 Enviando al carrito -> productId: ${productId}, storeId: ${storeId}`);
 
     this.cartService.addToCartBackend(productId, storeId, 1).subscribe({
-      next: () => alert(`¡${prod.name} agregado al carrito con éxito!`),
+      next: () => {},
       error: (err) => {
         console.error('🔴 Error en el backend:', err.error);
         alert(`Error: ${err.error?.message || 'No disponible en esta tienda'}`);
