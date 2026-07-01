@@ -7,8 +7,17 @@
     </div>
 
     <!-- Nombre de la tienda en el centro -->
-    <div class="store-name-badge">
-      🏪 {{ storeName() }}
+    <div class="store-name-badge" style="display: flex; align-items: center; gap: 8px;">
+      
+      @if (storeLogo()) {
+        <img [src]="storeLogo()" 
+             alt="Logo de {{ storeName() }}" 
+             style="width: 24px; height: 24px; object-fit: contain; border-radius: 4px; background-color: #f8fafc; padding: 2px; border: 1px solid #cbd5e1;" />
+      } @else {
+        <span>🏪</span>
+      }
+
+      <span>{{ storeName() }}</span>
     </div>
 
     <!-- Navigation tabs -->

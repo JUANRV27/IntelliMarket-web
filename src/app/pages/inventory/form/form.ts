@@ -38,7 +38,7 @@ export class FormComponent implements OnInit {
     const savedStoreId = localStorage.getItem('intellimarket.storeId') || '1';
     this.storeId = savedStoreId;
 
-    // 💡 TRUCO DEFENSIVO: Si el ID guardado es el del usuario (ej: 18), 
+    // TRUCO DEFENSIVO: Si el ID guardado es el del usuario (ej: 18), 
     // le preguntamos al stock cuál es el verdadero ID de la tienda para no romper el backend.
     this.inventoryService.getStockByStore(this.storeId).subscribe({
       next: (products: any[]) => {

@@ -1,11 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { StoreService } from '../../../services/store.service';
 import { StoreRequest } from '../../../models/store-request';
 import { StoreResponse } from '../../../models/store-response';
-import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-store-form',
@@ -16,51 +15,94 @@ import { ToastService } from '../../../services/toast.service';
 })
 export class StoreFormComponent {
   private storeService = inject(StoreService);
-  private router = inject(Router);
-  private toastService = inject(ToastService);
+  private router       = inject(Router);
 
-  name = '';
-  address = '';
-  district = '';
+  // Propiedades bindeades con ngModel en el HTML
+  name         = '';
+  address      = '';
+  district     = '';
   errorMessage = '';
 
-  onCreateStore() {
+  // SEÑAL REACTIVA: Resuelve el problema de actualización asíncrona de la UI
+  public imagePreview = signal<string | null>(null);
+  
+  // Almacena el valor Base64 puro listo para viajar en el JSON del Payload
+  private imageBase64: string | null = null;
+
+  /**
+   * Captura el archivo del input, lo transforma a Base64 de forma asíncrona
+   * e impacta la señal reactiva para forzar el repintado inmediato en el HTML.
+   */
+  onFileSelected(event: Event): void {
+    const input = event.currentTarget as HTMLInputElement;
+    const file  = input.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor, selecciona un archivo de imagen válido.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      
+      // Notificamos a la señal. Angular redibuja el bloque @else en milisegundos.
+      this.imagePreview.set(base64);
+      this.imageBase64 = base64;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /**
+   * Precarga una imagen existente (Útil si en el futuro reutilizas este formulario para Editar)
+   */
+  preloadImage(base64Image: string): void {
+    this.imagePreview.set(base64Image);
+    this.imageBase64 = base64Image;
+  }
+
+  /**
+   * Resetea el flujo de la imagen permitiendo que vuelva a aparecer la zona de clic (Dropzone)
+   */
+  removeImage(): void {
+    this.imagePreview.set(null);
+    this.imageBase64 = null;
+  }
+
+  /**
+   * Envía el JSON estructurado al StoreService para dar de alta la tienda en PostgreSQL
+   */
+  onCreateStore(): void {
     this.errorMessage = '';
 
+    // Validación defensiva básica en el cliente
     if (!this.name.trim() || !this.address.trim() || !this.district.trim()) {
       this.errorMessage = 'Por favor, complete todos los campos obligatorios.';
       return;
     }
 
+    // Construcción del Payload respetando la interfaz StoreRequest
     const payload: StoreRequest = {
-      name: this.name,
-      address: this.address,
-      district: this.district
+      name:     this.name.trim(),
+      address:  this.address.trim(),
+      district: this.district.trim(),
+      imageUrl: this.imageBase64 || undefined // Viaja como String Base64 si existe
     };
-
-    console.log('Enviando solicitud de creación de tienda al backend:', payload);
 
     this.storeService.createStore(payload).subscribe({
       next: (res: StoreResponse) => {
-        console.log('Tienda creada exitosamente en el backend (StoreResponse):', res);
-        
-        // 💡 SOLUCIÓN CRÍTICA: Capturamos el verdadero ID autoincremental de la base de datos 
-        // enviado por el backend (res.id) y reemplazamos el id erróneo en el LocalStorage.
-        if (res && res.id) {
-          localStorage.setItem('intellimarket.storeId', res.id.toString());
+        if (res?.id) {
+          // Guardamos las credenciales de la tienda operativa en almacenamiento local
+          localStorage.setItem('intellimarket.storeId',   res.id.toString());
           localStorage.setItem('intellimarket.storeName', res.name);
-          console.log(`[STORAGE] Sincronizado intellimarket.storeId con el ID real de BD: ${res.id}`);
-        } else {
-          console.warn('El backend no retornó un ID válido en la respuesta. Usando valor "1" de contingencia.');
-          localStorage.setItem('intellimarket.storeId', '1');
+          localStorage.setItem('intellimarket.storeLogo', res.imageUrl || this.imageBase64 || '');
         }
-    
-        this.toastService.success(`¡Tienda "${res.name}" creada con éxito!`);
-        console.log('Redirigiendo al catálogo unificado...');
+        alert(`¡Tienda "${res.name}" creada con éxito!`);
         this.router.navigate(['/seller/catalog']);
-              },
+      },
       error: (err) => {
-        console.error('Error al crear la tienda:', err);
+        console.error('🔴 Error al crear la tienda:', err);
         this.errorMessage = err.error?.message || 'Error al procesar el registro de la tienda.';
       }
     });

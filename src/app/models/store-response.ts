@@ -5,5 +5,6 @@ export interface StoreResponse {
     district: string;
     ownerName: string;
     isActive: boolean;
+    imageUrl?: string;
     createdAt: string;
 }

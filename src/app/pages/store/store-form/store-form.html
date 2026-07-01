@@ -1,6 +1,6 @@
 <div class="store-shell">
   <div class="store-layout-container animate-fade-in">
-    
+
     <div class="store-visual-panel">
       <div class="panel-overlay-content">
         <div class="brand-badge">IntelliMarket Enterprise</div>
@@ -32,22 +32,14 @@
         }
 
         <form (ngSubmit)="onCreateStore()" #formStore="ngForm" class="modern-form">
-          
+
           <div class="form-group">
             <label for="name">Nombre de la Tienda <span class="required">*</span></label>
             <div class="input-with-icon">
-              <span class="input-addon-icon">🏪</span>
-              <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                [(ngModel)]="name" 
-                #nameCtrl="ngModel"
-                maxlength="30" 
-                placeholder="Ej. Mi Bodega Express" 
-                required 
-                [class.input-error]="nameCtrl.invalid && nameCtrl.touched"
-              />
+              <!--span class="input-addon-icon">🏪</!--span-->
+              <input type="text" id="name" name="name" [(ngModel)]="name" #nameCtrl="ngModel"
+                     maxlength="30" placeholder="Ej. Mi Bodega Express" required
+                     [class.input-error]="nameCtrl.invalid && nameCtrl.touched" />
             </div>
             @if (nameCtrl.invalid && nameCtrl.touched) {
               <small class="error-text">El nombre de la tienda es obligatorio.</small>
@@ -57,17 +49,10 @@
           <div class="form-group">
             <label for="address">Dirección de la Tienda <span class="required">*</span></label>
             <div class="input-with-icon">
-              <span class="input-addon-icon">📍</span>
-              <input 
-                type="text" 
-                id="address" 
-                name="address" 
-                [(ngModel)]="address" 
-                #addressCtrl="ngModel"
-                placeholder="Ej. Av. Universitaria 456" 
-                required 
-                [class.input-error]="addressCtrl.invalid && addressCtrl.touched"
-              />
+              <!--span class="input-addon-icon">📍</!--span-->
+              <input type="text" id="address" name="address" [(ngModel)]="address" #addressCtrl="ngModel"
+                     placeholder="Ej. Av. Universitaria 456" required
+                     [class.input-error]="addressCtrl.invalid && addressCtrl.touched" />
             </div>
             @if (addressCtrl.invalid && addressCtrl.touched) {
               <small class="error-text">Necesitamos tu dirección para ubicar la tienda.</small>
@@ -77,33 +62,50 @@
           <div class="form-group">
             <label for="district">Distrito <span class="required">*</span></label>
             <div class="input-with-icon">
-              <span class="input-addon-icon">🏙️</span>
-              <input 
-                type="text" 
-                id="district" 
-                name="district" 
-                [(ngModel)]="district" 
-                #districtCtrl="ngModel"
-                maxlength="50" 
-                placeholder="Ej. La Molina" 
-                required 
-                [class.input-error]="districtCtrl.invalid && districtCtrl.touched"
-              />
+              <!--span class="input-addon-icon">🏙️</!--span-->
+              <input type="text" id="district" name="district" [(ngModel)]="district" #districtCtrl="ngModel"
+                     maxlength="50" placeholder="Ej. La Molina" required
+                     [class.input-error]="districtCtrl.invalid && districtCtrl.touched" />
             </div>
             @if (districtCtrl.invalid && districtCtrl.touched) {
               <small class="error-text">El distrito es obligatorio.</small>
             }
           </div>
 
+          <div class="form-group">
+            <label>Logo o Imagen de la Tienda <span class="optional">(opcional)</span></label>
+
+            @if (!imagePreview()) {
+              <label for="storeImageFile" class="image-upload-zone">
+                <!--div class="upload-icon">🖼️</!--div-->
+                <p>Haz clic para subir el logo de tu tienda</p>
+                <small>JPG, PNG o WebP</small>
+                <input id="storeImageFile" type="file" accept="image/*"
+                       (change)="onFileSelected($event)" style="display:none">
+              </label>
+            } @else {
+              <div class="image-preview-box" style="text-align: center; margin-top: 10px;">
+                <img [src]="imagePreview()" alt="Logo de la tienda" class="image-preview" 
+                    style="max-width: 100%; max-height: 150px; object-fit: contain; border-radius: 8px; border: 1px dashed #cbd5e1; padding: 4px;" />
+                
+                <div class="image-preview-actions" style="margin-top: 8px;">
+                  <span class="upload-status success" style="display: block; margin-bottom: 5px; color: #10b981; font-size: 12px;">✓ Logo cargado</span>
+                  <button type="button" class="btn-remove-image" (click)="removeImage()">
+                    Cambiar imagen
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
           <div class="actions">
-            <button 
-              type="submit" 
-              class="btn-submit" 
-              [disabled]="formStore.invalid"
-              [class.btn-disabled]="formStore.invalid">
-              Crear y Abrir Tienda ⚡
+            <button type="submit" class="btn-submit"
+                    [disabled]="formStore.invalid"
+                    [class.btn-disabled]="formStore.invalid">
+              Crear y Abrir Tienda
             </button>
           </div>
+
         </form>
       </div>
     </div>
