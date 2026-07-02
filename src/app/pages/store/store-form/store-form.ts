@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { StoreService } from '../../../services/store.service';
 import { StoreRequest } from '../../../models/store-request';
 import { StoreResponse } from '../../../models/store-response';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-store-form',
@@ -16,6 +17,7 @@ import { StoreResponse } from '../../../models/store-response';
 export class StoreFormComponent {
   private storeService = inject(StoreService);
   private router       = inject(Router);
+  private toastService = inject(ToastService);
 
   // Propiedades bindeades con ngModel en el HTML
   name         = '';
@@ -42,7 +44,7 @@ export class StoreFormComponent {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('Por favor, selecciona un archivo de imagen válido.');
+      this.toastService.error('Por favor, selecciona un archivo de imagen válido.');
       return;
     }
 
@@ -87,7 +89,7 @@ export class StoreFormComponent {
 
     // Validación defensiva básica en el cliente
     if (!this.name.trim() || !this.address.trim() || !this.district.trim()) {
-      this.errorMessage = 'Por favor, complete todos los campos obligatorios.';
+      this.toastService.error('Por favor, complete todos los campos obligatorios.');
       return;
     }
 
@@ -107,12 +109,12 @@ export class StoreFormComponent {
           localStorage.setItem('intellimarket.storeName', res.name);
           localStorage.setItem('intellimarket.storeLogo', res.imageUrl || this.imageBase64 || '');
         }
-        this.showSuccessModal.set(true);
-        //alert(`¡Tienda "${res.name}" creada con éxito!`);
-        //this.router.navigate(['/seller/catalog']);
+        this.toastService.success(`¡Tienda "${res.name}" creada con éxito!`);
+        this.router.navigate(['/seller/catalog']);
       },
       error: (err) => {
         console.error('🔴 Error al crear la tienda:', err);
+        this.toastService.error(err.error?.message || 'Error al procesar el registro de la tienda.');
         this.errorMessage = err.error?.message || 'Error al procesar el registro de la tienda.';
       }
     });

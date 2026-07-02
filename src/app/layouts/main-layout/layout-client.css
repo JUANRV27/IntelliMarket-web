@@ -5,7 +5,7 @@
   align-items: center;
   padding: 0 2rem;
   height: 70px;
-  background-color: #ffffff;
+  background-color: #0c8ce9;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
@@ -21,12 +21,12 @@
 .nav-logo {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: white;
   text-decoration: none;
 }
 
 .nav-link {
-  color: #555;
+  color: white;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
@@ -34,6 +34,21 @@
 
 .nav-link:hover {
   color: #2c3e50;
+}
+
+.btn-login {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-login:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
 }
 
 /* Botón del Carrito */
@@ -76,14 +91,14 @@
 }
 
 .avatar-circle-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .avatar-circle {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #2c3e50;
+  background-color: white;
   display: flex;
   align-items: center;
   justify-content: center;

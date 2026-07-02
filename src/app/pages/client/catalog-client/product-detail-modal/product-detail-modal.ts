@@ -20,22 +20,20 @@ export class ProductDetailModal implements OnInit {
   @Input() isOpen = false;
   @Output() closeModal = new EventEmitter<void>();
 
-  reviews = signal<Review[]>([]);
+  /*reviews = signal<Review[]>([]);
   loadingReviews = signal(false);
 
   showReviewForm = signal(false);
   reviewAuthor = signal('');
   reviewRating = signal(5);
   reviewComment = signal('');
-  isSubmittingReview = signal(false);
+  isSubmittingReview = signal(false);*/
 
   ngOnInit() {
-    if (this.product?.id) {
-      this.cargarResenas();
-    }
+    if (this.product?.id) {}
   }
 
-  cargarResenas() {
+  /*cargarResenas() {
     this.loadingReviews.set(true);
     this.inventoryService.getProductReviews(this.product.id).subscribe({
       next: (data) => {
@@ -48,7 +46,7 @@ export class ProductDetailModal implements OnInit {
         this.loadingReviews.set(false);
       }
     });
-  }
+  }*/
 
   close() {
     this.closeModal.emit();
@@ -73,7 +71,7 @@ export class ProductDetailModal implements OnInit {
     });
   }
 
-  toggleReviewForm() {
+  /*toggleReviewForm() {
     this.showReviewForm.set(!this.showReviewForm());
   }
 
@@ -111,5 +109,5 @@ export class ProductDetailModal implements OnInit {
 
   renderStars(rating: number): string {
     return '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
-  }
+  }*/
 }

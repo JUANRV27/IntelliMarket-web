@@ -40,13 +40,13 @@
 }
 
 .form-group input:focus {
-  border-color: #2ecc71; /* Verde sutil para diferenciar el flujo de cliente */
+  border-color: #3498db; 
 }
 
 .btn-primary {
   width: 100%;
   padding: 12px;
-  background-color: #2ecc71;
+  background-color: #3498db;
   color: white;
   border: none;
   border-radius: 6px;
@@ -58,7 +58,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #27ae60;
+  background-color: #3498db;
 }
 
 .links {
