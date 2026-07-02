@@ -145,10 +145,10 @@
 }
 
 /* Subtle left highlight bar depending on KPI type */
-.val-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #10b981; }
-.stock-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #3b82f6; }
-.prod-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #8b5cf6; }
-.alert-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #64748b; }
+.val-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #1078b9; }
+.stock-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #0a68ff; }
+.prod-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #17178f; }
+.alert-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #00275d; }
 .alert-card.has-alerts::before { background: #ef4444; }
 
 .kpi-card-inner {

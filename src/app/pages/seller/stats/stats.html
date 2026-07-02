@@ -6,7 +6,7 @@
       <p>Monitorea el valor, stock y estado general de tu tienda en tiempo real.</p>
     </div>
     <button class="btn-refresh" (click)="loadStatsData()" [disabled]="isLoading()">
-      <span *ngIf="!isLoading()">🔄 Actualizar</span>
+      <span *ngIf="!isLoading()">Actualizar</span>
       <span *ngIf="isLoading()">Cargando...</span>
     </button>
   </div>
@@ -29,7 +29,7 @@
     
     <!-- Empty State -->
     <div *ngIf="totalProducts() === 0" class="empty-stats-wrapper">
-      <div class="empty-icon">📦</div>
+      <div class="empty-icon"></div>
       <h3>Tu catálogo está vacío</h3>
       <p>Para ver estadísticas detalladas, primero debes registrar productos en tu inventario.</p>
       <button class="btn-primary" (click)="goToStock()">Ir a Gestión de Inventario</button>
@@ -46,7 +46,7 @@
               <h3 class="kpi-value">S/ {{ totalValue() | number:'1.2-2' }}</h3>
               <span class="kpi-trend positive">Costo total acumulado</span>
             </div>
-            <div class="kpi-icon-box">💰</div>
+            <div class="kpi-icon-box"><img [src]="'assets/fi-rr-dollar.png'" alt="value-icon" class="kpi-icon-img" /></div>
           </div>
         </div>
 
@@ -58,7 +58,7 @@
               <h3 class="kpi-value">{{ totalStock() | number }}</h3>
               <span class="kpi-trend">Unidades disponibles</span>
             </div>
-            <div class="kpi-icon-box">📦</div>
+            <div class="kpi-icon-box"><img [src]="'assets/fi-rr-box-alt.png'" alt="stock-icon" class="kpi-icon-img" /></div>
           </div>
         </div>
 
@@ -70,7 +70,7 @@
               <h3 class="kpi-value">{{ totalProducts() }}</h3>
               <span class="kpi-trend">Variedad de artículos</span>
             </div>
-            <div class="kpi-icon-box">🏷️</div>
+            <div class="kpi-icon-box"><img [src]="'assets/Shopping_Bag_01.svg'" alt="prod-icon" class="kpi-icon-img" /></div>
           </div>
         </div>
 
@@ -87,7 +87,7 @@
               </span>
             </div>
             <div class="kpi-icon-box" [class.pulse]="criticalStockCount() > 0">
-              {{ criticalStockCount() > 0 ? '⚠️' : '✅' }}
+              <img [src]="criticalStockCount() > 0 ? 'assets/Triangle_Warning.svg' : 'assets/Circle_Check.svg'" alt="status-icon" class="kpi-icon-img" />
             </div>
           </div>
         </div>
