@@ -3,14 +3,14 @@
 
     <div class="store-visual-panel">
       <div class="panel-overlay-content">
-        <div class="brand-badge">IntelliMarket Enterprise</div>
+        <div class="brand-badge">IntelliMarket</div>
         <div class="panel-hero-text">
           <h1>¡Da el gran salto digital!</h1>
           <p>Únete a la red de logística y abastecimiento inteligente más grande del mercado comercial.</p>
         </div>
         <div class="panel-footer-features">
-          <div class="feature-item"><span>✦</span> Catálogo Real automatizado</div>
-          <div class="feature-item"><span>✦</span> Control de stock crítico a tiempo real</div>
+          <div class="feature-item"><span></span> Catálogo Real automatizado</div>
+          <div class="feature-item"><span></span> Control de stock crítico a tiempo real</div>
         </div>
       </div>
     </div>
@@ -111,4 +111,33 @@
     </div>
 
   </div>
+
+  @if (showSuccessModal()) {
+    <div class="modal-overlay animate-fade-in" 
+         style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+      
+      <div class="modal-card" 
+           style="background: #ffffff; color: #000000; width: 420px; border-radius: 12px; padding: 30px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0;">
+        
+        <div class="success-icon-wrapper" style="font-size: 48px; margin-bottom: 15px; color: #38bdf8;">
+          🎉
+        </div>
+        
+        <h3 style="margin: 0 0 10px 0; font-size: 22px; font-weight: 600; color: #0f172a;">
+          ¡Configuración Completada!
+        </h3>
+        
+        <p style="margin: 0 0 24px 0; font-size: 14px; color: #475569; line-height: 1.5;">
+          La tienda <strong style="color: #0f172a;">{{ name }}</strong> ha sido creada con éxito. Su entorno de ventas e inventario ya se encuentra operativo.
+        </p>
+        
+        <button type="button" (click)="onNavigateToCatalog()"
+                style="width: 100%; background-color: #38bdf8; color: #ffffff; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s ease, transform 0.1s ease; box-shadow: 0 4px 6px -1px rgba(56, 189, 248, 0.2);"
+                onmouseover="this.style.backgroundColor='#0ea5e9'" 
+                onmouseout="this.style.backgroundColor='#38bdf8'">
+          Continuar al Catálogo
+        </button>
+      </div>
+    </div>
+  }
 </div>

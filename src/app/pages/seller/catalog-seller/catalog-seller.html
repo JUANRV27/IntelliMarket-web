@@ -48,7 +48,7 @@
       />
     </div>
     <div class="ops-actions-group">
-      <button class="btn btn-secondary" (click)="goToStockView()">📋 Ver Stock Real</button>
+      <button class="btn btn-secondary" (click)="goToStockView()">Consultar inventario</button>
       <button class="btn btn-primary" (click)="openModal()">+ Agregar Producto</button>
     </div>
   </section>
@@ -56,7 +56,7 @@
   <section class="catalog-grid-section">
     @if (filteredProducts().length === 0) {
       <div class="empty-catalog-box animate-fade-in">
-        <div class="empty-icon">📦</div>
+        <div class="empty-icon"></div>
         <h3>No se encontraron productos</h3>
         <p>Intente con otra categoría o agregue un nuevo producto a su catálogo.</p>
       </div>

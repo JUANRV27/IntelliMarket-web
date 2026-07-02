@@ -18,14 +18,14 @@
   min-height: 620px;
   background-color: #ffffff;
   border-radius: 20px;
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 20px 40px -15px rgba(27, 80, 201, 0.1);
   overflow: hidden;
   border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 /* Panel Izquierdo Ornamental */
 .store-visual-panel {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #3c6fc1 0%, #3466da 100%);
   padding: 50px;
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@
   right: -20%;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(117, 157, 243, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(7, 78, 232, 0.15) 0%, transparent 70%);
   border-radius: 50%;
 }
 

@@ -25,6 +25,9 @@ export class StoreFormComponent {
 
   // SEÑAL REACTIVA: Resuelve el problema de actualización asíncrona de la UI
   public imagePreview = signal<string | null>(null);
+
+  // Señal reactiva al crearse una tienda correctamente para mostrar un modal de éxito
+  public showSuccessModal = signal<boolean>(false);
   
   // Almacena el valor Base64 puro listo para viajar en el JSON del Payload
   private imageBase64: string | null = null;
@@ -70,6 +73,12 @@ export class StoreFormComponent {
     this.imageBase64 = null;
   }
 
+  // Navegar hacia catalog-seller después de cerrar el modal de éxito
+  onNavigateToCatalog(): void {
+    this.showSuccessModal.set(false);
+    this.router.navigate(['/seller/catalog']);
+  }
+
   /**
    * Envía el JSON estructurado al StoreService para dar de alta la tienda en PostgreSQL
    */
@@ -98,8 +107,9 @@ export class StoreFormComponent {
           localStorage.setItem('intellimarket.storeName', res.name);
           localStorage.setItem('intellimarket.storeLogo', res.imageUrl || this.imageBase64 || '');
         }
-        alert(`¡Tienda "${res.name}" creada con éxito!`);
-        this.router.navigate(['/seller/catalog']);
+        this.showSuccessModal.set(true);
+        //alert(`¡Tienda "${res.name}" creada con éxito!`);
+        //this.router.navigate(['/seller/catalog']);
       },
       error: (err) => {
         console.error('🔴 Error al crear la tienda:', err);
