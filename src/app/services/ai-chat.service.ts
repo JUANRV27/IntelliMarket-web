@@ -28,7 +28,7 @@ export class AiChatService {
    * El backend ya devuelve un set distinto según si el usuario
    * autenticado es CUSTOMER o SELLER.
    */
-  ggetSuggestions(): Observable<string[]> {
+  getSuggestions(): Observable<string[]> {
     return this.http.get<string[]>(`${environment.apiUrl}/v1/ai/suggestions`);  
   }
 }
