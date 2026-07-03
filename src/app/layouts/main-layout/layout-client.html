@@ -49,3 +49,6 @@
 <main class="layout-content">
   <router-outlet></router-outlet>
 </main>
+@if (tokenService.isLoggedIn()) {
+  <app-chat-bubble></app-chat-bubble>
+}

@@ -1,0 +1,75 @@
+@if (tokenService.isLoggedIn()) {
+  <div class="chat-bubble-root">
+
+    @if (isOpen()) {
+      <div class="chat-panel">
+        <div class="chat-panel-header">
+          <div class="chat-panel-title">
+            <span class="chat-panel-avatar">🤖</span>
+            <span>Asistente IntelliMarket</span>
+          </div>
+          <button class="chat-panel-close" (click)="closePanel()" title="Cerrar">✕</button>
+        </div>
+
+        <div class="chat-panel-messages">
+          @for (msg of messages(); track $index) {
+            <div class="chat-msg-row" [class.chat-msg-row-user]="msg.from === 'user'">
+              <div
+                class="chat-msg-bubble"
+                [class.chat-msg-bubble-user]="msg.from === 'user'"
+                [class.chat-msg-bubble-error]="msg.isError"
+              >
+                {{ msg.text }}
+              </div>
+            </div>
+          }
+
+          @if (isLoading()) {
+            <div class="chat-msg-row">
+              <div class="chat-msg-bubble chat-typing">
+                <span class="chat-typing-dot"></span>
+                <span class="chat-typing-dot"></span>
+                <span class="chat-typing-dot"></span>
+              </div>
+            </div>
+          }
+
+          <div #messagesEnd></div>
+        </div>
+
+        @if (suggestions().length > 0) {
+          <div class="chat-suggestions">
+            @for (s of suggestions(); track $index) {
+              <button class="chat-suggestion-chip" (click)="sendSuggestion(s)" [disabled]="isLoading()">
+                {{ s }}
+              </button>
+            }
+          </div>
+        }
+
+        <form class="chat-panel-input" (ngSubmit)="sendDraft()">
+          <input
+            type="text"
+            placeholder="Escribe tu consulta..."
+            [ngModel]="draft()"
+            (ngModelChange)="draft.set($event)"
+            name="draft"
+            autocomplete="off"
+            [disabled]="isLoading()"
+          />
+          <button type="submit" class="chat-send-btn" [disabled]="isLoading() || !draft().trim()" title="Enviar">
+            ➤
+          </button>
+        </form>
+      </div>
+    }
+
+    <button class="chat-fab" (click)="togglePanel()" [title]="isOpen() ? 'Cerrar chat' : 'Abrir asistente'">
+      @if (isOpen()) {
+        <span>✕</span>
+      } @else {
+        <span>💬</span>
+      }
+    </button>
+  </div>
+}

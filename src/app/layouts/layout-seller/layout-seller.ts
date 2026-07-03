@@ -2,10 +2,11 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { CommonModule } from '@angular/common';
+import { ChatBubble } from '../../shared/components/chat-bubble/chat-bubble';
 
 @Component({
   selector: 'app-layout-seller',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, ChatBubble],  // <- agregado
   templateUrl: './layout-seller.html',
   styleUrl: './layout-seller.css'
 })

@@ -1,13 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { TokenService } from '../../services/token.service';
+import { ChatBubble } from '../../shared/components/chat-bubble/chat-bubble';
 
 @Component({
   selector: 'app-layout-client',
   standalone: true,
-  imports: [RouterModule],
+  imports: [CommonModule, RouterModule, ChatBubble],   // <- CommonModule para *ngIf de la burbuja
   templateUrl: './layout-client.html',
   styleUrls: ['./layout-client.css']
 })
