@@ -177,7 +177,7 @@
 }
 
 .btn-modal-retry {
-  background-color: #27ae60; /* Verde IntelliMarket */
+  background-color:  #2293d0; /* Verde IntelliMarket */
   color: white;
   border: none;
   padding: 10px 20px;
@@ -188,7 +188,7 @@
 }
 
 .btn-modal-retry:hover {
-  background-color: #219653;
+  background-color: #2293d0;
 }
 
 .btn-modal-cancel {
