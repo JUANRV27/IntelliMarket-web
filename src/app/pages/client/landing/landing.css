@@ -104,9 +104,15 @@
   box-shadow: var(--shadow-md);
 }
 
-.feature-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
+.feature-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background-color: #eef6fd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
 }
 
 .feature-title {
