@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
@@ -23,10 +23,37 @@ export class RegisterSeller {
   password = '';
   errorMessage = '';
 
+  // Modal de error
+  showModal = signal(false);
+  modalErrors = signal<string[]>([]);
+
   onRegister() {
     this.errorMessage = '';
     
     // Armamos el paquete declarando explícitamente que es un SELLER
+    const errors: string[] = [];
+
+    // VALIDACIÓN CLIENTE: Alimentamos el modal antes de ir al servidor
+    if (!this.firstName.trim()) errors.push('El nombre del representante es obligatorio.');
+    if (!this.lastName.trim()) errors.push('Los apellidos del representante son obligatorios.');
+    
+    if (!this.email.includes('@')) {
+      errors.push("El correo electrónico debe contener un '@'.");
+    }
+    if (this.email.length > 30) {
+      errors.push('El correo electrónico no debe superar los 30 caracteres.');
+    }
+    if (this.password.length < 8) {
+      errors.push('La contraseña debe tener al menos 8 caracteres.');
+    }
+
+    // Si existen inconsistencias locales, abrimos el modal y frenamos la petición
+    if (errors.length > 0) {
+      this.modalErrors.set(errors);
+      this.showModal.set(true);
+      return;
+    }
+    
     const payload = {
       firstName: this.firstName,
       lastName: this.lastName,
@@ -39,13 +66,23 @@ export class RegisterSeller {
     this.authService.register(payload).subscribe({
       next: (res) => {
         console.log('Registro de vendedor exitoso', res);
-        this.toastService.success('¡Negocio registrado con éxito! Ahora puedes iniciar sesión.')
+        this.toastService.success('¡Negocio registrado con éxito! Ahora puedes iniciar sesión.');
         this.router.navigate(['/auth/login']);
       },
       error: (err) => {
+        //console.error('Error al registrar vendedor:', err);
+        //this.errorMessage = err.error?.message || 'Error al registrar el negocio. Verifica los datos.';
         console.error('Error al registrar vendedor:', err);
-        this.errorMessage = err.error?.message || 'Error al registrar el negocio. Verifica los datos.';
+        const backendMessage = err.error?.message || 'Error al registrar el negocio. Verifica los datos.';
+        
+        this.modalErrors.set([backendMessage]);
+        this.showModal.set(true);
       }
     });
+  }
+
+  cerrarModal() {
+    this.showModal.set(false);
+    this.modalErrors.set([]);
   }
 }

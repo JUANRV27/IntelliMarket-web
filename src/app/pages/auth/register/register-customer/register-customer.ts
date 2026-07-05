@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
@@ -23,6 +23,10 @@ export class RegisterCustomer {
   password = '';
   errorMessage = '';
 
+  // Modal de error
+  showModal = signal(false)
+  modalErrors = signal<string[]>([])
+
   onRegister() {
     this.errorMessage = '';
     
@@ -42,10 +46,15 @@ export class RegisterCustomer {
         this.router.navigate(['/auth/login']); // Te redirige al login
       },
       error: (err) => {
-        console.error('Error del backend:', err);
+        //console.error('Error del backend:', err);
         // Si el backend manda un mensaje específico, lo mostramos
-        this.errorMessage = err.error?.message || 'Error al registrar. Verifica los datos o si el correo ya existe.';
+        //this.errorMessage = err.error?.message || 'Error al registrar. Verifica los datos o si el correo ya existe.';
       }
     });
+  }
+
+  cerrarModal() {
+    this.showModal.set(false);
+    this.modalErrors.set([]);
   }
 }
