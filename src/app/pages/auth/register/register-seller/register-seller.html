@@ -38,10 +38,18 @@
       [(ngModel)]="email" 
       placeholder="negocio@correo.com" 
       #emailInput="ngModel"
-      [class.input-error]="emailInput.invalid && emailInput.touched"
+      [class.input-error]="emailInput.invalid && emailInput.touched && !email.includes('@') && email.length > 30" 
       required>
       @if (emailInput.invalid && emailInput.touched) {
         <span class="error-hint">Este campo es obligatorio.</span>
+      }
+      <!--En caso de no contener @-->
+      @if (!email.includes('@') && email.length > 30) {
+        <span class="error-hint">El correo electrónico debe contener un '@' y no superar los 30 caracteres.</span>
+      }
+      <!--En caso de ser mayor de 30 caracteres-->
+      @if (email.length > 30) {
+        <span class="error-hint">El correo electrónico no debe superar los 30 caracteres.</span>
       }
     </div>
     
@@ -52,10 +60,13 @@
       [(ngModel)]="password" 
       placeholder="••••••••" 
       #passwordInput="ngModel"
-      [class.input-error]="passwordInput.invalid && passwordInput.touched"
+      [class.input-error]="passwordInput.invalid && passwordInput.touched && password.length < 8"
       required>
       @if (passwordInput.invalid && passwordInput.touched) {
         <span class="error-hint">Este campo es obligatorio.</span>
+      }
+      @if (password.length < 8 && password.length > 0) {
+        <span class="error-hint">La contraseña debe tener al menos 8 caracteres.</span>
       }
     </div>
     
@@ -76,3 +87,30 @@
     </div>
   </form>
 </div>
+
+<!--Modal de error-->
+@if (showModal()){
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+
+      <p class="modal-title"> Revisa los siguientes campos</p>
+      <p class="modal-body">Corrige los errores antes de continuar con el registro.</p>
+
+      <ul class="modal-list">
+        @for (err of modalErrors(); track err) {
+          <li>{{ err }}</li>
+        }
+      </ul>
+
+      <button class="btn-modal-close" (click)="cerrarModal()">Entendido</button>
+      
+    </div>
+  </div>
+}
