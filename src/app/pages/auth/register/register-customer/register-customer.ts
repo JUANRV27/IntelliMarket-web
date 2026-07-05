@@ -27,8 +27,34 @@ export class RegisterCustomer {
   showModal = signal(false)
   modalErrors = signal<string[]>([])
 
+  
+
   onRegister() {
     this.errorMessage = '';
+
+    // Armamos el paquete declarando explícitamente que es un SELLER
+    const errors: string[] = [];
+
+    // VALIDACIÓN CLIENTE: Alimentamos el modal antes de ir al servidor
+    if (!this.firstName.trim()) errors.push('El nombre del representante es obligatorio.');
+    if (!this.lastName.trim()) errors.push('Los apellidos del representante son obligatorios.');
+    
+    if (!this.email.includes('@')) {
+      errors.push("El correo electrónico debe contener un '@'.");
+    }
+    if (this.email.length > 30) {
+      errors.push('El correo electrónico no debe superar los 30 caracteres.');
+    }
+    if (this.password.length < 8) {
+      errors.push('La contraseña debe tener al menos 8 caracteres.');
+    }
+
+    // Si existen inconsistencias locales, abrimos el modal y frenamos la petición
+    if (errors.length > 0) {
+      this.modalErrors.set(errors);
+      this.showModal.set(true);
+      return;
+    }
     
     // Armamos el paquete exacto para Spring Boot
     const payload = {
@@ -49,6 +75,11 @@ export class RegisterCustomer {
         //console.error('Error del backend:', err);
         // Si el backend manda un mensaje específico, lo mostramos
         //this.errorMessage = err.error?.message || 'Error al registrar. Verifica los datos o si el correo ya existe.';
+        console.error('Error al registrar cliente:', err);
+        const backendMessage = err.error?.message || 'Error al registrar el cliente. Verifica los datos.';
+        
+        this.modalErrors.set([backendMessage]);
+        this.showModal.set(true);
       }
     });
   }
