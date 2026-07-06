@@ -19,20 +19,22 @@ export class ProfileSeller implements OnInit {
   private router         = inject(Router);
   private toastService   = inject(ToastService);
 
-  isLoading     = signal(true);
-  errorMessage  = signal('');
-  isFirstTime   = signal(false);   // true → mostrar formulario de bienvenida
-  isEditing     = signal(false);
+  isLoading    = signal(true);
+  errorMessage = signal('');
+  isFirstTime  = signal(false);
+  isEditing    = signal(false);
+  profileData  = signal<any>(null);
 
-  profileData   = signal<any>(null);
-
-  // Campos editables
   editPhone = '';
   editDni   = '';
 
+  // Controlan cuándo mostrar errores (solo tras interacción del usuario)
+  phoneTouched = false;
+  dniTouched   = false;
+
   ngOnInit(): void {
     if (!this.tokenService.token) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
       return;
     }
     this.loadProfile();
@@ -44,60 +46,74 @@ export class ProfileSeller implements OnInit {
       next: (data) => {
         this.profileData.set(data);
         this.isLoading.set(false);
-
-        // Si phone está vacío → primera vez
         if (!data.phone) {
           this.isFirstTime.set(true);
           this.editPhone = '';
           this.editDni   = '';
         }
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage.set('No se pudo cargar el perfil. Intente de nuevo.');
         this.isLoading.set(false);
       }
     });
   }
 
-  // Guardar datos en primera visita
+  // ── Validaciones ──────────────────────────────────────────────────
+  isPhoneValid(): boolean {
+    return /^\d{9}$/.test(this.editPhone);
+  }
+
+  isDniValid(): boolean {
+    // DNI es opcional — si está vacío es válido; si tiene algo, deben ser exactamente 8 dígitos
+    return this.editDni.trim() === '' || /^\d{8}$/.test(this.editDni);
+  }
+
+  isFormValid(): boolean {
+    return this.isPhoneValid() && this.isDniValid();
+  }
+
+  // ── Acciones ──────────────────────────────────────────────────────
   completeProfile(): void {
-    if (!this.editPhone.trim()) {
-      //alert('El número de teléfono es obligatorio.');
-      this.toastService.error('El número de teléfono es obligatorio.');
-      return;
-    }
+    this.phoneTouched = true;
+    this.dniTouched   = true;
+    if (!this.isFormValid()) return;
     this.saveToBackend();
   }
 
   startEditing(): void {
-    this.editPhone = this.profileData()?.phone || '';
-    this.editDni   = this.profileData()?.dni   || '';
+    this.editPhone    = this.profileData()?.phone || '';
+    this.editDni      = this.profileData()?.dni   || '';
+    this.phoneTouched = false;
+    this.dniTouched   = false;
     this.isEditing.set(true);
   }
 
   cancelEditing(): void {
+    this.phoneTouched = false;
+    this.dniTouched   = false;
     this.isEditing.set(false);
   }
 
   saveProfile(): void {
-    if (!this.editPhone.trim()) {
-      //alert('El número de teléfono es obligatorio.');
-      this.toastService.error('El número de teléfono es obligatorio.');
-      return;
-    }
+    this.phoneTouched = true;
+    this.dniTouched   = true;
+    if (!this.isFormValid()) return;
     this.saveToBackend();
   }
 
   private saveToBackend(): void {
     this.profileService.updateOwnerProfile({
       phone: this.editPhone,
-      dni:   this.editDni
+      dni:   this.editDni.trim() || undefined
     }).subscribe({
       next: (updated) => {
         this.profileData.set(updated);
         this.isFirstTime.set(false);
         this.isEditing.set(false);
-        this.toastService.success('¡Perfil guardado con éxito!');
+        this.phoneTouched = false;
+        this.dniTouched   = false;
+        this.toastService.success('Perfil guardado con exito.');
       },
       error: (err) => {
         this.toastService.error('Error al guardar: ' + (err.error?.message || 'Error interno'));

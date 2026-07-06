@@ -95,3 +95,10 @@ h2 {
 .btn-save:hover {
   background-color: #27ae60;
 }
+
+.error-text {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  display: block;
+}

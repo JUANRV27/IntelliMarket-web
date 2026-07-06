@@ -1,30 +1,62 @@
 <div class="profile-shell">
   <div class="profile-container">
     <h2>Editar Perfil</h2>
-    <p class="subtitle">Actualiza tu información de contacto</p>
+    <p class="subtitle">Actualiza tu informacion de contacto</p>
 
-    <form (ngSubmit)="onGuardar()">
+    <form (ngSubmit)="onGuardar()" novalidate>
+
+      <!-- Telefono — igual para vendedor y cliente -->
       <div class="form-group">
-        <label>Teléfono Celular</label>
-        <input type="text" name="phone" [(ngModel)]="phone" placeholder="Ej. 987654321">
+        <label>Telefono Celular <span class="required">*</span></label>
+        <input type="text" name="phone"
+               [(ngModel)]="phone"
+               (ngModelChange)="phoneTouched = true"
+               [class.input-error]="phoneTouched && !isPhoneValid()"
+               placeholder="Ej. 987654321"
+               maxlength="9" />
+        @if (phoneTouched && !isPhoneValid()) {
+          <small class="error-text">Solo digitos, exactamente 9 numeros.</small>
+        }
       </div>
 
-      @if (userRole === 'SELLER') {
+      <!-- DNI (solo vendedor) -->
+      @if (userRole === 'SELLER' || userRole === 'ROLE_SELLER') {
         <div class="form-group">
-          <label>Documento Nacional de Identidad (DNI)</label>
-          <input type="text" name="dni" [(ngModel)]="dni" placeholder="Exactamente 8 dígitos">
+          <label>DNI <span class="optional">(opcional)</span></label>
+          <input type="text" name="dni"
+                 [(ngModel)]="dni"
+                 (ngModelChange)="dniTouched = true"
+                 [class.input-error]="dniTouched && !isDniValid()"
+                 placeholder="Exactamente 8 digitos"
+                 maxlength="8" />
+          @if (dniTouched && !isDniValid()) {
+            <small class="error-text">El DNI debe tener exactamente 8 digitos numericos.</small>
+          }
         </div>
+
+      <!-- Direccion (solo cliente) -->
       } @else {
         <div class="form-group">
-          <label>Dirección Física Residencial</label>
-          <input type="text" name="address" [(ngModel)]="address" placeholder="Calle, Número, Distrito">
+          <label>Direccion Residencial <span class="optional">(opcional)</span></label>
+          <input type="text" name="address"
+                 [(ngModel)]="address"
+                 (ngModelChange)="addressTouched = true"
+                 [class.input-error]="addressTouched && !isAddressValid()"
+                 placeholder="Calle, Numero, Distrito" />
+          @if (addressTouched && !isAddressValid()) {
+            <small class="error-text">La direccion debe tener al menos 5 caracteres.</small>
+          }
         </div>
       }
 
       <div class="form-buttons">
         <button type="button" routerLink="/profile" class="btn-cancel">Cancelar</button>
-        <button type="submit" class="btn-save">Guardar Cambios</button>
+        <button type="submit" class="btn-save"
+                [disabled]="phoneTouched && !isFormValid()">
+          Guardar Cambios
+        </button>
       </div>
+
     </form>
   </div>
 </div>

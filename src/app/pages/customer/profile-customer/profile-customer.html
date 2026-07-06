@@ -19,24 +19,33 @@
       } @else if (isFirstTime()) {
         <!-- ── PRIMERA VEZ ── -->
         <div class="form-section-block">
-          <h2 class="form-section-title">¡Completa tu perfil para continuar!</h2>
+          <h2 class="form-section-title">Completa tu perfil para continuar</h2>
           <p class="form-help">Necesitamos estos datos para gestionar tus pedidos.</p>
 
           <div class="fields-row-double">
             <div class="form-input-group">
-              <!--Teléfono con restricciónd e solo ocho números, ni menos ni más-->
-              <label class="form-label">Teléfono <span class="required">*</span></label>
-              <input type="text" class="form-field" [(ngModel)]="editPhone" [class.input-error]="!isPhoneValid()"
-                     placeholder="Ej: 987654321" />
-                     @if (!isPhoneValid()) {
-                       <small class="error-text">El teléfono debe tener exactamente 9 dígitos.</small>
-                     }
+              <label class="form-label">Telefono <span class="required">*</span></label>
+              <input type="text" class="form-field"
+                     [(ngModel)]="editPhone"
+                     (ngModelChange)="phoneTouched = true"
+                     [class.input-error]="phoneTouched && !isPhoneValid()"
+                     placeholder="Ej: 987654321"
+                     maxlength="9" />
+              @if (phoneTouched && !isPhoneValid()) {
+                <small class="error-text">Solo digitos, exactamente 9 numeros.</small>
+              }
             </div>
 
             <div class="form-input-group">
-              <label class="form-label">Dirección de entrega</label>
-              <input type="text" class="form-field" [(ngModel)]="editAddress"
+              <label class="form-label">Direccion de entrega <span class="optional">(opcional)</span></label>
+              <input type="text" class="form-field"
+                     [(ngModel)]="editAddress"
+                     (ngModelChange)="addressTouched = true"
+                     [class.input-error]="addressTouched && !isAddressValid()"
                      placeholder="Ej: Av. Lima 123, Miraflores" />
+              @if (addressTouched && !isAddressValid()) {
+                <small class="error-text">La direccion debe tener al menos 5 caracteres.</small>
+              }
             </div>
           </div>
 
@@ -68,18 +77,32 @@
 
           <div class="fields-row-double">
             <div class="form-input-group">
-              <label class="form-label">Teléfono</label>
+              <label class="form-label">Telefono</label>
               @if (isEditing()) {
-                <input type="text" class="form-field" [(ngModel)]="editPhone" />
+                <input type="text" class="form-field"
+                       [(ngModel)]="editPhone"
+                       (ngModelChange)="phoneTouched = true"
+                       [class.input-error]="phoneTouched && !isPhoneValid()"
+                       maxlength="9" />
+                @if (phoneTouched && !isPhoneValid()) {
+                  <small class="error-text">Solo digitos, exactamente 9 numeros.</small>
+                }
               } @else {
                 <div class="view-field-box">{{ profileData()?.phone || '—' }}</div>
               }
             </div>
 
             <div class="form-input-group">
-              <label class="form-label">Dirección de entrega</label>
+              <label class="form-label">Direccion de entrega</label>
               @if (isEditing()) {
-                <input type="text" class="form-field" [(ngModel)]="editAddress" />
+                <input type="text" class="form-field"
+                       [(ngModel)]="editAddress"
+                       (ngModelChange)="addressTouched = true"
+                       [class.input-error]="addressTouched && !isAddressValid()"
+                       placeholder="Ej: Av. Lima 123, Miraflores" />
+                @if (addressTouched && !isAddressValid()) {
+                  <small class="error-text">La direccion debe tener al menos 5 caracteres.</small>
+                }
               } @else {
                 <div class="view-field-box">{{ profileData()?.address || '—' }}</div>
               }
@@ -90,9 +113,13 @@
         <div class="profile-actions-footer">
           @if (isEditing()) {
             <button class="btn btn-secondary" style="width:auto" (click)="cancelEditing()">Cancelar</button>
-            <button class="btn btn-primary"   style="width:auto" (click)="saveProfile()">Guardar</button>
+            <button class="btn btn-primary" style="width:auto"
+                    (click)="saveProfile()"
+                    [disabled]="phoneTouched && !isFormValid()">
+              Guardar
+            </button>
           } @else {
-            <button class="btn btn-primary" (click)="startEditing()">Editar información</button>
+            <button class="btn btn-primary" (click)="startEditing()">Editar informacion</button>
           }
         </div>
       }

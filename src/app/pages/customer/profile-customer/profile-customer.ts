@@ -23,15 +23,17 @@ export class ProfileCustomer implements OnInit {
   errorMessage = signal('');
   isFirstTime  = signal(false);
   isEditing    = signal(false);
-
   profileData  = signal<any>(null);
 
   editPhone   = '';
   editAddress = '';
 
+  phoneTouched   = false;
+  addressTouched = false;
+
   ngOnInit(): void {
     if (!this.tokenService.token) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/auth/login']);
       return;
     }
     this.loadProfile();
@@ -43,8 +45,6 @@ export class ProfileCustomer implements OnInit {
       next: (data) => {
         this.profileData.set(data);
         this.isLoading.set(false);
-
-        // Si phone está vacío → primera vez
         if (!data.phone) {
           this.isFirstTime.set(true);
           this.editPhone   = '';
@@ -58,47 +58,61 @@ export class ProfileCustomer implements OnInit {
     });
   }
 
+  // ── Validaciones ──────────────────────────────────────────────────
+  isPhoneValid(): boolean {
+    return /^\d{9}$/.test(this.editPhone);
+  }
+
+  isAddressValid(): boolean {
+    // Dirección es opcional; si tiene algo, debe tener al menos 5 caracteres
+    return this.editAddress.trim() === '' || this.editAddress.trim().length >= 5;
+  }
+
+  isFormValid(): boolean {
+    return this.isPhoneValid() && this.isAddressValid();
+  }
+
+  // ── Acciones ──────────────────────────────────────────────────────
   completeProfile(): void {
-    if (!this.editPhone.trim()) {
-      alert('El número de teléfono es obligatorio.');
-      return;
-    }
+    this.phoneTouched   = true;
+    this.addressTouched = true;
+    if (!this.isFormValid()) return;
     this.saveToBackend();
   }
 
-  isPhoneValid(): boolean {
-    const phoneRegex = /^\d{9}$/;
-    return phoneRegex.test(this.editPhone);
-  }
-
   startEditing(): void {
-    this.editPhone   = this.profileData()?.phone   || '';
-    this.editAddress = this.profileData()?.address || '';
+    this.editPhone      = this.profileData()?.phone   || '';
+    this.editAddress    = this.profileData()?.address || '';
+    this.phoneTouched   = false;
+    this.addressTouched = false;
     this.isEditing.set(true);
   }
 
   cancelEditing(): void {
+    this.phoneTouched   = false;
+    this.addressTouched = false;
     this.isEditing.set(false);
   }
 
   saveProfile(): void {
-    if (!this.editPhone.trim()) {
-      alert('El número de teléfono es obligatorio.');
-      return;
-    }
+    this.phoneTouched   = true;
+    this.addressTouched = true;
+    if (!this.isFormValid()) return;
     this.saveToBackend();
   }
 
   private saveToBackend(): void {
     this.profileService.updateCustomerProfile({
       phone:   this.editPhone,
-      address: this.editAddress
+      address: this.editAddress.trim() || undefined
     }).subscribe({
       next: (updated) => {
         this.profileData.set(updated);
         this.isFirstTime.set(false);
         this.isEditing.set(false);
-        this.toastService.success('¡Perfil guardado con éxito!');
+        this.phoneTouched   = false;
+        this.addressTouched = false;
+        this.toastService.success('Perfil guardado con exito.');
       },
       error: (err) => {
         this.toastService.error('Error al guardar: ' + (err.error?.message || 'Error interno'));
