@@ -167,24 +167,26 @@ export class CartComponent {
     this.isProcessingTransaction.set(false);
     
     // Opcional: Volvemos a sincronizar por seguridad local
-    this.cartService.loadCartFromBackend().subscribe();
+    //this.cartService.loadCartFromBackend().subscribe();
+    this.restaurarOrdenesAlCarrito();
     
     //this.toastService.info('Compra pausada. Puedes modificar tus cantidades o continuar revisando el catálogo.');
   }
 
   private procesarSiguientePago(estadoEnum: 'COMPLETED' | 'CANCELLED', exito: boolean) {
     if (this.currentPaymentIndex >= this.pendingOrders.length) {
-      // Todas las órdenes ya fueron procesadas
       this.isProcessingTransaction.set(false);
       this.showPaymentModal.set(false);
 
       if (exito) {
         this.toastService.success(`¡Pago procesado con éxito! Se generaron ${this.pendingOrders.length} orden(es).`);
-        this.cartService.cartState.set(null); // el carrito ya fue vaciado en el backend al hacer checkout()
+        this.cartService.cartState.set(null); 
         this.router.navigate(['/history']);
       } else {
         this.toastService.error('Transacción rechazada. El stock reservado ha sido devuelto al inventario.');
-        this.cartService.loadCartFromBackend().subscribe();
+        
+        // Si la pasarela de pago rechaza la tarjeta, también restauramos el carrito
+        this.restaurarOrdenesAlCarrito();
       }
 
       this.pendingOrders = [];
@@ -205,4 +207,65 @@ export class CartComponent {
       }
     });
   }
+
+  /**
+   * Toma los ítems guardados en pendingOrders y los reinserta en el backend 
+   * usando recursividad para evitar problemas de concurrencia HTTP sincrónica.
+   */
+  private restaurarOrdenesAlCarrito() {
+    if (!this.pendingOrders || this.pendingOrders.length === 0) {
+      this.cartService.loadCartFromBackend().subscribe();
+      return;
+    }
+
+    // Recopilamos todos los ítems de todas las órdenes pendientes creadas por el checkout
+    const itemsARestaurar: { productId: number; storeId: number; quantity: number }[] = [];
+    
+    this.pendingOrders.forEach(order => {
+      if (order.items) {
+        order.items.forEach((item: any) => {
+          itemsARestaurar.push({
+            productId: Number(item.productId),
+            storeId: Number(order.storeId || item.storeId), // Ajusta según la estructura de tu OrderResponse
+            quantity: Number(item.quantity)
+          });
+        });
+      }
+    });
+
+    if (itemsARestaurar.length === 0) {
+      this.cartService.loadCartFromBackend().subscribe();
+      return;
+    }
+
+    this.isCheckoutLoading.set(true);
+    this.ejecutarInsercionesSecuenciales(itemsARestaurar, 0);
+  }
+
+  private ejecutarInsercionesSecuenciales(items: any[], index: number) {
+    if (index >= items.length) {
+      // Al terminar de restaurar todo, volvemos a sincronizar el estado reactivo global
+      this.cartService.loadCartFromBackend().subscribe({
+        next: () => {
+          this.isCheckoutLoading.set(false);
+          this.pendingOrders = [];
+        },
+        error: () => this.isCheckoutLoading.set(false)
+      });
+      return;
+    }
+
+    const currentItem = items[index];
+    this.cartService.addToCartBackend(currentItem.productId, currentItem.storeId, currentItem.quantity).subscribe({
+      next: () => {
+        // Procedemos con el siguiente ítem secuencialmente
+        this.ejecutarInsercionesSecuenciales(items, index + 1);
+      },
+      error: (err) => {
+        console.error('🔴 Error al restaurar ítem al carrito:', err);
+        this.ejecutarInsercionesSecuenciales(items, index + 1);
+      }
+    });
+  }
+
 }
