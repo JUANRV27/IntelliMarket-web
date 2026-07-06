@@ -69,9 +69,23 @@ export class CartComponent {
   }
 
   vaciarCarrito() {
-    if (confirm('¿Estás seguro de que deseas vaciar todo el carrito?')) {
-      this.cartService.clearCartBackend().subscribe();
-    }
+    // Eliminamos el 'confirm' nativo y procedemos directamente a vaciar el contenido
+    this.cartService.clearCartBackend().subscribe({
+      next: () => {
+        // Forzamos el vaciado del estado reactivo en el cliente inmediatamente
+        this.cartService.cartState.set(null);
+        
+        // Sincronizamos con el backend para asegurar que la UI pinte la sección vacía
+        this.cartService.loadCartFromBackend().subscribe();
+        
+        // Notificación limpia sin alertas nativas intrusivas
+        this.toastService.success('El carrito ha sido vaciado por completo.');
+      },
+      error: (err) => {
+        console.error('🔴 Error al vaciar el carrito en el servidor:', err);
+        this.toastService.error(err.error?.message || 'No se pudo vaciar el carrito. Intente de nuevo.');
+      }
+    });
   }
 
   // PASO 1: crea la(s) orden(es) agrupando por tienda y ABRE el modal de pago.
