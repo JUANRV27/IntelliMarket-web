@@ -110,17 +110,63 @@
         </div>
 
         <div class="payment-actions-container">
-          <!-- ✅ FIX: ambos botones llaman al MISMO método (procesarTransaccionSimulada),
+          <!-- FIX: ambos botones llaman al MISMO método (procesarTransaccionSimulada),
                solo cambia el parámetro true/false. Antes "Confirmar Pago" llamaba a
                confirmarCompraBackend(), que usaba una URL rota e inexistente. -->
           <button class="btn-pay-success" (click)="procesarTransaccionSimulada(true)">
             Confirmar Pago Exitoso
           </button>
-          <button class="btn-pay-fail" (click)="procesarTransaccionSimulada(false)">
+          <button class="btn-pay-fail" (click)="cancelarPasarelaDePago()">
             Cancelar
           </button>
         </div>
       }
+    </div>
+  </div>
+}
+
+@if (showPhoneWarningModal()) {
+  <div class="modal-overlay" (click)="cerrarModalAdvertencia()" 
+       style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+    
+    <div class="modal-card" (click)="$event.stopPropagation()" 
+         style="background: #ffffff; color: #0f172a; width: 440px; border-radius: 14px; padding: 32px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; animation: fade-in 0.2s ease;">
+      
+      <div class="modal-icon-wrapper" 
+           style="width: 64px; height: 64px; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+        <svg viewBox="0 0 24 24" style="width: 32px; height: 32px; fill: none; stroke: #0284c7; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+
+      <h3 style="margin: 0 0 12px 0; font-size: 20px; font-weight: 600; color: #0f172a; line-height: 1.4;">
+        No se puede iniciar compra sin dirección o teléfono
+      </h3>
+      
+      <p style="margin: 0 0 26px 0; font-size: 14px; color: #475569; line-height: 1.5;">
+        Para poder calcular las rutas de envío y emitir las órdenes de compra correctamente, es necesario que tu información de contacto esté completa.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        
+        <button type="button" (click)="irAlPerfil()" 
+                style="width: 100%; background-color: #0284c7; color: #ffffff; border: none; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s ease, transform 0.1s ease; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);"
+                onmouseover="this.style.backgroundColor='#0369a1'" 
+                onmouseout="this.style.backgroundColor='#0284c7'">
+          Ir a completar mis datos
+        </button>
+        
+        <button type="button" class="btn-modal-close" (click)="cerrarModalAdvertencia()" 
+                style="width: 100%; background: #f8fafc; color: #64748b; border: 1px solid #cbd5e1; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s ease;"
+                onmouseover="this.style.background='#f1f5f9'; this.style.color='#475569'" 
+                onmouseout="this.style.background='#f8fafc'; this.style.color='#64748b'">
+          Cancelar
+        </button>
+        
+      </div>
+      
     </div>
   </div>
 }

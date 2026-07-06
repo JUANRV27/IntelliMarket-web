@@ -5,6 +5,7 @@ import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { OrderResponse } from '../../models/order-response';
 import { ToastService } from '../../services/toast.service';
+import { ProfileService } from '../../services/profile.service';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class CartComponent {
   private orderService = inject(OrderService);
   private router = inject(Router);
   private toastService = inject(ToastService);
+  private profileService = inject(ProfileService);
 
   public showPaymentModal = signal<boolean>(false);
   public isCheckoutLoading = signal<boolean>(false);
@@ -27,7 +29,8 @@ export class CartComponent {
   // Puede haber VARIAS órdenes (una por tienda) generadas en un solo checkout
   private pendingOrders: OrderResponse[] = [];
   private currentPaymentIndex = 0;
-  
+  // Modal para advertir al usuario que debe registrar su teléfono antes de poder comprar
+  public showPhoneWarningModal = signal<boolean>(false);
   public isUpdatingQuantity = signal<boolean>(false);
 
   ngOnInit() {
@@ -81,12 +84,44 @@ export class CartComponent {
 
     this.isCheckoutLoading.set(true);
 
+    // Validamos que el cliente tenga teléfono y dirección registrados antes del Checkout
+    this.profileService.getCustomerProfile().subscribe({
+      next: (profile) => {
+        if (!profile || !profile.phone || !profile.address || profile.address.trim() === '' || 
+        profile.phone.trim() === '') {
+          this.isCheckoutLoading.set(false);
+          
+          this.showPhoneWarningModal.set(true);
+          return;
+        }
+
+        // Si pasó la validación, procedemos con el flujo de reserva de stock normal
+        this.ejecutarCheckoutTransaccional();
+      },
+      error: (err) => {
+        this.isCheckoutLoading.set(false);
+        console.error('🔴 Error al validar perfil del cliente antes del pago:', err);
+        this.toastService.error('No pudimos validar tus datos de entrega. Intenta nuevamente.');
+      }
+    });
+  }
+
+  irAlPerfil() {
+    this.showPhoneWarningModal.set(false);
+    // Cambia la ruta a '/profile' o como esté mapeado el ProfileCustomer en tus rutas hijas
+    this.router.navigate(['/profile']); 
+  }
+
+  cerrarModalAdvertencia() {
+    this.showPhoneWarningModal.set(false);
+  }
+
+  private ejecutarCheckoutTransaccional() {
     this.orderService.checkout().subscribe({
       next: (orders: OrderResponse[]) => {
         this.pendingOrders = orders;
         this.currentPaymentIndex = 0;
-
-        console.log(`✅ Se generaron ${orders.length} orden(es), una por cada tienda:`, orders);
+        console.log(`✅ Se generaron ${orders.length} orden(es):`, orders);
 
         this.isCheckoutLoading.set(false);
         this.showPaymentModal.set(true);
@@ -94,7 +129,7 @@ export class CartComponent {
       error: (err) => {
         this.isCheckoutLoading.set(false);
         console.error('🔴 Error en checkout:', err.error);
-        this.toastService.error('Error en checkout: ' + (err.error?.message || 'Inconsistencia de stock en tienda.'));
+        this.toastService.error('Error en checkout: ' + (err.error?.message || 'Inconsistencia de stock.'));
       }
     });
   }
@@ -110,6 +145,17 @@ export class CartComponent {
     setTimeout(() => {
       this.procesarSiguientePago(estadoEnum, exito);
     }, 1500);
+  }
+
+  cancelarPasarelaDePago() {
+    this.showPaymentModal.set(false);
+    this.isCheckoutLoading.set(false);
+    this.isProcessingTransaction.set(false);
+    
+    // Opcional: Volvemos a sincronizar por seguridad local
+    this.cartService.loadCartFromBackend().subscribe();
+    
+    //this.toastService.info('Compra pausada. Puedes modificar tus cantidades o continuar revisando el catálogo.');
   }
 
   private procesarSiguientePago(estadoEnum: 'COMPLETED' | 'CANCELLED', exito: boolean) {
