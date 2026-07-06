@@ -66,6 +66,11 @@ export class ProfileCustomer implements OnInit {
     this.saveToBackend();
   }
 
+  isPhoneValid(): boolean {
+    const phoneRegex = /^\d{9}$/;
+    return phoneRegex.test(this.editPhone);
+  }
+
   startEditing(): void {
     this.editPhone   = this.profileData()?.phone   || '';
     this.editAddress = this.profileData()?.address || '';

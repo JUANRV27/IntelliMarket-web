@@ -24,9 +24,13 @@
 
           <div class="fields-row-double">
             <div class="form-input-group">
+              <!--Teléfono con restricciónd e solo ocho números, ni menos ni más-->
               <label class="form-label">Teléfono <span class="required">*</span></label>
-              <input type="text" class="form-field" [(ngModel)]="editPhone"
+              <input type="text" class="form-field" [(ngModel)]="editPhone" [class.input-error]="!isPhoneValid()"
                      placeholder="Ej: 987654321" />
+                     @if (!isPhoneValid()) {
+                       <small class="error-text">El teléfono debe tener exactamente 9 dígitos.</small>
+                     }
             </div>
 
             <div class="form-input-group">
