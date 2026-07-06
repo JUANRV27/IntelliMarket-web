@@ -65,7 +65,7 @@ export class CartService {
   }
 
   clearCartBackend(): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}`).pipe(
+    return this.http.delete<any>(`${this.baseUrl}/me`).pipe(
       tap(() => this.cartState.set(null))
     );
   }
